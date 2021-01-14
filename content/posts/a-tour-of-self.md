@@ -114,8 +114,6 @@ by using the programming environment. The user interface is built using Morphic,
 which is the UI framework powering the environment, built on X11 on GNU/Linux
 and Quartz on macOS.
 
-In order to use one of these snapshots,
-
 When you first start the `morphic` or `kitchensink` snapshots, you are greeted
 with something like this:
 
