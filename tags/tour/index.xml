@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>tour on sin-ack&#39;s writings</title>
-    <link>http://sin-ack.github.io/tags/tour/</link>
+    <link>https://sin-ack.github.io/tags/tour/</link>
     <description>Recent content in tour on sin-ack&#39;s writings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 14 Jan 2021 16:51:08 +0100</lastBuildDate><atom:link href="http://sin-ack.github.io/tags/tour/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 14 Jan 2021 16:51:08 +0100</lastBuildDate><atom:link href="https://sin-ack.github.io/tags/tour/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>A tour of Self</title>
-      <link>http://sin-ack.github.io/posts/a-tour-of-self/</link>
+      <link>https://sin-ack.github.io/posts/a-tour-of-self/</link>
       <pubDate>Thu, 14 Jan 2021 16:51:08 +0100</pubDate>
       
-      <guid>http://sin-ack.github.io/posts/a-tour-of-self/</guid>
+      <guid>https://sin-ack.github.io/posts/a-tour-of-self/</guid>
       <description>Hey there. This is the first post I will be making here, and I wanted to give a tour of Self before making posts about my current implementation, mySelf.
 Throughout this post, I will be showing examples from the regular implementation of the Self programming environment, available here.
 What is Self? To quote the Self language homepage:
