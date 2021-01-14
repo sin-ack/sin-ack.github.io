@@ -238,7 +238,7 @@ As you can see, the vector is now populated with the FizzBuzz game.
 
 Of course, simple programming examples are not the only thing you can do in
 Self. The standard library is super rich (after all, Self was developed in Sun
-Microsystem for a new years, who are notorious for another language with a very
+Microsystem for a few years, who are notorious for another language with a very
 large standard library). In particular, the Morphic system is an extremely cool
 UI toolkit which I definitely want to talk more about, but I don't want my first
 post to become extremely long, so I'll end it here for now.
