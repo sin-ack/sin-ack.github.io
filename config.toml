@@ -1,0 +1,26 @@
+baseURL = "http://sin-ack.github.io/"
+defaultContentLanguage = "en"
+hasCJKLanguage = false
+languageCode = "en"
+paginate = 5
+theme = "texify"
+title = "sin-ack's writings"
+
+pygmentsUseClasses = true
+
+[author]
+name = "sin-ack"
+
+[markup.goldmark.renderer]
+unsafe = true
+
+[[menu.main]]
+    identifier = "archives"
+    name = "Archives"
+    url = "/posts/"
+    weight = 2
+
+[params]
+    custom_css = ["/css/custom.css"]
+    description = "Self-important monologues."
+    keywords = ["self", "blog"]

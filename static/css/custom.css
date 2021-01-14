@@ -1,0 +1,19 @@
+figure {
+  padding: 1rem;
+  text-align: center;
+}
+
+figcaption {
+  padding: 0.5rem 2rem;
+  font-size: 0.8rem;
+  font-weight: normal;
+  font-style: italic;
+}
+
+figcaption p {
+  text-align: center !important;
+}
+
+figcaption code {
+  font-style: normal;
+}
