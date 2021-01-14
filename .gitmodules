@@ -1,0 +1,3 @@
+[submodule "public"]
+	path = public
+	url = https://sin-ack:e04d1d27dd4aa55500aa76c1e801cb8d52e03496@github.com/sin-ack/sin-ack.github.io.git
