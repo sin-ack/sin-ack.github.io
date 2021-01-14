@@ -1,4 +1,4 @@
-baseURL = "http://sin-ack.github.io/"
+baseURL = "https://sin-ack.github.io/"
 defaultContentLanguage = "en"
 hasCJKLanguage = false
 languageCode = "en"
