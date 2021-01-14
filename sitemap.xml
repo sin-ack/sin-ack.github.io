@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>http://sin-ack.github.io/posts/a-tour-of-self/</loc>
+    <lastmod>2021-01-14T16:51:08+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://sin-ack.github.io/categories/</loc>
+    <lastmod>2021-01-14T16:51:08+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://sin-ack.github.io/posts/</loc>
+    <lastmod>2021-01-14T16:51:08+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://sin-ack.github.io/tags/self/</loc>
+    <lastmod>2021-01-14T16:51:08+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://sin-ack.github.io/categories/self/</loc>
+    <lastmod>2021-01-14T16:51:08+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://sin-ack.github.io/</loc>
+    <lastmod>2021-01-14T16:51:08+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://sin-ack.github.io/tags/</loc>
+    <lastmod>2021-01-14T16:51:08+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://sin-ack.github.io/tags/tour/</loc>
+    <lastmod>2021-01-14T16:51:08+01:00</lastmod>
+  </url>
+  
+</urlset>
