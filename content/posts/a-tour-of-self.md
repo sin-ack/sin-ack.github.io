@@ -136,9 +136,9 @@ for each _morph_ (widget or layout, in modern terms) in the workspace:
 If you want to do something to what the morph is showing, you middle click it.
 If you want to change the morph itself, you right click it.
 
-The background is middle-clickable, as well, and contains many important menu
-items. It is where you find the options to create a new object, and references
-to some important objects in the Self environment.
+The background (called world, or root) is middle-clickable, as well, and
+contains many important menu items. It is where you find the options to create a
+new object, and references to some important objects in the Self environment.
 
 {{< figure src="/images/tour1/bg_menu.png" caption="The background (`rootMorph`) menu." >}}
 
