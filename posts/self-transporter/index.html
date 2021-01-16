@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<meta name="author" content="sin-ack">
+
+
+
+<meta name="description" content="In my previous post, I talked about Self and gave a
+general tour of the language and the programming environment. I mentioned that
+Self was an image-based programming language. Of course, if you want to develop
+a Self application with multiple people, an image is not suitable for
+collaborating (except in real-time &ndash; we&rsquo;ll come back to that in a later post).
+Your Self image contains everything in your programming environment (provided
+you don&rsquo;t forget to save it!), including the active morphs you have on the
+screen, and stuff you are working on. Therefore, obviously, it is not possible
+to collaborate using your world images on version control.
+So then the question becomes &ldquo;How can we extract just the parts of our
+application so that they can be re-imported to other Self worlds independently?&rdquo;
+And the answer to that is the Transporter system.">
+
+
+
+
+<meta name="keywords" content=" self  blog ">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Self Transporter: how to share your Self code" />
+<meta name="twitter:description" content="In my previous post, I talked about Self and gave a
+general tour of the language and the programming environment. I mentioned that
+Self was an image-based programming language. Of course, if you want to develop
+a Self application with multiple people, an image is not suitable for
+collaborating (except in real-time &ndash; we&rsquo;ll come back to that in a later post).
+Your Self image contains everything in your programming environment (provided
+you don&rsquo;t forget to save it!), including the active morphs you have on the
+screen, and stuff you are working on. Therefore, obviously, it is not possible
+to collaborate using your world images on version control.
+So then the question becomes &ldquo;How can we extract just the parts of our
+application so that they can be re-imported to other Self worlds independently?&rdquo;
+And the answer to that is the Transporter system." />
+
+
+<link rel="canonical" href="https://sin-ack.github.io/posts/self-transporter/">
+
+
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/common.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/content.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/highlight.css'>
+
+
+
+<title>Self Transporter: how to share your Self code - sin-ack&#39;s writings</title>
+
+
+
+
+
+  <link rel="stylesheet" href='https://sin-ack.github.io/css/single.css'>
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://sin-ack.github.io/">sin-ack&#39;s writings</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/posts/">Archives</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/index.xml">RSS Feed</a>
+    </span>
+    
+  </nav>
+</header>
+
+    <main id="main" class="post">
+      
+      
+      
+      <h1>Self Transporter: how to share your Self code</h1>
+      
+      <div>
+        <b>Keywords: </b>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/self'>#self</a>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/transporter'>#transporter</a>
+        
+      </div>
+      
+      <div class="content">
+        <p>In my <a href="/posts/a-tour-of-self/">previous post</a>, I talked about Self and gave a
+general tour of the language and the programming environment. I mentioned that
+Self was an image-based programming language. Of course, if you want to develop
+a Self application with multiple people, an image is not suitable for
+collaborating (except in real-time &ndash; we&rsquo;ll come back to that in a later post).
+Your Self image contains everything in your programming environment (provided
+you don&rsquo;t forget to save it!), including the active morphs you have on the
+screen, and stuff you are working on. Therefore, obviously, it is not possible
+to collaborate using your world images on version control.</p>
+<p>So then the question becomes &ldquo;How can we extract just the parts of our
+application so that they can be re-imported to other Self worlds independently?&rdquo;
+And the answer to that is the Transporter system.</p>
+<p>But before we can talk about Transporter, we first need to understand what Self
+considers a module.</p>
+<h2 id="self-modules">Self Modules</h2>
+<p>We previously talked about slots and objects in Self and said that an object is
+a collection of slots. Well, all of our world is a huge hierarchy of objects
+created by connections of slots. Obviously it would be very hard to put
+everything together at once. Besides, we might want to plug some stuff out or
+plug new stuff in at will.</p>
+<p>That&rsquo;s where Self modules come in. For the most part, modules behave like you
+would expect from other programming languages: modules are collections of
+objects. However, they differ from regular programming language modules in that
+they also contain <em>individual slots</em>. That is, you can set a module for any
+slot, in any object. This makes Self&rsquo;s modules incredibly powerful in extending
+the language: by making the granularity of modules in Self at the slot level,
+you can extend the standard library as you wish, adding new slots.</p>
+<figure>
+    <img src="/images/self2/string_asFileContents.png"
+         alt="asFileContents is probably not something you would expect to be on traits string."/> <figcaption>
+            <p><code>asFileContents</code> is probably not something you would expect to be on
+<code>traits string</code>.</p>
+        </figcaption>
+</figure>
+
+<p>In that screenshot you can see that right after the category name (<code>files</code>),
+there is a bit that says <code>Module: abstract_OS</code>. In the programming environment,
+at the top of each object and category, there is a summary of the modules that
+own the slots. If there is only one module for all slots, it will show the
+module name like above; if there are multiple, it will abbreviate it and show
+the module count instead; and if there are none, it will show
+<code>no filed-out slots</code> (might be familiar if you followed the previous post).<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<figure>
+    <img src="/images/self2/globals_modules.png"
+         alt="The module summary for globals, using the morphic snapshot."/> <figcaption>
+            <p>The module summary
+for <code>globals</code>, using the <code>morphic</code> snapshot.</p>
+        </figcaption>
+</figure>
+
+<p>We will soon look into how we can create our own modules. For now, let&rsquo;s
+understand how the Transporter system works.</p>
+<h2 id="the-transporter-system">The Transporter system</h2>
+<p>The Transporter system is a way to reliably extract a module from a Self world
+while the code is still running. It accomplishes this by getting the
+representation of each object and slot that belongs to the module (and is
+well-known<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>) and transforming them into a series of messages which can then
+be written to a file. This file is a text file which then be shared as you would
+with any other text file.</p>
+<p>The handbook has an
+<a href="https://handbook.selflanguage.org/2017.1/howtoprg.html#the-transporter">excellent section</a>
+on how Transporter works and the problems that were faced. You should definitely
+check it out, but to summarize, live objects and slots do not provide enough
+information to accurately represent them in source code (a slot might be
+computed initially, how to handle slots that reference another module&rsquo;s objects,
+how to handle immutable objects), so in order to preserve that information for
+<em>filing into</em> (loading into) another Self world later, the information is set by
+the programmer as <em>annotations</em> on the objects and slots. Let us now look at
+what annotations are and what kind of annotations there are.</p>
+<h2 id="self-annotations">Self Annotations</h2>
+<p>To solve the problem of storing meta-data on the object regarding its creation,
+Self has a syntactic element called <em>annotations</em>. Annotations are strings that
+are stored with the object or slot and can then be fetched by the environment.
+The default Self environment and Transporter separates different keys and values
+in an annotation with <code>\x7f</code>. In text form, slots and objects can be annotated
+using curly braces.</p>
+<figure>
+    <img src="/images/self2/annotation_syntax.png"
+         alt="Annotations in text form."/> <figcaption>
+            <p>Annotations in text form.</p>
+        </figcaption>
+</figure>
+
+<p>In an object, there are a few annotations that are relevant to the Transporter
+system, and the environment provides a graphical way to modify them.</p>
+<figure>
+    <img src="/images/self2/object_annotations.png"
+         alt="The annotations that are available on an object."/> <figcaption>
+            <p>The annotations that are available on an object.</p>
+        </figcaption>
+</figure>
+
+<p>In the screenshot above, the first two slots are related to Transporter. We will
+come back to copy-down in a later post, so ignore the last 3 slots for now.</p>
+<ul>
+<li>The <em>creator slot</em> is the well-known path for this object. All objects that
+refer to this object must use the creator slot to do so. This also allows
+your object to get its own name, as we will see later in this blog post.</li>
+<li>The <em>Complete?</em> flag allows us to determine whether there is an expression
+such that, provided all required objects are filed in, lets us recreate this
+object 1:1. This is used by Transporter to write simple expressions to
+recreate slot contents.<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></li>
+</ul>
+<p>An important thing to note is that, for an object to be accurately recreated, it
+must either be complete or it must have a well-known creator slot.</p>
+<figure>
+    <img src="/images/self2/creator.png"
+         alt="traits string has a well-known creator path: you can always access it by evaluating traits string."/> <figcaption>
+            <p><code>traits string</code>
+has a well-known creator path: you can always access it by evaluating
+<code>traits string</code>.</p>
+        </figcaption>
+</figure>
+
+<figure>
+    <img src="/images/self2/complete.png"
+         alt="This textLines object is complete: when filing out, Transporter will simply write &amp;lsquo;foo&amp;rsquo; asTextLines. You can create the object this way yourself."/> <figcaption>
+            <p>This <code>textLines</code>
+object is complete: when filing out, Transporter will simply write
+<code>&lsquo;foo&rsquo; asTextLines</code>. You can create the object this way yourself.</p>
+        </figcaption>
+</figure>
+
+<p>For slots, we have a few more annotations. They determine how the slot will be
+represented when Transporter files them out.</p>
+<figure>
+    <img src="/images/self2/slot_annotations.png"
+         alt="The annotations
+that are available on a slot."/> <figcaption>
+            <p>The annotations
+that are available on a slot.</p>
+        </figcaption>
+</figure>
+
+<p>This one is much simpler. A slot has a <em>module</em> it belongs to, and has two modes
+when determining how to initialize it when filing it in later. If <em>Follow</em> is
+selected, then Transporter will try to write out whatever&rsquo;s the value of the
+module; if <em>Initialize to</em> is selected, however, Transporter will place the
+expression that&rsquo;s typed in the text box as the slot&rsquo;s value.</p>
+<p>Okay, now that we know all of this, we can write our own module and file it out,
+so let&rsquo;s do it.</p>
+<h2 id="writing-our-own-module">Writing our own module</h2>
+<p>Here, I am creating an object with basic mathematical operations.</p>
+<figure>
+    <img src="/images/self2/object_creation.png"
+         alt="Creating the objects
+on the slot."/> <figcaption>
+            <p>Creating the objects
+on the slot.</p>
+        </figcaption>
+</figure>
+
+<figure>
+    <img src="/images/self2/object.png"
+         alt="The final version of the
+object."/> <figcaption>
+            <p>The final version of the
+object.</p>
+        </figcaption>
+</figure>
+
+<p>First, let&rsquo;s define the module for the slots on this object. Middle-click on
+the object&rsquo;s header (the part with <code>a slots object</code>) and select <code>Set Module...</code>
+Select <code>All</code> slots, and select module as <code>other</code>. For name, we can enter
+<code>maths</code> and then click <code>Okay</code>.</p>
+<figure>
+    <img src="/images/self2/set_module_1.png"
+         alt="Selecting Set Module."/> <figcaption>
+            <p>Selecting
+<code>Set Module</code>.</p>
+        </figcaption>
+</figure>
+
+<figure>
+    <img src="/images/self2/set_module_2.png"
+         alt="Steps of setting module to maths."/> <figcaption>
+            <p>Steps of setting module
+to <code>maths</code>.</p>
+        </figcaption>
+</figure>
+
+<p>Self will warn us that the module we are trying to save to does not exist, but
+we already know this. Click on <code>Create it!</code></p>
+<figure>
+    <img src="/images/self2/set_module_3.png"
+         alt="Self telling us that
+there is no such module."/> <figcaption>
+            <p>Self telling us that
+there is no such module.</p>
+        </figcaption>
+</figure>
+
+<p>Self will then ask us to add this module as a submodule of another. This is good
+for organization, but we want this module to be standalone, so leave this
+textbox empty and click <code>Okay</code>.</p>
+<figure>
+    <img src="/images/self2/set_module_4.png"
+         alt="Leaving the parent module
+empty."/> <figcaption>
+            <p>Leaving the parent module
+empty.</p>
+        </figcaption>
+</figure>
+
+<p>Self will be surprised because we&rsquo;re creating a new root module, but that&rsquo;s
+fine; click <code>No module</code>.</p>
+<figure>
+    <img src="/images/self2/set_module_5.png"
+         alt="Self is very shocked at
+this turn of events."/> <figcaption>
+            <p>Self is very shocked at
+this turn of events.</p>
+        </figcaption>
+</figure>
+
+<p>For the final step, we determine which directory our module will reside in. The
+directory <code>applications</code> is fine, so let&rsquo;s just accept the default.</p>
+<figure>
+    <img src="/images/self2/set_module_6.png"
+         alt="Selecting the directory
+of the application."/> <figcaption>
+            <p>Selecting the directory
+of the application.</p>
+        </figcaption>
+</figure>
+
+<p>And there we go, we just created our first module.</p>
+<figure>
+    <img src="/images/self2/set_module_success.png"
+         alt="The object now displays the module as maths."/> <figcaption>
+            <p>The object
+now displays the module as <code>maths</code>.</p>
+        </figcaption>
+</figure>
+
+<p>But wait! If we file out our module now, we will not be able to reach the slots
+we just created in any form. This is because the object we created has no
+<em>creator slot</em>. If you recall from earlier, we said that objects need to have a
+well-known creator slot to be filed out. A very simple way to do this is to
+just put our slot on <code>globals</code>, as most modules do.</p>
+<p>Let&rsquo;s add a new slot to <code>globals</code> as we did previously with other objects. If
+you cannot find the &ldquo;Add Slot&hellip;&rdquo; option in the object menu, make sure you are
+clicking on the outliner&rsquo;s header area. For now, we are setting it to <code>nil</code>,
+because we will be setting it to our object later on.</p>
+<figure>
+    <img src="/images/self2/global_slot_1.png"
+         alt="Adding a new slot to
+global."/> <figcaption>
+            <p>Adding a new slot to
+global.</p>
+        </figcaption>
+</figure>
+
+<figure>
+    <img src="/images/self2/global_slot_2.png"
+         alt="The newly added slot."/> <figcaption>
+            <p>The newly added slot.</p>
+        </figcaption>
+</figure>
+
+<p>We can now carry the connector that&rsquo;s currently connected to <code>nil</code>, and drag it
+over the object we have created.</p>
+<figure>
+    <img src="/images/self2/global_slot_connector.png"
+         alt="Dropping the
+connector on the object."/> <figcaption>
+            <p>Dropping the
+connector on the object.</p>
+        </figcaption>
+</figure>
+
+<p>If done right, <code>maths</code> will now show <code>a slots object</code> as its value. But we&rsquo;re
+not done yet; we now have the slot correctly set up, but we need to annotate
+the creator of our object (which we can now do, because the object is globally
+accessible).</p>
+<p>Middle-click on our object, and select &ldquo;Show Annotation&rdquo;, then set it to <code>maths</code>
+and save it with the green button.</p>
+<figure>
+    <img src="/images/self2/set_creator.png"
+         alt="Setting the creator of
+our object."/> <figcaption>
+            <p>Setting the creator of
+our object.</p>
+        </figcaption>
+</figure>
+
+<p>At this point, our object (now knowing its creator path) identifies itself as
+<code>maths</code>. The object is now globally accessible and ready for filing out.</p>
+<figure>
+    <img src="/images/self2/maths.png"
+         alt="The object now identifies itself as maths."/> <figcaption>
+            <p>The object now
+identifies itself as <code>maths</code>.</p>
+        </figcaption>
+</figure>
+
+<p>Before we file out, it is often important to check the <em>expatriate slots</em> list.
+The Expatriate Slots list contains the slots which exist on well-known objects,
+but do not belong to any module in our Self world. We can check it by
+middle-clicking the background, selecting <code>Changed Modules</code> (which will list our
+module), and middle clicking on the <code>Changed Modules</code> morph and selecting
+<code>Expatriate Slots (not in any module)</code>.</p>
+<figure>
+    <img src="/images/self2/expat.png"
+         alt="Expatriate Slots list."/> <figcaption>
+            <p>Expatriate Slots list.</p>
+        </figcaption>
+</figure>
+
+<p>And what do you know, we did forget a slot: we never set the module of the
+<code>maths</code> slot on <code>globals</code>. Because slots each belong to their own module, we
+need to set it so that the <code>maths</code> slot belongs to our module. So let&rsquo;s middle
+click on the <code>maths</code> slot, select <code>Show Annotation</code>, enter the module as <code>maths</code>
+and accept.</p>
+<figure>
+    <img src="/images/self2/maths_annotation.png"
+         alt="Annotating the maths slot."/> <figcaption>
+            <p>Annotating the
+<code>maths</code> slot.</p>
+        </figcaption>
+</figure>
+
+<p>Now if we middle-click <code>Changed Modules</code> again, the menu item will say
+<code>No Expatriate Slots</code>, which means we correctly assigned modules to all our
+slots and can now file them out.</p>
+<figure>
+    <img src="/images/self2/no_expat.png"
+         alt="We don&amp;rsquo;t have any other
+expatriate slots."/> <figcaption>
+            <p>We don&rsquo;t have any other
+expatriate slots.</p>
+        </figcaption>
+</figure>
+
+<p>To write out our module, simply click the <code>W All</code> button on the
+<code>Changed Modules</code> morph, which will file out all changed modules. It should
+briefly flash a window mentioning writing out <code>maths</code>, and the title should
+change to <code>No Changed Modules</code>. You can now find the <code>maths.self</code> file in
+<code>applications</code> in the same directory as Self if you&rsquo;re running the kitchen sink
+snapshot, or in <code>objects/applications</code> in the parent directory if you&rsquo;re running
+the Morphic snapshot.</p>
+<h2 id="filing-in-modules">Filing in modules</h2>
+<p>To end this post, let&rsquo;s file in the module we just filed out. Quit Self by
+selecting <code>Quit &gt; Just quit</code> from the background menu, then open it again. Our
+<code>maths</code> object will be gone from <code>globals</code>, but we can add it back in now that
+we have filed our module out. Select <code>New shell</code> from the background menu, open
+a new prompt by clicking the &ldquo;E&rdquo;, and enter the path of the .self file relative
+to where you executed Self, followed by <code>runScript</code>.</p>
+<figure>
+    <img src="/images/self2/filing_in.png"
+         alt="Filing in our maths module."/> <figcaption>
+            <p>Filing in our
+<code>maths</code> module.</p>
+        </figcaption>
+</figure>
+
+<p>Once you click <code>Do it</code>, and open &ldquo;Globals&rdquo; from the background menu, you should
+see <code>maths</code> there.</p>
+<p>I hope you enjoyed this blog post. There is still a lot to cover about
+Transporter, and Self in general, so there will be more posts to come. In my
+next post, I will take a look at the Morphic user interface, and how to build
+simple interfaces in it. Stay tuned!</p>
+<p><small>As a final tidbit, you can file out the standard modules in the snapshot
+by selecting &ldquo;All Modules&rdquo; from the background and clicking &ldquo;W&rdquo; for the module
+from the menu you get. This way, you can look at the standard library source in
+text form.</small></p>
+<!-- prettier-ignore -->
+<!-- prettier-ignore -->
+<!-- prettier-ignore -->
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>If you want to know more about how the summarization process works, you
+should dig into <code>pluggableOutliner</code> and <code>selfCatOrObjModel</code>. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>An object is well-known if it has a known path from <code>lobby</code> to itself.
+This is important because this is how you and others will access your
+module&rsquo;s objects and slots. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>When an object <code>isComplete</code>, it accepts the <code>printString</code> (the string
+representation of this object when printing) and <code>storeString</code> (the string
+representation when filed out into a module) messages. It also accepts a few
+more messages; check out the handbook if you&rsquo;d like to know more. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+      </div>
+      <div class="paginator">
+        
+        <a class="link" href="https://sin-ack.github.io/posts/a-tour-of-self/">← prev</a>
+        
+        
+        <a></a>
+        
+      </div>
+      <div class="comment">
+        
+      </div>
+      
+    </main>
+    <footer id="footer">
+  <div>
+    <span>© 2019</span> - <span>2021</span>
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+    <span> 🍦 Theme </span>
+    <a class="link" href="https://github.com/queensferryme/hugo-theme-texify">TeXify</a>
+    <span> + </span>
+    <a class="link" href="https://github.com/sin-ack/hugo-theme-texify">some changes</a>
+  </div>
+
+  <div class="footnote">
+    <span></span>
+  </div>
+</footer>
+
+  </div>
+  
+
+<link media="screen" rel="stylesheet" href="https://sin-ack.github.io/css/custom.css" />
+
+
+
+
+
+</body>
+
+</html>

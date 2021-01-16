@@ -6,7 +6,27 @@
     <description>Recent content in self on sin-ack&#39;s writings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 14 Jan 2021 16:51:08 +0100</lastBuildDate><atom:link href="https://sin-ack.github.io/tags/self/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 15 Jan 2021 00:33:18 +0100</lastBuildDate><atom:link href="https://sin-ack.github.io/tags/self/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Self Transporter: how to share your Self code</title>
+      <link>https://sin-ack.github.io/posts/self-transporter/</link>
+      <pubDate>Fri, 15 Jan 2021 00:33:18 +0100</pubDate>
+      
+      <guid>https://sin-ack.github.io/posts/self-transporter/</guid>
+      <description>&lt;p&gt;In my &lt;a href=&#34;https://sin-ack.github.io/posts/a-tour-of-self/&#34;&gt;previous post&lt;/a&gt;, I talked about Self and gave a
+general tour of the language and the programming environment. I mentioned that
+Self was an image-based programming language. Of course, if you want to develop
+a Self application with multiple people, an image is not suitable for
+collaborating (except in real-time &amp;ndash; we&amp;rsquo;ll come back to that in a later post).
+Your Self image contains everything in your programming environment (provided
+you don&amp;rsquo;t forget to save it!), including the active morphs you have on the
+screen, and stuff you are working on. Therefore, obviously, it is not possible
+to collaborate using your world images on version control.&lt;/p&gt;
+&lt;p&gt;So then the question becomes &amp;ldquo;How can we extract just the parts of our
+application so that they can be re-imported to other Self worlds independently?&amp;rdquo;
+And the answer to that is the Transporter system.&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>A tour of Self</title>
       <link>https://sin-ack.github.io/posts/a-tour-of-self/</link>
