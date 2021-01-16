@@ -1,6 +1,6 @@
 ---
 title: "Self Transporter: how to share your Self code"
-date: 2021-01-15T00:33:18+01:00
+date: 2021-01-16T22:13:00+01:00
 tags:
   - self
   - transporter
