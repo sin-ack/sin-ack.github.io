@@ -1,6 +1,6 @@
 ---
 title: "An introduction to Morphic: Self's UI toolkit"
-date: 2021-01-16T14:03:06+01:00
+date: 2021-01-17T17:35:06+01:00
 tags:
     - self
     - morphic
