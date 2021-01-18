@@ -28,6 +28,18 @@ And the answer to that is the Transporter system.&lt;/p&gt;</description>
     </item>
     
     <item>
+      <title>An introduction to Morphic: Self&#39;s UI toolkit</title>
+      <link>https://sin-ack.github.io/posts/morphic-intro/</link>
+      <pubDate>Sat, 16 Jan 2021 14:03:06 +0100</pubDate>
+      
+      <guid>https://sin-ack.github.io/posts/morphic-intro/</guid>
+      <description>&lt;p&gt;In my previous two posts, I talked about Self as the language, and the system
+which allows it to serialize objects into text format. Now let&amp;rsquo;s talk about
+another big part of Self, which is the programming environment and the UI
+toolkit that it is created from: Morphic.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>A tour of Self</title>
       <link>https://sin-ack.github.io/posts/a-tour-of-self/</link>
       <pubDate>Thu, 14 Jan 2021 16:51:08 +0100</pubDate>

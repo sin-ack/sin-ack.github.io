@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>morphic on sin-ack&#39;s writings</title>
+    <link>https://sin-ack.github.io/tags/morphic/</link>
+    <description>Recent content in morphic on sin-ack&#39;s writings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 16 Jan 2021 14:03:06 +0100</lastBuildDate><atom:link href="https://sin-ack.github.io/tags/morphic/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>An introduction to Morphic: Self&#39;s UI toolkit</title>
+      <link>https://sin-ack.github.io/posts/morphic-intro/</link>
+      <pubDate>Sat, 16 Jan 2021 14:03:06 +0100</pubDate>
+      
+      <guid>https://sin-ack.github.io/posts/morphic-intro/</guid>
+      <description>&lt;p&gt;In my previous two posts, I talked about Self as the language, and the system
+which allows it to serialize objects into text format. Now let&amp;rsquo;s talk about
+another big part of Self, which is the programming environment and the UI
+toolkit that it is created from: Morphic.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<meta name="author" content="sin-ack">
+
+
+
+<meta name="description" content="In my previous two posts, I talked about Self as the language, and the system
+which allows it to serialize objects into text format. Now let&rsquo;s talk about
+another big part of Self, which is the programming environment and the UI
+toolkit that it is created from: Morphic.">
+
+
+
+
+<meta name="keywords" content=" self  blog ">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="An introduction to Morphic: Self&#39;s UI toolkit" />
+<meta name="twitter:description" content="In my previous two posts, I talked about Self as the language, and the system
+which allows it to serialize objects into text format. Now let&rsquo;s talk about
+another big part of Self, which is the programming environment and the UI
+toolkit that it is created from: Morphic." />
+
+
+<link rel="canonical" href="https://sin-ack.github.io/posts/morphic-intro/">
+
+
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/common.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/content.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/highlight.css'>
+
+
+
+<title>An introduction to Morphic: Self&#39;s UI toolkit - sin-ack&#39;s writings</title>
+
+
+
+
+
+  <link rel="stylesheet" href='https://sin-ack.github.io/css/single.css'>
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://sin-ack.github.io/">sin-ack&#39;s writings</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/posts/">Archives</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/index.xml">RSS Feed</a>
+    </span>
+    
+  </nav>
+</header>
+
+    <main id="main" class="post">
+      
+      
+      
+      <h1>An introduction to Morphic: Self&#39;s UI toolkit</h1>
+      
+      <div>
+        <b>Keywords: </b>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/self'>#self</a>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/morphic'>#morphic</a>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/tour'>#tour</a>
+        
+      </div>
+      
+      <div class="content">
+        <p>In my previous two posts, I talked about Self as the language, and the system
+which allows it to serialize objects into text format. Now let&rsquo;s talk about
+another big part of Self, which is the programming environment and the UI
+toolkit that it is created from: Morphic.</p>
+<h2 id="what-is-morphic">What is Morphic?</h2>
+<p>Morphic is an abstract UI toolkit built for Self. It has backends for X11 and
+Quartz, for GNU/Linux and macOS respectively. It is based on the idea of
+<em>morphs</em>, which are known as widgets in modern UI toolkits. The difference here,
+obviously, is the prototypical approach; it is after all written entirely in
+Self, and so employs a prototypical-inheritance programming paradigm. All morphs
+have a family tree that can be traced back to the original <code>morph</code> which
+provides the building blocks for implementing your own morphs.</p>
+<p>Now, consider this scenario: an update to Morphic is made (this scenario is
+hypothetical), and a new field is added to the root <code>morph</code> object which must
+propagate to all other morphs and is needed to display the morphs. Or a simpler
+scenario; you want to change a default for all morphs and you want this change
+to propagate to all other morphs. However, you might remember that we previously
+talked about how instances in Self work and specifically, how they work by
+<em>copying a prototype</em>. So how can we easily propagate new slot information from
+parents to copied children? The answer is <strong>copy-downs</strong>.</p>
+<h2 id="copy-downs">Copy-downs</h2>
+<p>&ldquo;Copy-down&rdquo; is what Self calls replicating slots that exist in another object,
+and updating those slots when that object changes. You may remember in the
+previous post that an object had a few slots related to copy-down in its
+annotation section.</p>
+<figure>
+    <img src="/images/self2/object_annotations.png"
+         alt="The annotations that are available on an object."/> <figcaption>
+            <p>The annotations that are available on an object.</p>
+        </figcaption>
+</figure>
+
+<p>In the previous post we ignored these, but when programming in Morphic
+copy-downs are important, so I&rsquo;ll go into detail here. Copy-downs work by
+sending the &ldquo;copy-down selector&rdquo; as a message to the &ldquo;copy-down parent&rdquo; (which
+is an object), and then copying down the slots (except the ones listed in &ldquo;slots
+to omit&rdquo;). This allows changes to parent objects to propagate as long as the
+change is not omitted. This is similar to &ldquo;sub-classing&rdquo; in that it &ldquo;inherits&rdquo;
+slots from a parent.</p>
+<p>Copy-down is not a part of the Self language, but instead of the programming
+environment that comes with it, and its implementation is done entirely within
+annotations and the mirror system (we&rsquo;ll look into mirrors later, just know that
+mirrors are Self&rsquo;s reflection system).</p>
+<p><a href="https://handbook.selflanguage.org/2017.1/howtoprg.html#copy-down">The handbook section about
+copy-down</a>
+gives some important information about copy-downs, but nothing that is really
+omitted here. At the end it mentions this:</p>
+<blockquote>
+<p>The least convenient aspect of using copy-downs is that to do the moral equivalent of creating a subclass, the programmer has to create two objects: a new traits object, and a new prototype, and then set the object annotation of the new prototype. Perhaps someday there will be a button to do this, or perhaps other styles of programming will emerge.</p>
+</blockquote>
+<p>It turns out this document is outdated, as we <em>do</em> have a way to do this in Self
+now which we will take advantage of in a short bit, when we start building our
+own morph. For now, let&rsquo;s take a look at what a morph actually is.</p>
+<h2 id="the-anatomy-of-a-morph">The anatomy of a morph</h2>
+<p>When we get the root morph prototype by typing <code>morph</code> in the shell and then
+&ldquo;Get it&rdquo;, we get this object:</p>
+<figure>
+    <img src="/images/self3/morph_prototype.png"
+         alt="The prototype morph."/> <figcaption>
+            <p>The prototype
+<code>morph</code>.</p>
+        </figcaption>
+</figure>
+
+<p>Most of the slots here isn&rsquo;t of concern to us, because they are managed
+automatically by Morphic when we send it messages (either directly with an
+evaluator, or by interacting with the morph directly). A few points that might
+be interesting are:</p>
+<ul>
+<li><code>hResizing</code>/<code>vResizing</code>: These determine how the object sizes itself
+according to its parent or its children. There are three modes of resizing in
+Morphic, which are:
+<ul>
+<li>Rigid: The object stays at its defined width and height and does not change
+its size based on its surroundings, parents or children.</li>
+<li>Shrink-wrap: The object resizes to wrap around its contents, and does not
+grow larger.</li>
+<li>Flexible (or space-filling): The object enlarges to fill available space.
+If multiple sibling objects have this property, they all distribute the
+width/height equally.</li>
+</ul>
+</li>
+<li><code>noStickOuts</code>: Morphic optimizes drawing if the morph is a simple rectangle
+with nothing sticking out of it.</li>
+<li><code>velcroFlag</code>: Kind of a weirdly named one. If this is <code>true</code> then the
+submorphs of this morph cannot be yanked from the morph, and you cannot
+drag-and-drop new submorphs to this morph.</li>
+</ul>
+<p>Different &ldquo;subclasses&rdquo; of <code>morph</code> have their own unique slots. Thankfully,
+the authors of Morphic have categorized each morph&rsquo;s slots such that a morph
+that is copied down from another will have its unique slots under a separate
+category, which makes it a lot easier to see what belongs to which morph.</p>
+<figure>
+    <img src="/images/self3/morph_categories.png"
+         alt="The frameMorph is copied down from rowMorph, which was itself copied down from morph. Each link in the chain categorizes its own slots separately."/> <figcaption>
+            <p>The
+<code>frameMorph</code> is copied down from <code>rowMorph</code>, which was
+itself copied down from <code>morph</code>. Each link in the chain categorizes
+its own slots separately.</p>
+        </figcaption>
+</figure>
+
+<p>Each morph may only appear once. If you use &ldquo;Show Morph&rdquo; on an outliner for a
+morph that already exists somewhere else, it will remove itself from there and
+attach it to your hand (similar to the Javascript DOM in this respect).</p>
+<h2 id="a-useful-tool-the-core-sampler">A useful tool: the core sampler</h2>
+<p>As it stands, a complex morph with many submorphs in it is hard to inspect. The
+submorphs of a morph are hidden inside a <code>vector</code> called <code>rawMorphs</code> and there&rsquo;s
+no easy way to display a tree of what submorphs are available in a morph.
+Luckily, there is a tool in the Self programming environment that allows us to
+easily inspect a submorph and its parents: the <em>core sampler</em>.</p>
+<figure>
+    <img src="/images/self3/core_sampler_idle.png"
+         alt="Core sampler in
+the idle state."/> <figcaption>
+            <p>Core sampler in
+the idle state.</p>
+        </figcaption>
+</figure>
+
+<p>The core sampler will list all the morphs under its &ldquo;magnifying glass&rdquo; (the
+crosshair), starting from the innermost one up to the outermost. Each entry in
+the list allows you to see its color, and to see and modify its resizing mode.
+You can also middle-click an entry to access the morph&rsquo;s properties panel and
+also get an outliner for the morph.</p>
+<figure>
+    <img src="/images/self3/core_sampler_list.png"
+         alt="A core sampler
+listing the submorphs in an outliner, with their colors (on the left) and their
+resize modes (two buttons on the right)."/> <figcaption>
+            <p>A core sampler
+listing the submorphs in an outliner, with their colors (on the left) and their
+resize modes (two buttons on the right).</p>
+        </figcaption>
+</figure>
+
+<p>To access the core sampler, simply right-click any existing morph and select
+<code>Core sampler...</code>.</p>
+<figure>
+    <img src="/images/self3/core_sampler_list.png"
+         alt="Opening the core
+sampler."/> <figcaption>
+            <p>Opening the core
+sampler.</p>
+        </figcaption>
+</figure>
+
+<p>The core sampler is extremely helpful to figure out why a submorph is
+misbehaving, because you can directly see its hierarchy and open an outliner for
+it, debugging the morph as it operates. This is one of my favorite parts of
+Self, because you interact with the system while it&rsquo;s running, having all
+debugging info at hand.</p>
+<p>Now that we looked into Morphic, let&rsquo;s build something with it.</p>
+<h2 id="building-an-application-with-morphic">Building an application with Morphic</h2>
+<p>Let&rsquo;s build a desktop calculator. It&rsquo;s better than a toy example (because it
+actually does something) while being simple enough that this post won&rsquo;t become
+too long (longer than it already is, anyway). The hierarchy of the final
+<code>calculatorMorph</code> is presented below.</p>
+<pre><code>calculatorMorph
+    columnMorph (layout)
+        rowMorph (titleBar)
+            labelMorph (title)
+        uglyTextEditorMorph (editor)
+        rowMorph (buttonRows at: 0)
+            buttonMorph ('(')
+            buttonMorph (')')
+            buttonMorph ('CE')
+            buttonMorph ('+')
+        rowMorph (buttonRows at: 1)
+            buttonMorph ('7')
+            buttonMorph ('8')
+            buttonMorph ('9')
+            buttonMorph ('-')
+        rowMorph (buttonRows at: 2)
+            buttonMorph ('4')
+            buttonMorph ('5')
+            buttonMorph ('6')
+            buttonMorph ('*')
+        rowMorph (buttonRows at: 3)
+            buttonMorph ('1')
+            buttonMorph ('2')
+            buttonMorph ('3')
+            buttonMorph ('/')
+        rowMorph (buttonRows at: 4)
+            buttonMorph ('.')
+            buttonMorph ('0')
+            buttonMorph ('BS')
+            buttonMorph ('=')
+</code></pre><figure>
+    <img src="/images/self3/calculator_done.png"
+         alt="Our finished
+product."/> <figcaption>
+            <p>Our finished
+product.</p>
+        </figcaption>
+</figure>
+
+<p>Let&rsquo;s start out by copying <code>frameMorph</code>, which provides a rectangular frame
+around its contents. Open a shell with <code>New shell...</code> from the background menu,
+and type in <code>frameMorph</code> then &ldquo;Get it&rdquo; to get the <code>frameMorph</code> prototype.</p>
+<figure>
+    <img src="/images/self3/morph_categories.png"
+         alt="The frameMorph prototype as we saw it earlier."/> <figcaption>
+            <p>The
+<code>frameMorph</code> prototype as we saw it earlier.</p>
+        </figcaption>
+</figure>
+
+<p>Earlier we talked about copy-downs and said this is how we create &ldquo;sub-classes&rdquo;
+of morphs. We will now copy-down <code>frameMorph</code> as the basis of our
+<code>calculatorMorph</code>. Middle-click <code>frameMorph</code>&rsquo;s header and click <code>&quot;Subclass&quot; Me</code>
+(this is the easy method of copying down we talked about earlier). When asked
+for a copydown selector, leave it as the default and click &ldquo;Okay&rdquo;.</p>
+<figure>
+    <img src="/images/self3/subclass.png"
+         alt="&amp;ldquo;Subclassing&amp;rdquo; frameMorph."/> <figcaption>
+            <p>&ldquo;Subclassing&rdquo;
+<code>frameMorph</code>.</p>
+        </figcaption>
+</figure>
+
+<figure>
+    <img src="/images/self3/copydown_selector.png"
+         alt="The copydown
+selector dialog."/> <figcaption>
+            <p>The copydown
+selector dialog.</p>
+        </figcaption>
+</figure>
+
+<figure>
+    <img src="/images/self3/a_frameMorph.png"
+         alt="Our frameMorph &amp;ldquo;subclass&amp;rdquo;. Notice the &amp;ldquo;a&amp;rdquo; before the name."/> <figcaption>
+            <p>Our
+<code>frameMorph</code> &ldquo;subclass&rdquo;. Notice the &ldquo;a&rdquo; before the name.</p>
+        </figcaption>
+</figure>
+
+<p>You can now dismiss the original <code>frameMorph</code> either with right-click &gt;
+&ldquo;Dismiss&rdquo; or with the <code>X</code> on the top right.</p>
+<p>Now that we have the basis for our calculator, we can display it! Middle-click
+the header of our newly created morph, and click &ldquo;Show Morph&rdquo;. A little blue
+square should be attached to the cursor, which we can simply drop to any empty
+spot.</p>
+<figure>
+    <img src="/images/self3/frameMorph_display.png"
+         alt="Our
+&amp;ldquo;calculator&amp;rdquo;."/> <figcaption>
+            <p>Our
+&ldquo;calculator&rdquo;.</p>
+        </figcaption>
+</figure>
+
+<p>Of course, we want it to look like a part of our Morphic system, so let&rsquo;s pick a
+better color for it than blue<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. Open the evaluator on our morph&rsquo;s outliner,
+and enter <code>color: paint named: 'lightGray'.</code> and then &ldquo;Do it&rdquo;.</p>
+<figure>
+    <img src="/images/self3/frameMorph_recolor.png"
+         alt="Recoloring the
+morph."/> <figcaption>
+            <p>Recoloring the
+morph.</p>
+        </figcaption>
+</figure>
+
+<p><code>color:</code> is a message that is provided to us by <code>traits morph</code>. You can evaluate
+<code>traits morph</code> in the shell to see what functions are available. Be warned, the
+<code>traits morph</code> object is quite large and it can be hard to find a specific thing
+you&rsquo;re looking for, but it is categorized like most other standard library
+objects.</p>
+<p>Now let&rsquo;s define a few slots that we will be using (under a new category, so we
+don&rsquo;t get confused later down the line). Above in the hierarchy I put a few
+names in parenthesis for the morphs that we will hold a reference to. Create
+the category by selecting &ldquo;Add Category&rdquo; from the object menu, then create slots
+on it by middle-clicking the category and selecting &ldquo;Add Slot&rdquo;<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+<figure>
+    <img src="/images/self3/calculator_slots_creation.png"
+         alt="Creating
+new slots in our morph."/> <figcaption>
+            <p>Creating
+new slots in our morph.</p>
+        </figcaption>
+</figure>
+
+<figure>
+    <img src="/images/self3/calculator_slots.png"
+         alt="The finished
+slots."/> <figcaption>
+            <p>The finished
+slots.</p>
+        </figcaption>
+</figure>
+
+<p>Before we proceed further, let&rsquo;s set the resizing mode of our calculator. By
+default, it is in flexible mode, but we want it to wrap around its contents.
+There are two ways of changing the resizing mode:</p>
+<ul>
+<li>From an evaluator by typing <code>beShrinkWrap</code>.</li>
+<li>Putting a core sampler on it and changing its mode using the buttons.</li>
+</ul>
+<p>I personally chose the former as it is faster for me, but you can do it however
+you like.</p>
+<p>Now let&rsquo;s create the layout morph for our calculator. We want to layout the
+title, the editor and then the buttons vertically, so we will use a
+<code>columnMorph</code> which allows us to put multiple rows below each other. Copy
+the <code>columnMorph</code> prototype and set the <code>layout</code> slot to it, and then add it to
+our calculator morph.</p>
+<figure>
+    <img src="/images/self3/add_layout.png"
+         alt="Adding layout to our calculator."/> <figcaption>
+            <p>Adding
+<code>layout</code> to our calculator.</p>
+        </figcaption>
+</figure>
+
+<figure>
+    <img src="/images/self3/add_layout_after.png"
+         alt="After addition of layout."/> <figcaption>
+            <p>After addition of
+<code>layout</code>.</p>
+        </figcaption>
+</figure>
+
+<p>By default <code>columnMorph</code> comes with an ugly brown-ish color. We can set it to
+not display color at all, by evaluating
+<code>layout color: paint named 'transparent'</code>.
+While we&rsquo;re at it, let&rsquo;s make it also shrink-wrap its contents by evaluating
+<code>layout beShrinkWrap</code><sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
+<figure>
+    <img src="/images/self3/layout_color.png"
+         alt="Setting layout&amp;rsquo;s color."/> <figcaption>
+            <p>Setting
+<code>layout</code>&rsquo;s color.</p>
+        </figcaption>
+</figure>
+
+<p>Now let&rsquo;s create the title bar. First, we will create the <code>labelMorph</code> with the
+label <code>Calculator</code> and make it white in color and with a font size of 12. Then
+we will create a <code>rowMorph</code> for <code>titleBar</code> and set its color to <code>blue</code>. Finally,
+we will add <code>title</code> to <code>titleBar</code>, and add <code>titleBar</code> to <code>layout</code>.</p>
+<!-- prettier-ignore -->
+<div class="highlight"><pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="ss">title</span><span class="p">:</span> <span class="n">labelMorph</span>
+    <span class="ss">copyLabel</span><span class="p">:</span> <span class="s1">&#39;Calculator&#39;</span>
+    <span class="ss">FontSpec</span><span class="p">:</span> <span class="p">(</span><span class="n">labelMorph</span> <span class="n">fontSpec</span> <span class="ss">copySize</span><span class="p">:</span> <span class="mi">12</span><span class="p">)</span>
+    <span class="ss">Color</span><span class="p">:</span> <span class="p">(</span><span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;white&#39;</span><span class="p">)</span><span class="o">.</span>
+
+<span class="ss">titleBar</span><span class="p">:</span> <span class="n">rowMorph</span> <span class="n">copy</span> <span class="n">beFlexible</span> <span class="ss">borderWidth</span><span class="p">:</span> <span class="mi">2</span><span class="o">.</span>
+<span class="n">titleBar</span> <span class="ss">color</span><span class="p">:</span> <span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="o">.</span>
+
+<span class="n">titleBar</span> <span class="ss">addMorph</span><span class="p">:</span> <span class="n">title</span><span class="o">.</span>
+<span class="n">layout</span> <span class="ss">addMorph</span><span class="p">:</span> <span class="n">titleBar</span><span class="o">.</span></code></pre></div>
+<figure>
+    <img src="/images/self3/setting_title.png"
+         alt="Setting
+the title."/> <figcaption>
+            <p>Setting
+the title.</p>
+        </figcaption>
+</figure>
+
+<p>(You may not agree with my stylistic choices, of course. Feel free to mess around
+with the colors and font sizes. If you mess up along the way, evaluate
+<code>removeAllMorphs</code> to clear the submorphs and restart from the <code>layout</code> section.)</p>
+<p>Now let&rsquo;s add the editor morph, which will be our calculator display. <a href="https://handbook.selflanguage.org/2017.1/morphic.html#some-useful-morphs">The
+handbook</a>
+gives us two options from the available morphs as editors: <code>editorMorph</code> which
+is a regular text editor (that can hold morphs as well as text!), and
+<code>uglyTextEditorMorph</code> which only holds text but is higher performance. I
+personally prefer the <code>uglyTextEditorMorph</code>, because it is what is used in the
+evaluator and I think it looks cooler.</p>
+<!-- prettier-ignore -->
+<div class="highlight"><pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="s2">&#34;offWhite is the color that the evaluator uses for the editor.&#34;</span>
+<span class="ss">editor</span><span class="p">:</span> <span class="n">uglyTextEditorMorph</span>
+    <span class="ss">copyString</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span>
+    <span class="ss">Style</span><span class="p">:</span> <span class="p">(</span><span class="o">|</span> <span class="n">color</span> <span class="o">=</span> <span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;offWhite&#39;</span><span class="o">.</span> <span class="o">|</span><span class="p">)</span>
+    
+<span class="n">layout</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="n">editor</span><span class="o">.</span></code></pre></div>
+<figure>
+    <img src="/images/self3/calculator_editor.png"
+         alt="Adding the display
+to the calculator."/> <figcaption>
+            <p>Adding the display
+to the calculator.</p>
+        </figcaption>
+</figure>
+
+<p>Finally, we will build our buttons. I have decided to arrange the buttons as 5
+rows of 4 buttons each. But that&rsquo;s 20 buttons! Should we really have to type out
+the initialization of all of those buttons manually?</p>
+<p>Well, there&rsquo;s a better way. If you check out the outliner of our calculator, you
+will notice that <code>parent*</code> points to <code>a slots object</code>. If you click on the
+button next to it, it will bring up a separate object.</p>
+<figure>
+    <img src="/images/self3/calculator_parent.png"
+         alt="Our calculator&amp;rsquo;s
+parent."/> <figcaption>
+            <p>Our calculator&rsquo;s
+parent.</p>
+        </figcaption>
+</figure>
+
+<p>This object is what is known as a <em>trait object</em>. You may have seen some of
+those if you have explored the Self environment for yourself a little bit. If
+they are within the global <code>traits</code> object, the outliner will mark it as a trait
+by coloring it purple on the left edge. However, as the comment on the <code>traits</code>
+object says, not all traits have to be in this object and many objects store
+their traits privately on their prototype (still accessible, but not registered
+as an &ldquo;official&rdquo; trait).</p>
+<p>In Self, a good style is to always separate the changing parts of an object from
+unchanging parts. Unchanging parts would be code, and changing parts would be
+data, like the <code>rawBox</code> property on our calculator morph. Code will change very
+rarely, and when we need to change functionality we can just create a new object
+that refers to our original traits object and refer to that with a parent slot;
+however, data will change very frequently as we copy, and it would be wasteful
+to copy the code everytime we want to create a copy of the prototype. To solve
+this, we use trait objects for code and prototypes for initial data.</p>
+<p>When we &ldquo;subclassed&rdquo; the <code>frameMorph</code> to create our calculator morph, Self
+automatically created a new traits object for us that references
+<code>traits frameMorph</code> and attached it to our newly created morph. This allows us
+to quickly add new methods to our calculator morph. So let&rsquo;s add a convenience
+method to quickly build a button for us.</p>
+<p>One last thing you need to know that buttons in Morphic need a <code>target</code> (an
+object to execute their action on) and a <code>script</code> (code that will execute when
+the button is pressed). In the script, you can refer to <code>target</code> to refer to the
+object that the button is targetting.</p>
+<p>With all of that out of the way, let&rsquo;s add <code>buildButton:Script:</code> on our trait
+object:</p>
+<!-- prettier-ignore -->
+<div class="highlight"><pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="ss">buildButton</span><span class="p">:</span> <span class="n">label</span> <span class="ss">Script</span><span class="p">:</span> <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="o">|</span> <span class="n">b</span> <span class="o">|</span>
+    <span class="s2">&#34;Create the new button.&#34;</span>
+    <span class="ss">b</span><span class="p">:</span> <span class="n">ui2Button</span>
+        <span class="ss">copyColor</span><span class="p">:</span> <span class="p">(</span><span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;lightGray&#39;</span><span class="p">)</span>
+        <span class="ss">Target</span><span class="p">:</span> <span class="nb">self</span><span class="o">.</span>
+    <span class="s2">&#34;Make it flexible, set its label and script. , is the concatenation operator.&#34;</span>
+    <span class="n">b</span> <span class="n">beFlexible</span><span class="o">.</span>
+    <span class="n">b</span> <span class="ss">label</span><span class="p">:</span> <span class="n">label</span><span class="o">.</span>
+    <span class="n">b</span> <span class="ss">script</span><span class="p">:</span> <span class="s1">&#39;target &#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span>
+    <span class="n">b</span>
+<span class="p">)</span></code></pre></div>
+<figure>
+    <img src="/images/self3/buildButton.png"
+         alt="The buildButton:Script:
+method, under the &amp;lsquo;building&amp;rsquo; category."/> <figcaption>
+            <p>The buildButton:Script:
+method, under the &lsquo;building&rsquo; category.</p>
+        </figcaption>
+</figure>
+
+<p>Let&rsquo;s test it out. Enter <code>buildButton: '1' Script: 'addCharacter: \'1\''</code> on our
+calculator morph&rsquo;s evaluator and &ldquo;Get it&rdquo;. A button outliner should be attached
+to our hands which we can drop anywhere. We can then display the button using
+&ldquo;Show Morph&rdquo; from the object menu on the button outliner.</p>
+<figure>
+    <img src="/images/self3/one_button.png"
+         alt="The &amp;ldquo;1&amp;rdquo; button we just
+created."/> <figcaption>
+            <p>The &ldquo;1&rdquo; button we just
+created.</p>
+        </figcaption>
+</figure>
+
+<p>Now, if we click this button, we will get an error, because we didn&rsquo;t define
+<code>addCharacter:</code> for our calculator morph yet. So let&rsquo;s do that now. I will place
+it under the &ldquo;text operations&rdquo; category.</p>
+<!-- prettier-ignore -->
+<div class="highlight"><pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="ss">addCharacter</span><span class="p">:</span> <span class="n">c</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&#34;If the display shows 0 and we didn&#39;t press ., replace the display contents
+</span><span class="s2">     with the character we just entered, like calculators do.&#34;</span>
+    <span class="p">(</span><span class="n">editor</span> <span class="n">contentsString</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">[</span><span class="n">c</span> <span class="o">!=</span> <span class="s1">&#39;.&#39;</span><span class="o">]</span>
+    <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span><span class="n">editor</span> <span class="ss">setText</span><span class="p">:</span> <span class="n">c</span><span class="o">]</span>
+    <span class="s2">&#34;Otherwise, simply insert the character at the cursor point.&#34;</span>
+    <span class="ss">False</span><span class="p">:</span> <span class="o">[</span><span class="n">editor</span> <span class="n">text</span> <span class="ss">insert_char</span><span class="p">:</span> <span class="n">c</span><span class="o">].</span>
+    <span class="nb">self</span>
+<span class="p">)</span></code></pre></div>
+<p>If you click the button now, you should see the it fill the calculator display
+with 1s. You just learned how to hook up Morphic widgets! But wait, we&rsquo;re not
+done yet. We need to create a grid of buttons for our calculator like I showed
+in the hierarchy earlier in this post. To do this, we will just define a new
+<code>vector</code> on our <code>buttonRows</code> slot, fill each element of it with <code>rowMorph</code>s, and
+insert our buttons to each row.</p>
+<p>(You can get rid of the button we just created by selecting &ldquo;Dismiss&rdquo; from the
+morph menu (right-click)).</p>
+<p>Let&rsquo;s take it one step at a time. First, let&rsquo;s fill out our <code>buttonRows</code> with
+<code>rowMorph</code>s by evaluating the following snippet in the evaluator.</p>
+<!-- prettier-ignore -->
+<div class="highlight"><pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="ss">buttonRows</span><span class="p">:</span> <span class="n">vector</span> <span class="ss">copySize</span><span class="p">:</span> <span class="mi">5</span><span class="o">.</span>
+<span class="s2">&#34;traits integer do: is how range loops are done in Self, similar to Ruby.&#34;</span>
+<span class="mi">5</span> <span class="k">do</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:i</span><span class="o">.</span> <span class="n">r</span> <span class="o">|</span>
+    <span class="ss">r</span><span class="p">:</span> <span class="n">rowMorph</span> <span class="n">copy</span> <span class="n">beFlexible</span> <span class="ss">borderWidth</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span>
+    <span class="n">r</span> <span class="ss">color</span><span class="p">:</span> <span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;transparent&#39;</span><span class="o">.</span>
+    <span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="n">i</span> <span class="ss">Put</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span>
+    <span class="n">layout</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span>
+<span class="o">].</span>
+<span class="s2">&#34;Let layout know that the layout changed.&#34;</span>
+<span class="n">layout</span> <span class="n">layoutChanged</span><span class="o">.</span></code></pre></div>
+<figure>
+    <img src="/images/self3/button_rows.png"
+         alt="The button rows showing
+up as 1 pixel high morphs."/> <figcaption>
+            <p>The button rows showing
+up as 1 pixel high morphs.</p>
+        </figcaption>
+</figure>
+
+<p>We can finally add our buttons. Since each button is unique, we&rsquo;ll just add them
+one by one:</p>
+<!-- prettier-ignore -->
+<div class="highlight"><pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;(&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;(\&#39;&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;)&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;)\&#39;&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;CE&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;clear&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;+&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;+\&#39;&#39;</span><span class="o">.</span>
+
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;7&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;7\&#39;&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;8&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;8\&#39;&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;9&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;9\&#39;&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;-&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;-\&#39;&#39;</span><span class="o">.</span>
+
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;4&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;4\&#39;&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;5&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;5\&#39;&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;6\&#39;&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;*&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;*\&#39;&#39;</span><span class="o">.</span>
+
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;1\&#39;&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;2\&#39;&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;3&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;3\&#39;&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;/&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;/\&#39;&#39;</span><span class="o">.</span>
+
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;.&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;.\&#39;&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;0\&#39;&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;BS&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;backspace&#39;</span><span class="o">.</span>
+<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;=&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;evaluate&#39;</span><span class="o">.</span></code></pre></div>
+<p>Most of these are pretty straight-forward, they just add characters to the
+display, but there are a few functions we didn&rsquo;t implement, so let&rsquo;s do that now
+on the traits object.</p>
+<p>Each method is a separate slot, so make sure you create 3 new slots from the
+object menu.</p>
+<!-- prettier-ignore -->
+<div class="highlight"><pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="s2">&#34;Resets the calculator input.&#34;</span>
+<span class="n">clear</span> <span class="o">=</span> <span class="p">(</span><span class="n">editor</span> <span class="ss">setText</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="o">.</span>
+<span class="s2">&#34;Removes one character at cursor point. If display is empty, set it to &#39;0&#39;.&#34;</span>
+<span class="n">backspace</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">editor</span> <span class="n">text</span> <span class="n">backspace</span><span class="o">.</span>
+    <span class="p">(</span><span class="n">editor</span> <span class="n">contentsString</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
+    <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span><span class="n">editor</span> <span class="ss">setText</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="o">].</span>
+<span class="p">)</span><span class="o">.</span>
+<span class="s2">&#34;Evaluates the expression on the editor display and writes the result.&#34;</span>
+<span class="n">evaluate</span> <span class="o">=</span> <span class="p">(</span><span class="n">editor</span> <span class="ss">setText</span><span class="p">:</span> <span class="n">editor</span> <span class="n">text</span> <span class="nb">eval</span> <span class="n">asString</span><span class="p">)</span><span class="o">.</span></code></pre></div>
+<p><code>evaluate</code> uses <code>traits string eval</code> to evaluate the contents of the text
+display as a Self expression, which works just fine. However, Self does not have
+operator precedence (because operators are just messages with special names),
+and will complain if you put different operators next to each other, so you will
+need to use parentheses.</p>
+<p>And our calculator is finally done! With practice (and a lot of exploring the
+Morphic toolkit), it took me about 15 minutes to build it from scratch for this
+post.</p>
+<figure>
+    <img src="/images/self3/calculator_done.png"
+         alt="Our finished
+calculator."/> <figcaption>
+            <p>Our finished
+calculator.</p>
+        </figcaption>
+</figure>
+
+<h2 id="making-our-calculator-into-a-prototype">Making our calculator into a prototype</h2>
+<p>Of course, we built our calculator, but we built it as the &ldquo;prototype&rdquo;
+calculator: when users want to use the calculator, they should copy it and use
+that copy. For this, we need to set up a couple more things.</p>
+<p>When we copy our calculator, Self will create a copy of all slots: this includes
+submorphs <em>and</em> our reference slots. Obviously this poses a problem: now two
+diverging copies of the morphs we reference exist, the value of the slot and the
+submorph embedded in the morph. To solve this problem, <code>traits morph</code>
+specializes <code>copy</code> to do some extra work. In particular, after copying is done,
+it will call <code>mapReferencesUsing:</code> on each morph that has been copied with a
+dictionary of old morph references to new ones. Using this dictionary we can
+update our references to submorphs to the new values.</p>
+<p>So let&rsquo;s create this method on our traits object.</p>
+<!-- prettier-ignore -->
+<div class="highlight"><pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="ss">mapReferencesUsing</span><span class="p">:</span> <span class="n">dict</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&#34;Make sure the overridden call is also run.&#34;</span>
+    <span class="n">resend</span><span class="o">.</span><span class="n">mapReferencesUsing</span><span class="p">:</span> <span class="n">dict</span><span class="o">.</span>
+    <span class="s2">&#34;Update each of our references.&#34;</span>
+    <span class="n">dict</span> <span class="k">if</span><span class="p">:</span>   <span class="n">layout</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span>   <span class="ss">layout</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
+    <span class="n">dict</span> <span class="k">if</span><span class="p">:</span>   <span class="n">editor</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span>   <span class="ss">editor</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
+    <span class="n">dict</span> <span class="k">if</span><span class="p">:</span>    <span class="n">title</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span>    <span class="ss">title</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
+    <span class="n">dict</span> <span class="k">if</span><span class="p">:</span> <span class="n">titleBar</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span> <span class="ss">titleBar</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
+    <span class="s2">&#34;Update the buttonRows vector.&#34;</span>
+    <span class="n">buttonRows</span> <span class="k">do</span><span class="p">:</span> <span class="o">[|</span><span class="ss">:r</span><span class="o">.</span> <span class="ss">:i</span><span class="o">|</span>
+        <span class="n">dict</span> <span class="k">if</span><span class="p">:</span> <span class="n">r</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span> <span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="n">i</span> <span class="ss">Put</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
+    <span class="o">].</span>
+    <span class="n">dict</span>
+<span class="p">)</span></code></pre></div>
+<p>However, if we copy our calculator now, we&rsquo;ll find that text input doesn&rsquo;t work.
+This is unfortunately because of a bug in the Self environment. Normally,
+<code>uglyTextEditorMorph</code>s are not copied with the <code>ui2_Text</code> morph inside but are
+recreated (i.e. in <code>evaluatorMorph</code>). Because of this, this bug is never reached
+during normal operation, but our usecase hits a bug where the
+<code>uglyTextEditorMorph</code> goes out-of-sync with the inner <code>ui2_Text</code> morph. To work
+around this, we can override <code>copy</code> and re-initialize our editor after the copy
+is done.</p>
+<div class="highlight"><pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="n">copy</span> <span class="o">=</span> <span class="p">(</span><span class="o">|</span> <span class="n">c</span> <span class="o">|</span>
+    <span class="ss">c</span><span class="p">:</span> <span class="n">resend</span><span class="o">.</span><span class="n">copy</span><span class="o">.</span>
+    <span class="s2">&#34;Re-initialize our editor.&#34;</span>
+    <span class="n">c</span> <span class="n">editor</span>
+        <span class="ss">initializeString</span><span class="p">:</span> <span class="p">(</span><span class="n">c</span> <span class="n">editor</span> <span class="n">contentsString</span><span class="p">)</span>
+        <span class="ss">Style</span><span class="p">:</span> <span class="p">(</span><span class="o">|</span> <span class="n">color</span> <span class="o">=</span> <span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;offWhite&#39;</span> <span class="o">|</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">c</span>
+<span class="p">)</span></code></pre></div>
+<p>Finally, let&rsquo;s make our calculator morph globally accessible, and set its
+prototype so Self knows how to restore this calculator morph when we file it
+back in. Open up <code>globals</code>, and add a new slot named <code>calculatorMorph</code>, then
+drag the connector like we did in the <a href="/posts/self-transporter/">previous post</a>.
+However, now I can show you a simpler way of setting up the creator slot: after
+dragging the connector on our calculator morph, simply middle-click the slot on
+<code>globals</code> and select &ldquo;Make Creator&rdquo;, and the object will automatically become
+well-known.</p>
+<figure>
+    <img src="/images/self3/final1.png"
+         alt="The final version of calculatorMorph."/> <figcaption>
+            <p>The final version of
+<code>calculatorMorph</code>.</p>
+        </figcaption>
+</figure>
+
+<p>But you&rsquo;ll notice that it says <code>calculatorMorph (type: frameMorph)</code>. This is
+because our <code>morphTypeName</code> is inherited from <code>traits frameMorph</code>. Let&rsquo;s create
+a new slot in our calculator traits object, and after that set <code>prototype</code> on
+the calculator prototype object.</p>
+<figure>
+    <img src="/images/self3/setting_prototype.png"
+         alt="Setting prototype and morphTypeName."/> <figcaption>
+            <p>Setting
+<code>prototype</code> and <code>morphTypeName</code>.</p>
+        </figcaption>
+</figure>
+
+<p>If you want, you can now apply the procedures we did in the Transporter post in
+order to set the modules for our new slots and file it out.</p>
+<p>And we&rsquo;re done! Thanks for reading, and I hope you enjoyed this post. Now that
+I&rsquo;ve gotten the big stuff about Self out of the way, in my next post I can talk
+about some less exciting but nevertheless interesting features about Self, like
+digging a bit more into Transporter or looking at things like animation. Stay
+tuned!</p>
+<!-- prettier-ignore -->
+<!-- prettier-ignore -->
+<!-- prettier-ignore -->
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>You are obviously free to choose your own color. Evaluate <code>paint</code> in the
+shell in order to get the possible paints you can apply to an object. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>When creating a new kind of morph, you might need to add new references
+down the line. You are not restricted by Self from adding new slots or
+categories. The ones I created here are simply the ones that I know we will be
+using. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>If you&rsquo;re wondering why the morph didn&rsquo;t immediately shrivel when <code>layout</code>
+is inside it like it did when we set the main morph to shrink-wrap, it&rsquo;s
+because morphs like <code>columnMorph</code> have a <code>minimumWidth</code> and <code>minimumHeight</code>
+set that prevent them from getting any smaller. You can check out their
+definitions to find out more. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+      </div>
+      <div class="paginator">
+        
+        <a class="link" href="https://sin-ack.github.io/posts/a-tour-of-self/">← prev</a>
+        
+        
+        <a class="link" href="https://sin-ack.github.io/posts/self-transporter/">next →</a>
+        
+      </div>
+      <div class="comment">
+        
+      </div>
+      
+    </main>
+    <footer id="footer">
+  <div>
+    <span>© 2019</span> - <span>2021</span>
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+    <span> 🍦 Theme </span>
+    <a class="link" href="https://github.com/queensferryme/hugo-theme-texify">TeXify</a>
+    <span> + </span>
+    <a class="link" href="https://github.com/sin-ack/hugo-theme-texify">some changes</a>
+  </div>
+
+  <div class="footnote">
+    <span></span>
+  </div>
+</footer>
+
+  </div>
+  
+
+<link media="screen" rel="stylesheet" href="https://sin-ack.github.io/css/custom.css" />
+
+
+
+
+
+</body>
+
+</html>
