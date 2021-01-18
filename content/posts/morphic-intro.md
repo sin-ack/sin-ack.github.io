@@ -139,7 +139,7 @@ resize modes (two buttons on the right).` >}}
 To access the core sampler, simply right-click any existing morph and select
 `Core sampler...`.
 
-{{< figure src="/images/self3/core_sampler_list.png" caption=`Opening the core
+{{< figure src="/images/self3/core_sampler_open.png" caption=`Opening the core
 sampler.` >}}
 
 The core sampler is extremely helpful to figure out why a submorph is
