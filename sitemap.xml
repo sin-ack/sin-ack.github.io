@@ -3,23 +3,53 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://sin-ack.github.io/posts/morphic-intro/</loc>
+    <lastmod>2021-01-17T17:35:06+01:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://sin-ack.github.io/categories/</loc>
-    <lastmod>2021-01-16T22:13:00+01:00</lastmod>
+    <lastmod>2021-01-17T17:35:06+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sin-ack.github.io/tags/morphic/</loc>
+    <lastmod>2021-01-17T17:35:06+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sin-ack.github.io/categories/morphic/</loc>
+    <lastmod>2021-01-17T17:35:06+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://sin-ack.github.io/posts/</loc>
-    <lastmod>2021-01-16T22:13:00+01:00</lastmod>
+    <lastmod>2021-01-17T17:35:06+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://sin-ack.github.io/tags/self/</loc>
-    <lastmod>2021-01-16T22:13:00+01:00</lastmod>
+    <lastmod>2021-01-17T17:35:06+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://sin-ack.github.io/categories/self/</loc>
-    <lastmod>2021-01-16T22:13:00+01:00</lastmod>
+    <lastmod>2021-01-17T17:35:06+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sin-ack.github.io/</loc>
+    <lastmod>2021-01-17T17:35:06+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sin-ack.github.io/tags/</loc>
+    <lastmod>2021-01-17T17:35:06+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sin-ack.github.io/tags/tour/</loc>
+    <lastmod>2021-01-17T17:35:06+01:00</lastmod>
   </url>
   
   <url>
@@ -28,38 +58,8 @@
   </url>
   
   <url>
-    <loc>https://sin-ack.github.io/</loc>
-    <lastmod>2021-01-16T22:13:00+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://sin-ack.github.io/tags/</loc>
-    <lastmod>2021-01-16T22:13:00+01:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://sin-ack.github.io/tags/transporter/</loc>
     <lastmod>2021-01-16T22:13:00+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://sin-ack.github.io/posts/morphic-intro/</loc>
-    <lastmod>2021-01-16T14:03:06+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://sin-ack.github.io/tags/morphic/</loc>
-    <lastmod>2021-01-16T14:03:06+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://sin-ack.github.io/categories/morphic/</loc>
-    <lastmod>2021-01-16T14:03:06+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://sin-ack.github.io/tags/tour/</loc>
-    <lastmod>2021-01-16T14:03:06+01:00</lastmod>
   </url>
   
   <url>
