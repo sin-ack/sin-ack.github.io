@@ -6,7 +6,37 @@
     <description>Recent content in self on sin-ack&#39;s writings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 17 Jan 2021 17:35:06 +0100</lastBuildDate><atom:link href="https://sin-ack.github.io/tags/self/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 29 Mar 2021 13:00:00 +0200</lastBuildDate><atom:link href="https://sin-ack.github.io/tags/self/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A look at Self&#39;s object system</title>
+      <link>https://sin-ack.github.io/posts/self-object-system/</link>
+      <pubDate>Mon, 29 Mar 2021 13:00:00 +0200</pubDate>
+      
+      <guid>https://sin-ack.github.io/posts/self-object-system/</guid>
+      <description>&lt;p&gt;When I &lt;a href=&#34;https://sin-ack.github.io/posts/a-tour-of-self/&#34;&gt;first introduced Self&lt;/a&gt;, I mentioned that Self is
+a programming language which employs &lt;em&gt;prototype-based inheritance&lt;/em&gt;; it does not
+depend on a class-instance distinction to facilitate object-oriented
+programming, but rather, it uses a &lt;em&gt;prototype object&lt;/em&gt; from which copies are
+created. The methods associated with a prototype is stored in a &lt;em&gt;traits object&lt;/em&gt;
+which is just another object storing methods that can be used on a prototype and
+all its copies through a parent slot.&lt;/p&gt;
+&lt;p&gt;The trouble begins when we actually try to implement this prototype-based
+inheritance system as an actual virtual machine, particularly with regards to
+memory consumption. Say that I have a prototype object &lt;code&gt;point&lt;/code&gt; with a constant
+parent slot pointing to &lt;code&gt;traits point&lt;/code&gt; and two assignable slots, &lt;code&gt;x&lt;/code&gt; and
+&lt;code&gt;y&lt;/code&gt;.&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt; When we copy this object, we would expect to copy all three fields. But
+if we scale that up, that&amp;rsquo;s so much unnecessary data being copied! For one, for
+every copy of the &lt;code&gt;point&lt;/code&gt; prototype we make, we&amp;rsquo;re copying that &lt;code&gt;traits point&lt;/code&gt;
+parent slot reference. Not to mention, because our language is dynamic, we can&amp;rsquo;t
+simply treat &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; as offsets into memory, because they might be constant
+or assignable (Self can&amp;rsquo;t intrinsically know). So our naive implementation would
+be pretty inefficient.&lt;/p&gt;
+&lt;p&gt;Can we make this more memory-efficient? In fact, we can; we can exploit the fact
+that most Self objects that are copied only ever have their assignable slots
+modified. Let&amp;rsquo;s take a look at how the original developers of Self have
+optimized the memory usage of the Self virtual machine.&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>An introduction to Morphic: Self&#39;s UI toolkit</title>
       <link>https://sin-ack.github.io/posts/morphic-intro/</link>

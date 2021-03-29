@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<meta name="author" content="sin-ack">
+
+
+
+<meta name="description" content="When I first introduced Self, I mentioned that Self is
+a programming language which employs prototype-based inheritance; it does not
+depend on a class-instance distinction to facilitate object-oriented
+programming, but rather, it uses a prototype object from which copies are
+created. The methods associated with a prototype is stored in a traits object
+which is just another object storing methods that can be used on a prototype and
+all its copies through a parent slot.
+The trouble begins when we actually try to implement this prototype-based
+inheritance system as an actual virtual machine, particularly with regards to
+memory consumption. Say that I have a prototype object point with a constant
+parent slot pointing to traits point and two assignable slots, x and
+y.1 When we copy this object, we would expect to copy all three fields. But
+if we scale that up, that&rsquo;s so much unnecessary data being copied! For one, for
+every copy of the point prototype we make, we&rsquo;re copying that traits point
+parent slot reference. Not to mention, because our language is dynamic, we can&rsquo;t
+simply treat x and y as offsets into memory, because they might be constant
+or assignable (Self can&rsquo;t intrinsically know). So our naive implementation would
+be pretty inefficient.
+Can we make this more memory-efficient? In fact, we can; we can exploit the fact
+that most Self objects that are copied only ever have their assignable slots
+modified. Let&rsquo;s take a look at how the original developers of Self have
+optimized the memory usage of the Self virtual machine.">
+
+
+
+
+<meta name="keywords" content=" self  blog ">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="A look at Self&#39;s object system" />
+<meta name="twitter:description" content="When I first introduced Self, I mentioned that Self is
+a programming language which employs prototype-based inheritance; it does not
+depend on a class-instance distinction to facilitate object-oriented
+programming, but rather, it uses a prototype object from which copies are
+created. The methods associated with a prototype is stored in a traits object
+which is just another object storing methods that can be used on a prototype and
+all its copies through a parent slot.
+The trouble begins when we actually try to implement this prototype-based
+inheritance system as an actual virtual machine, particularly with regards to
+memory consumption. Say that I have a prototype object point with a constant
+parent slot pointing to traits point and two assignable slots, x and
+y.1 When we copy this object, we would expect to copy all three fields. But
+if we scale that up, that&rsquo;s so much unnecessary data being copied! For one, for
+every copy of the point prototype we make, we&rsquo;re copying that traits point
+parent slot reference. Not to mention, because our language is dynamic, we can&rsquo;t
+simply treat x and y as offsets into memory, because they might be constant
+or assignable (Self can&rsquo;t intrinsically know). So our naive implementation would
+be pretty inefficient.
+Can we make this more memory-efficient? In fact, we can; we can exploit the fact
+that most Self objects that are copied only ever have their assignable slots
+modified. Let&rsquo;s take a look at how the original developers of Self have
+optimized the memory usage of the Self virtual machine." />
+
+
+<link rel="canonical" href="https://sin-ack.github.io/posts/self-object-system/">
+
+
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/common.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/content.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/highlight.css'>
+
+
+
+<title>A look at Self&#39;s object system - sin-ack&#39;s writings</title>
+
+
+
+
+
+  <link rel="stylesheet" href='https://sin-ack.github.io/css/single.css'>
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://sin-ack.github.io/">sin-ack&#39;s writings</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/posts/">Archives</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/index.xml">RSS Feed</a>
+    </span>
+    
+  </nav>
+</header>
+
+    <main id="main" class="post">
+      
+      
+      
+      <h1>A look at Self&#39;s object system</h1>
+      
+      <div>
+        <b>Keywords: </b>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/self'>#self</a>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/vm'>#vm</a>
+        
+      </div>
+      
+      <div class="content">
+        <p>When I <a href="/posts/a-tour-of-self/">first introduced Self</a>, I mentioned that Self is
+a programming language which employs <em>prototype-based inheritance</em>; it does not
+depend on a class-instance distinction to facilitate object-oriented
+programming, but rather, it uses a <em>prototype object</em> from which copies are
+created. The methods associated with a prototype is stored in a <em>traits object</em>
+which is just another object storing methods that can be used on a prototype and
+all its copies through a parent slot.</p>
+<p>The trouble begins when we actually try to implement this prototype-based
+inheritance system as an actual virtual machine, particularly with regards to
+memory consumption. Say that I have a prototype object <code>point</code> with a constant
+parent slot pointing to <code>traits point</code> and two assignable slots, <code>x</code> and
+<code>y</code>.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> When we copy this object, we would expect to copy all three fields. But
+if we scale that up, that&rsquo;s so much unnecessary data being copied! For one, for
+every copy of the <code>point</code> prototype we make, we&rsquo;re copying that <code>traits point</code>
+parent slot reference. Not to mention, because our language is dynamic, we can&rsquo;t
+simply treat <code>x</code> and <code>y</code> as offsets into memory, because they might be constant
+or assignable (Self can&rsquo;t intrinsically know). So our naive implementation would
+be pretty inefficient.</p>
+<p>Can we make this more memory-efficient? In fact, we can; we can exploit the fact
+that most Self objects that are copied only ever have their assignable slots
+modified. Let&rsquo;s take a look at how the original developers of Self have
+optimized the memory usage of the Self virtual machine.</p>
+<p>A little heads-up before we begin: This one&rsquo;s going to be a less hands-on post
+as I&rsquo;m mainly going to be talking about implementation details of the VM itself
+rather than the Self programming environment.</p>
+<h2 id="the-key-insight">The key insight</h2>
+<p>Just in the previous paragraph I mentioned that most objects in Self only ever
+have their assignable slots modified. In fact, this isn&rsquo;t just some rule of
+thumb: there is no assignment slot for constant slots, so you cannot modify the
+constant slots of an object through regular methods like you would with
+assignable slots<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+<p>So with that in mind, we could just reduce the copy of an object to the contents
+of the assignable slots and keep the rest of the object itself as a separate
+&ldquo;information&rdquo; structure that tells the VM what is supposed to be what.</p>
+<p>And that&rsquo;s exactly what the original developers of the Self VM did. They called
+their invention an &ldquo;object map&rdquo;. An <em>object map</em> (called just &ldquo;map&rdquo; hereafter)
+stores all the information the Self VM needs to know about an object, such as
+the parent slots, constant slots, etc. Using the map, we can reduce the amount
+of memory we require for a copy of our <code>point</code> prototype object to just two
+memory words (<code>x</code> and <code>y</code>) plus some book-keeping to point to the map itself.</p>
+<h2 id="self-object-references">Self object references</h2>
+<p>For things like integers and floating point numbers, even the book-keeping would
+be too much memory. For a 64-bit integer, just adding a pointer to a map doubles
+our memory footprint! So, the authors of Self turned to good-old pointer tagging
+for object references.</p>
+<p>In the Self virtual machine, all object references have their bottom two bits
+used as a tag. The possible values are as follows.</p>
+<ul>
+<li>Integers are given <code>00</code>, because that makes adding, subtracting and comparing
+them a single assembly instruction (because there&rsquo;s no bitwise ops
+required)<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</li>
+<li>For object references, we can exploit the fact that all our objects will be
+aligned to the nearest machine word. They are tagged by simply binary ORing
+the bottom two bits with <code>01</code>. Then they can be ANDed out when the pointer to
+the memory space needs to be dereferenced.</li>
+<li>Floats are marked with <code>10</code>. Since the bottom two bits of the float is part of
+the mantissa, we can simply AND the bits away at the cost of a little
+precision loss.</li>
+<li>Finally, <em>object markers</em> are tagged with <code>11</code>. We will talk about object
+markers shortly.</li>
+</ul>
+<p>Of course, this means that our integers are 62-bit and our floats lose some
+precision in their last decimal places, but it is probably better than carrying
+around an additional 8 bytes (more if we want to mark our objects).</p>
+<p>Note that newer techniques like NaN boxing are not used in Self. There are a
+couple reasons for this: first, from what I can tell, NaN boxing became more
+widely used in the early-to-mid 90s while Self&rsquo;s design was created in the late
+80s; and second, Self&rsquo;s dynamic inheritance and dynamic typing means that most
+objects we would optimize by boxing into NaNs require carrying around a parent
+slot pointer (48 bits in modern systems and possible 64 bits in the future),
+leaving not enough space for other attributes (i.e. the size value in vectors).</p>
+<h2 id="self-objects-in-memory">Self objects in memory</h2>
+<p>So what do Self objects in memory actually carry? Well, they consist of the
+following:</p>
+<ul>
+<li>A machine word for the <em>object marker</em> that we talked about above. Object
+markers are used to mark the start of an object.</li>
+<li>A machine word for the <em>map reference</em> for this object. It&rsquo;s simply a tagged
+pointer pointing to a map.</li>
+<li>If the object is a vector or byte vector object, an additional machine word is
+added for the number of items.</li>
+<li>If the object is a slots object (i.e. contains just slots), each assignable
+slot follows the first two words. If the object is a vector, <code>n</code> machine words
+for the items follow instead. If the object is a byte vector, a pointer to the
+<em>bytevector space</em> (explained in the next section) is stored.</li>
+</ul>
+<p>That&rsquo;s all we need in order to represent a Self object with our current scheme.
+The first word contains a bit more information identifying the <em>type</em> of the
+object (slots, vector, bytevector, map) as well as some implementation specific
+GC information.</p>
+<h2 id="self-maps-in-memory">Self maps in memory</h2>
+<p>Now that we described the objects themselves, let&rsquo;s look at maps, which are the
+descriptor structures for the objects in memory. They contain the following:</p>
+<ul>
+<li>An object marker, just like regular objects. However, they are identified as
+<em>maps</em> instead of any object type.</li>
+<li>A map reference. In Self, all maps are required to have a map reference
+pointing to the <em>map-map</em>, which is the map that references itself. The V8
+Javascript engine calls this the <em>meta-map</em> which I like more.</li>
+<li>In the third word, there is the &ldquo;garbage collection link&rdquo; which creates a
+linked list out of all the maps for scavenging. There&rsquo;s also a vtable pointer
+in the fourth word but that&rsquo;s an implementation detail and can be ignored.</li>
+<li>The total size of the object in machine words. Since Self was designed as a
+32-bit system, that&rsquo;s just the total size of the map divided by four.</li>
+<li>A few pointers to <em>dependency links</em>. Dependency links are used a lot in the
+compiler which is out of scope for this article. They&rsquo;re used to track changes
+for invalidation of compiled code when an object changes.</li>
+<li>If this map is for a method slot, then there is a machine word for the object
+reference to the bytecode.</li>
+<li>Following that are &ldquo;slot descriptor&rdquo; objects. They contain the name, type and
+either the contents (for constant slots) or the byte offset from the object
+(for mutable and assignment slots) of the slot. Vector maps only have a parent
+slot<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</li>
+</ul>
+<h2 id="the-self-memory-space">The Self memory space</h2>
+<p>The Self object system also splits Self objects and byte-vector values into two
+separate sides of the address space. <a href="https://raw.githubusercontent.com/russellallen/self/master/docs/papers/implementation.pdf">The implementation
+paper</a>
+describes that this was done to improve the speed of scavenging<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>. Since byte
+vectors (i.e. strings) can have any bit pattern, it would be quite easy to
+masquerade a bytevector&rsquo;s contents as an object marker by simply setting the
+bottom two bits of a word to <code>11</code>. Smalltalk interpreters at the time solved
+this by iterating over the memory space object-by-object (i.e. doing bounds
+checking for every object) but that causes performance problems. Self was able
+to achieve double the speed (3MB/s at the time, according to the paper) by
+<em>segregating</em> the raw byte data to the upper area of the allocated address
+space. This allows the scavenger to simply scan the entire object side of the
+memory for the <code>11</code> marker instead of caring about the length of the object, for
+example.</p>
+<h2 id="a-more-modern-implementation-v8">A more modern implementation: V8</h2>
+<p>The above information was about how Self implements its objects in the memory
+space. This particular implementation was conceived in the late 80s. However, as
+we all know, there is a newer and more popular language that also uses
+prototype-based object-orient programming: Javascript. I wanted to know what
+sort of object implementation Javascript had in a modern engine, so I started to
+research how the V8 Javascript engine does it. While researching, I came across
+this <a href="https://www.jayconrod.com/posts/52/a-tour-of-v8-object-representation">helpful article by Jay
+Conrod</a>
+which you should check out.</p>
+<p>Something that surprised me was how similar V8&rsquo;s object representation was to
+Self&rsquo;s object representation. Perhaps the authors were influenced by the paper,
+or perhaps they simply came up with a similar representation on their own.
+However, V8 seems to have a few key differences with regards to the object
+representation.</p>
+<h3 id="map-transitions">Map transitions</h3>
+<p>In its current implementation, Self will create a new map everytime an object
+has slots added or one of its constant slots modified. This is understandable,
+since that makes an object diverge from others. In Self this is mostly okay,
+because objects are copied wholesale from prototypes and all the properties that
+an object has is known at copy-time.</p>
+<p>However, Javascript has a different model, particularly for constructor
+functions. When a new object is created, it is usually assigned values
+one-by-one. Using Self&rsquo;s implementation, this would mean that a new map would be
+created everytime. Not only that, but many duplicate maps would be created from
+the re-assignments. To combat this, the V8 engine employs <em>map transitions</em>.</p>
+<p>I&rsquo;ll take the example from Jay Conrod&rsquo;s article. When we have a constructor like
+this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Point</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>The V8 engine can create the following maps when this code is first executed:</p>
+<pre><code>Map0: # Empty map
+  - x: Transition(Map1)
+
+Map1:
+  - x: Field
+  - y: Transition(Map2)
+
+Map2:
+  - x: Field
+  - y: Field
+</code></pre><p>When similar code is executed, this will slowly create a tree from the root map
+to the leaves which are concrete object maps.</p>
+<p>Now, to be clear, this method is neither superior or inferior when compared to
+Self&rsquo;s method of just allocating a new map. In particular, in the example Map1
+cannot be de-allocated because new Point objects will be using that map when
+being constructed. Self does not need something like this, because most objects
+are constructed at once with all their properties and copied many times.</p>
+<h3 id="constant-method-fields">Constant Method Fields</h3>
+<p>Another Javascript-related optimization that V8 does is to inline function
+pointers as constant. This seems to be very similar to how Self holds the values
+of constant slots directly in the slot descriptors.</p>
+<p>Here I&rsquo;m taking another example from the V8 article. Suppose we had a
+constructor like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Point</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">distance</span> <span class="o">=</span> <span class="nx">PointDistance</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">PointDistance</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">dx</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">dy</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">dx</span> <span class="o">*</span> <span class="nx">dx</span> <span class="o">+</span> <span class="nx">dy</span> <span class="o">*</span> <span class="nx">dy</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>Because we are assigning the same constant function everytime, it would not make
+sense to store a reference to it in every Point instance. So the V8 runtime will
+store the pointer as a constant directly in the map instead, like so:</p>
+<pre><code>...
+
+Map2:
+  - x: Field
+  - y: Field
+  - distance: Transition(Map3)
+
+Map3:
+  - x: Field
+  - y: Field
+  - distance: ConstantFunction(PointDistance)
+</code></pre><p>The optimizer would then replace any references to this constant function with a
+direct reference to the function itself, eliminating indirection.</p>
+<p>This is required in Javascript, because objects are malleable during runtime,
+and new properties may be added to them at anytime; in addition, in Javascript
+object properties cannot be constant unless the object is frozen. In contrast,
+Self already has this feature, however it is implemented in a different way:
+Because objects in normal operation are either created from scratch (with all
+their properties) or cloned, the constant values are immediately embedded into
+the newly created map without the need for transitions or special references to
+constant functions. The bytecode compiler can then inline these constant values
+just as it would with any other constant value. In Self, the Point prototype
+would look like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="o">|</span>
+  <span class="n">parent</span><span class="o">*</span> <span class="o">=</span> <span class="n">traits</span> <span class="n">clonable</span><span class="o">.</span>
+
+  <span class="n">x</span> <span class="o">&lt;-</span> <span class="mi">0</span><span class="o">.</span>
+  <span class="n">y</span> <span class="o">&lt;-</span> <span class="mi">0</span><span class="o">.</span>
+
+  <span class="ss">copyX</span><span class="p">:</span> <span class="n">x</span> <span class="ss">Y</span><span class="p">:</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="o">|</span> <span class="n">c</span> <span class="o">|</span>
+    <span class="ss">c</span><span class="p">:</span> <span class="nb">self</span> <span class="nb">clone</span><span class="o">.</span>
+    <span class="n">c</span> <span class="ss">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span>
+    <span class="n">c</span> <span class="ss">y</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span>
+    <span class="n">c</span>
+  <span class="p">)</span><span class="o">.</span>
+
+  <span class="ss">distance</span><span class="p">:</span> <span class="nb">p</span> <span class="o">=</span> <span class="p">(</span><span class="o">|</span> <span class="n">dx</span><span class="o">.</span> <span class="n">dy</span> <span class="o">|</span>
+    <span class="ss">dx</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="nb">p</span> <span class="n">x</span><span class="o">.</span>
+    <span class="ss">dy</span><span class="p">:</span> <span class="n">y</span> <span class="o">-</span> <span class="nb">p</span> <span class="n">y</span><span class="o">.</span>
+    <span class="p">(</span><span class="n">dx</span> <span class="n">square</span> <span class="o">+</span> <span class="n">dy</span> <span class="n">square</span><span class="p">)</span> <span class="n">squareRoot</span>
+  <span class="p">)</span><span class="o">.</span>
+<span class="o">|</span><span class="p">)</span>
+</code></pre></div><p>Since all the constant values (<code>parent</code>, <code>copyX:Y:</code> and <code>distance:</code>) are
+already known, the Self VM can create a single Map object which will embed a
+reference to the methods directly.</p>
+<p>Note that similar to the Javascript prototype object, in Self a <em>traits object</em>
+is used to store methods that can be used on a prototype and its copies. While
+this is purely an idiom, it is a good idiom nevertheless. In particular, when
+new methods are added to the traits object, the existing copies can also benefit
+from it.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Self&rsquo;s object system still seems to hold up since its initial implementation
+paper from 1989. Because the properties of Self allow it to allocate a single
+map for objects and then keep it around for a long time, a feature like map
+transitions does not seem to be necessary. Similarly, constant references in
+maps have existed from the beginning, because Self expects the programmer to
+define all slots during object creation, and makes a distinction between
+constant and assignable slots.</p>
+<p>There seems to be a key difference in how Javascript and Self treat the
+prototype-based inheritance system too, from what I can tell: In Javascript the
+<code>prototype</code> seems to have become a place to put the methods of an object. In a
+way, it&rsquo;s just the &ldquo;class&rdquo; object named a different way. In Self, the prototype
+object is the object that other code clones in order to get an &ldquo;instance&rdquo;. You
+could say that the prototype is the &ldquo;default value&rdquo; of an object.</p>
+<p>If we were to write the Javascript <code>Point</code> code above in a Self-like style, it
+would look like this:</p>
+<details>
+<summary>Self-like Javascript</summary>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">Point</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">x</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="nx">y</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+
+  <span class="nx">clone</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+    <span class="nx">p</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+    <span class="nx">p</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">p</span><span class="p">;</span>
+  <span class="p">},</span>
+
+  <span class="nx">distance</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">dx</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">dy</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">-</span> <span class="nx">p</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">dx</span> <span class="o">*</span> <span class="nx">dx</span> <span class="o">+</span> <span class="nx">dy</span> <span class="o">*</span> <span class="nx">dy</span><span class="p">);</span>
+  <span class="p">},</span>
+
+  <span class="nx">toString</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s2">&#34;Point(&#34;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="s2">&#34;, &#34;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="s2">&#34;)&#34;</span><span class="p">;</span>
+  <span class="p">},</span>
+<span class="p">};</span>
+
+<span class="c1">// To use it:
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">Point</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">);</span> <span class="c1">// Point(3, 4)
+</span><span class="c1"></span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">distance</span><span class="p">(</span><span class="nx">Point</span><span class="p">));</span> <span class="c1">// 5
+</span></code></pre></div><p>Pretty similar, eh?</p>
+</details><br />
+<p>Thanks for reading. This article wasn&rsquo;t as exciting as the previous ones,
+however I think it&rsquo;s still pretty interesting to look at how Self handles
+objects in memory and how it compares to newer programming languages in a
+similar paradigm. Also, sorry for being absent for almost 2 months from here. I
+had some IRL business to take care of, however that is done and now I should be
+able to post much more often. Stay tuned!</p>
+<!-- prettier-ignore -->
+<!-- prettier-ignore -->
+<!-- prettier-ignore -->
+<!-- prettier-ignore -->
+<!-- prettier-ignore -->
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>This is a simplified version of the initial object problem posed by the
+paper. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Keyword regular. Using primitives and mirrors, you can of course change an
+object&rsquo;s constant slots but that has additional side effects, like creating a
+completely new map. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>Multiplication requires one right shift, and division requires two right
+shifts before and a left shift after. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>Curiously, the current Self implementation does allow more than just the
+parent slot on vector objects, so maybe this restriction was lifted after
+the implementation paper was published. <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p>We will look at Self&rsquo;s GC system in a future post. For now, just know that
+scavenging is a quick GC technique that is faster than a full GC cycle. <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+      </div>
+      <div class="paginator">
+        
+        <a class="link" href="https://sin-ack.github.io/posts/morphic-intro/">← prev</a>
+        
+        
+        <a></a>
+        
+      </div>
+      <div class="comment">
+        
+      </div>
+      
+    </main>
+    <footer id="footer">
+  <div>
+    <span>© 2019</span> - <span>2021</span>
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+    <span> 🍦 Theme </span>
+    <a class="link" href="https://github.com/queensferryme/hugo-theme-texify">TeXify</a>
+    <span> + </span>
+    <a class="link" href="https://github.com/sin-ack/hugo-theme-texify">some changes</a>
+  </div>
+
+  <div class="footnote">
+    <span></span>
+  </div>
+</footer>
+
+  </div>
+  
+
+<link media="screen" rel="stylesheet" href="https://sin-ack.github.io/css/custom.css" />
+
+
+
+
+
+</body>
+
+</html>
