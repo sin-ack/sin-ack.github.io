@@ -148,7 +148,7 @@ idiosyncratically carry a `serial_id`, which was the position of the `Component`
 within the file. The reason the `Component`s were in a hash table was that they
 would then be checked against the component ordering in a "Start of Scan"
 section to make sure all the components in the SOS section are in the expected
-order. Why this code was written this was instead of just checking against the
+order. Why this code was written this way instead of just checking against the
 ID by linearly iterating over the `Component`s, I have no idea.
 
 Anyway, these components would then be iterated over during the different
