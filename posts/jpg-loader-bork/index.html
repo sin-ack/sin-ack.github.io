@@ -16,7 +16,6 @@ SerenityOS this week. It was related to the decoding
 of JPG images in the operating system. For some reason, when a JPG image is
 viewed, it comes out like this:
 
-     
             Lenna,
 showing up with incorrect colors.
         
@@ -44,7 +43,6 @@ SerenityOS this week. It was related to the decoding
 of JPG images in the operating system. For some reason, when a JPG image is
 viewed, it comes out like this:
 
-     
             Lenna,
 showing up with incorrect colors.
         
@@ -117,10 +115,9 @@ makes the image show up correctly. Case closed!
 <a href="https://serenityos.org/">SerenityOS</a> this week. It was related to the decoding
 of JPG images in the operating system. For some reason, when a JPG image is
 viewed, it comes out like this:</p>
-<figure>
-    <img src="/images/serenity-jpgloader/lenna-broken.png"
+<figure><img src="/images/serenity-jpgloader/lenna-broken.png"
          alt="Lenna,
-showing up with incorrect colors."/> <figcaption>
+showing up with incorrect colors."/><figcaption>
             <p>Lenna,
 showing up with incorrect colors.</p>
         </figcaption>
@@ -128,17 +125,16 @@ showing up with incorrect colors.</p>
 
 <p>Weird, huh? Also seems like a simple confusion of RGB vs. BGR. And sure enough,
 making the following change on <code>JPGLoader.cpp</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff"><span class="gd">-   const Color color { (u8)block.y[pixel_index], (u8)block.cb[pixel_index], (u8)block.cr[pixel_index] };
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-diff" data-lang="diff"><span class="gd">-   const Color color { (u8)block.y[pixel_index], (u8)block.cb[pixel_index], (u8)block.cr[pixel_index] };
 </span><span class="gd"></span><span class="gi">+   const Color color { (u8)block.cr[pixel_index], (u8)block.cb[pixel_index], (u8)block.y[pixel_index] };
 </span><span class="gi"></span>    context.bitmap-&gt;set_pixel(x, y, color);
 </code></pre></div><p>makes the image show up correctly. Case closed!</p>
 <p>&hellip;not. Why did this even break in the first place?</p>
 <p>The last non-reverted change
 to <code>JPGLoader.cpp</code> is reported by Git to be over a month ago:</p>
-<figure>
-    <img src="/images/serenity-jpgloader/commitlog.png"
+<figure><img src="/images/serenity-jpgloader/commitlog.png"
          alt="Commit log
-at the time of JPGLoader being broken."/> <figcaption>
+at the time of JPGLoader being broken."/><figcaption>
             <p>Commit log
 at the time of JPGLoader being broken.</p>
         </figcaption>
@@ -176,7 +172,7 @@ Mobile. While this isn&rsquo;t the fault of the project, I&rsquo;m still mad.</p
 <p>So, after bisecting 1000 commits, rebuilding the OS from scratch several times
 and pulling my hair out because I didn&rsquo;t understand how bisect worked, I
 <em>finally</em> found the commit that broke JPG images. Drumroll please&hellip;</p>
-<pre><code>f89e8fb71a4893911ee5125f34bd5bbb99327d33
+<pre tabindex="0"><code>f89e8fb71a4893911ee5125f34bd5bbb99327d33
 Author:     Gunnar Beutner
 AuthorDate: Sat May 15 10:06:41 2021 +0200
 
@@ -196,9 +192,8 @@ Vector, HashTable and potentially other callers in the future.
 </code></pre><p>Uh, sorry, what?</p>
 <p>But it was. Building the commit right before this one showed the image
 correctly:</p>
-<figure>
-    <img src="/images/serenity-jpgloader/lenna-beforebroken.png"
-         alt="Lenna, before it was broken."/> <figcaption>
+<figure><img src="/images/serenity-jpgloader/lenna-beforebroken.png"
+         alt="Lenna, before it was broken."/><figcaption>
             <p>Lenna, before it was broken.</p>
         </figcaption>
 </figure>
@@ -212,7 +207,7 @@ possible causes.</p>
 <code>HashMap</code> depends on) and <code>Vector</code>. Both are used in the <code>JPGLoader</code> code, and
 either could be the cause of the problem here.</p>
 <p>I picked <code>HashTable</code> at random, removed the offending line:</p>
-<div class="highlight"><pre class="chroma"><code class="language-diff" data-lang="diff">         new_capacity = max(new_capacity, static_cast&lt;size_t&gt;(4));
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-diff" data-lang="diff">         new_capacity = max(new_capacity, static_cast&lt;size_t&gt;(4));
 <span class="gd">-        new_capacity = kmalloc_good_size(new_capacity * sizeof(Bucket)) / sizeof(Bucket);
 </span><span class="gd"></span>
          auto* old_buckets = m_buckets;
@@ -242,7 +237,7 @@ used to perform transforms on macroblocks.</p>
 <h2 id="getting-close">Getting close</h2>
 <p>When I added some debug prints to see how the components were read, I saw this
 in the commit with the broken colors:</p>
-<pre><code>ImageDecoder(33:33): Looking at component 0
+<pre tabindex="0"><code>ImageDecoder(33:33): Looking at component 0
 ImageDecoder(33:33): Looking at component 2
 ImageDecoder(33:33): Looking at component 1
 ImageDecoder(33:33): Looking at component 0
@@ -250,7 +245,7 @@ ImageDecoder(33:33): Looking at component 2
 ImageDecoder(33:33): Looking at component 1
 ...
 </code></pre><p>And when I checked out the previous commit, I saw this:</p>
-<pre><code>ImageDecoder(33:33): Looking at component 0
+<pre tabindex="0"><code>ImageDecoder(33:33): Looking at component 0
 ImageDecoder(33:33): Looking at component 1
 ImageDecoder(33:33): Looking at component 2
 ImageDecoder(33:33): Looking at component 0
@@ -261,7 +256,7 @@ ImageDecoder(33:33): Looking at component 2
 <a href="https://twitter.com/the_semicolon_">CxByte</a> at my wit&rsquo;s end, we ended up
 manually messing with the order of the components to see what would happen, and
 got this message:</p>
-<pre><code>ImageDecoder(32:32): Huffman stream exhausted. This could be an error!
+<pre tabindex="0"><code>ImageDecoder(32:32): Huffman stream exhausted. This could be an error!
 ImageDecoder(32:32): Failed to build Macroblock 3277
 </code></pre><p>&hellip;ah. Of course. It&rsquo;s a stream.</p>
 <h2 id="the-bug">The bug</h2>
@@ -283,7 +278,7 @@ messed with the size of the <code>HashTable</code></li>
 <p>And finally, at the end of about 10 hours of debugging, <a href="https://github.com/SerenityOS/Serenity/commit/a10ad24c760bfe713f1493e49dff7da16d14bf39">here is the
 commit</a>
 that fixed this monster of a bug:</p>
-<pre><code>a10ad24c760bfe713f1493e49dff7da16d14bf39
+<pre tabindex="0"><code>a10ad24c760bfe713f1493e49dff7da16d14bf39
 Author:     sin-ack
 AuthorDate: Mon May 31 15:22:04 2021 +0000
 Commit:     Linus Groh
@@ -318,10 +313,9 @@ probably fixed this by just swapping the order of the arguments right then and
 there, and it would&rsquo;ve worked; until someone else came along and changed the
 order again. Thankfully, now we will be able to look at tubas with correct
 colors in peace.</p>
-<figure>
-    <img src="/images/serenity-jpgloader/tuba.png"
+<figure><img src="/images/serenity-jpgloader/tuba.png"
          alt="A tuba with the
-correct colors. Source: music123.com"/> <figcaption>
+correct colors. Source: music123.com"/><figcaption>
             <p>A tuba with the
 correct colors. Source: music123.com</p>
         </figcaption>
@@ -343,7 +337,7 @@ hole. Stay tuned!</p>
         <a class="link" href="https://sin-ack.github.io/posts/self-object-system/">← prev</a>
         
         
-        <a></a>
+        <a class="link" href="https://sin-ack.github.io/posts/zigself-01/">next →</a>
         
       </div>
       <div class="comment">
@@ -353,7 +347,7 @@ hole. Stay tuned!</p>
     </main>
     <footer id="footer">
   <div>
-    <span>© 2019</span> - <span>2021</span>
+    <span>© 2019</span> - <span>2022</span>
   </div>
 
   <div>

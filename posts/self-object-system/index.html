@@ -278,12 +278,12 @@ created everytime. Not only that, but many duplicate maps would be created from
 the re-assignments. To combat this, the V8 engine employs <em>map transitions</em>.</p>
 <p>I&rsquo;ll take the example from Jay Conrod&rsquo;s article. When we have a constructor like
 this:</p>
-<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Point</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Point</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div><p>The V8 engine can create the following maps when this code is first executed:</p>
-<pre><code>Map0: # Empty map
+<pre tabindex="0"><code>Map0: # Empty map
   - x: Transition(Map1)
 
 Map1:
@@ -306,7 +306,7 @@ pointers as constant. This seems to be very similar to how Self holds the values
 of constant slots directly in the slot descriptors.</p>
 <p>Here I&rsquo;m taking another example from the V8 article. Suppose we had a
 constructor like this:</p>
-<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Point</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Point</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">distance</span> <span class="o">=</span> <span class="nx">PointDistance</span><span class="p">;</span>
@@ -320,7 +320,7 @@ constructor like this:</p>
 </code></pre></div><p>Because we are assigning the same constant function everytime, it would not make
 sense to store a reference to it in every Point instance. So the V8 runtime will
 store the pointer as a constant directly in the map instead, like so:</p>
-<pre><code>...
+<pre tabindex="0"><code>...
 
 Map2:
   - x: Field
@@ -343,7 +343,7 @@ the newly created map without the need for transitions or special references to
 constant functions. The bytecode compiler can then inline these constant values
 just as it would with any other constant value. In Self, the Point prototype
 would look like this:</p>
-<div class="highlight"><pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="o">|</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="o">|</span>
   <span class="n">parent</span><span class="o">*</span> <span class="o">=</span> <span class="n">traits</span> <span class="n">clonable</span><span class="o">.</span>
 
   <span class="n">x</span> <span class="o">&lt;-</span> <span class="mi">0</span><span class="o">.</span>
@@ -388,7 +388,7 @@ could say that the prototype is the &ldquo;default value&rdquo; of an object.</p
 would look like this:</p>
 <details>
 <summary>Self-like Javascript</summary>
-<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">Point</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">Point</span> <span class="o">=</span> <span class="p">{</span>
   <span class="nx">x</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
   <span class="nx">y</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
 
@@ -432,25 +432,25 @@ able to post much more often. Stay tuned!</p>
 <ol>
 <li id="fn:1" role="doc-endnote">
 <p>This is a simplified version of the initial object problem posed by the
-paper. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+paper.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
 <p>Keyword regular. Using primitives and mirrors, you can of course change an
 object&rsquo;s constant slots but that has additional side effects, like creating a
-completely new map. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+completely new map.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
 <p>Multiplication requires one right shift, and division requires two right
-shifts before and a left shift after. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+shifts before and a left shift after.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
 <p>Curiously, the current Self implementation does allow more than just the
 parent slot on vector objects, so maybe this restriction was lifted after
-the implementation paper was published. <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+the implementation paper was published.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:5" role="doc-endnote">
 <p>We will look at Self&rsquo;s GC system in a future post. For now, just know that
-scavenging is a quick GC technique that is faster than a full GC cycle. <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+scavenging is a quick GC technique that is faster than a full GC cycle.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>
@@ -470,7 +470,7 @@ scavenging is a quick GC technique that is faster than a full GC cycle. <a href=
     </main>
     <footer id="footer">
   <div>
-    <span>© 2019</span> - <span>2021</span>
+    <span>© 2019</span> - <span>2022</span>
   </div>
 
   <div>

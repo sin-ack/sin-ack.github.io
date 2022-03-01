@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<meta name="author" content="sin-ack">
+
+
+
+<meta name="description" content="Hello there. I have not posted in a while, and not without good reason. In my first article I had mentioned that I was going to make posts about my own implementation of Self called mySelf. That project never took off, and my interest shifted to other things. I had largely forgotten about it, but then LangJam happened.
+LangJam LangJam is a programming jam that works similar to game jams, but instead of developing video games you develop a programming language based around the theme of the jam.">
+
+
+
+
+<meta name="keywords" content=" self  blog ">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="ZigSelf: An implementation of Self in Zig" />
+<meta name="twitter:description" content="Hello there. I have not posted in a while, and not without good reason. In my first article I had mentioned that I was going to make posts about my own implementation of Self called mySelf. That project never took off, and my interest shifted to other things. I had largely forgotten about it, but then LangJam happened.
+LangJam LangJam is a programming jam that works similar to game jams, but instead of developing video games you develop a programming language based around the theme of the jam." />
+
+
+<link rel="canonical" href="https://sin-ack.github.io/posts/zigself-01/">
+
+
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/common.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/content.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/highlight.css'>
+
+
+
+<title>ZigSelf: An implementation of Self in Zig - sin-ack&#39;s writings</title>
+
+
+
+
+
+  <link rel="stylesheet" href='https://sin-ack.github.io/css/single.css'>
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://sin-ack.github.io/">sin-ack&#39;s writings</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/posts/">Archives</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/index.xml">RSS Feed</a>
+    </span>
+    
+  </nav>
+</header>
+
+    <main id="main" class="post">
+      
+      
+      
+      <h1>ZigSelf: An implementation of Self in Zig</h1>
+      
+      <div>
+        <b>Keywords: </b>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/self'>#self</a>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/zigself'>#zigself</a>
+        
+      </div>
+      
+      <div class="content">
+        <p>Hello there. I have not posted in a while, and not without good reason. In my
+<a href="/posts/a-tour-of-self/">first article</a> I had mentioned that I was going to make
+posts about my own implementation of Self called mySelf. That project never took
+off, and my interest shifted to other things. I had largely forgotten about it,
+but then LangJam happened.</p>
+<h2 id="langjam">LangJam</h2>
+<p><a href="https://github.com/langjam/langjam">LangJam</a> is a programming jam that works
+similar to game jams, but instead of developing video games you develop a
+programming language based around the theme of the jam. When I heard about it
+back in August, I remembered about my interest in implementing Self, and decided
+to join the jam. My implementation <a href="https://github.com/langjam/jam0001/blob/main/TeamDailyDose">went largely nowhere</a>,
+as it wasn&rsquo;t really interesting from the standpoint of the jam&rsquo;s theme. However,
+spending 48 hours to implement the lexer, parser and then a basic interpreter
+was pretty fun, and I started wondering again.</p>
+<h2 id="humble-beginnings">Humble beginnings</h2>
+<p>After the jam ended, I didn&rsquo;t really go back to Self for a while, as other
+projects such as SerenityOS caught my attention again.</p>
+<p>When November rolled around, I remembered that
+<a href="https://adventofcode.com/">Advent of Code</a> existed and the idea of solving it
+with my own language seemed interesting. With this motivation, on November 6th
+2021 <a href="https://github.com/sin-ack/zigself/commit/0869adc2d36804ebffe2e94c1e80ed7a98f637e2">I made the first commit to ZigSelf</a>.</p>
+<p>After that commit, I started working on the lexer, parser, AST and then
+eventually an interpreter. At first I was working only with primitives, as there
+was no standard library to speak of. Eventually however, I started implementing
+some basic methods for the primitive objects.</p>
+<h2 id="the-gc--heap-project">The GC + Heap project</h2>
+<p>After I had a basic standard library, I decided to implement some old Advent of
+Code problems in ZigSelf. However, I noticed something wrong when I decided to
+do this. <a href="https://adventofcode.com/2020/day/1">2020&rsquo;s Day 1</a> which is supposed
+to be one of the easiest took over <em>20 minutes</em> to solve both parts.</p>
+<p>The reason for this was my initial implementation of the object model. In my
+initial implementation I had used ref-counting and a single Object type that
+would hold any type that an object can be (including integers!). This caused an
+allocation for every basic operation, including <em>every single integer
+operation</em>. This was obviously infeasible, and I started planning for a proper
+object model.</p>
+<p>Of course, it would be disrespectful to write a Self implementation and not use
+David Ungar&rsquo;s <a href="https://people.cs.umass.edu/~emery/classes/cmpsci691s-fall2004/papers/p157-ungar.pdf">generational scavenging garbage
+collection</a>
+and <a href="https://raw.githubusercontent.com/russellallen/self/master/docs/papers/implementation.pdf">the Self memory
+model</a>,
+so I decided on implementing a full garbage collector and object model based off
+of them. The technical details could be interesting for a later article, but it
+was a big undertaking to say the least.</p>
+<p>At this point it was late November and I had largely given up on getting my
+language ready in time for AoC, so I set out to work on getting my language on a
+proper object model.</p>
+<p>Due to various real life factors, I had to take a break from the project from
+the start of December until January 22nd. After that I finally got my object
+heap working, fixed up all the primitives on the system (we don&rsquo;t talk about
+<code>_RemoveSlot:IfFail:</code>) to use the heap model, and have been working on it ever
+since.</p>
+<h2 id="current-state">Current state</h2>
+<p>That brings us to today. As of 2 days ago at the time of writing, ZigSelf now
+has a REPL! Feel free to check out the
+<a href="https://github.com/sin-ack/zigself#building-zigself">instructions</a> in order to
+play around with it. It&rsquo;s very fun to mess around with the language in the REPL
+(when it doesn&rsquo;t crash due to a bug :^).</p>
+<p>Other than the REPL, various parts of the language have improved substantially.
+There are some basic system calls to open, read and write files, and the
+standard library contains objects and methods that one would expect. The object
+heap has become stable enough to run proper programs on it.</p>
+<p>It&rsquo;s been an incredibly fun project to craft my own programming language and see
+it executing. It helps me understand how programming languages actually work
+internally. I am personally really happy about how well the object model and the
+heap works.</p>
+<h2 id="the-future">The future</h2>
+<p>While I have no plans with a concrete time-frame, I do have some future goals
+with this project. The biggest eventual goal is getting a graphical programming
+environment like the original Self VM working. With a more modern codebase, I
+really believe it could be an intuitive way to perform programming on a live
+system.</p>
+<p>Other than that, an actor model integration is my goal. I am interested in
+Erlang&rsquo;s actor model in particular, and I believe it could be a good fit for the
+message passing-based programming paradigm that Self employs. The original Self
+VM employs the traditional approach to concurrency with locks and what-have-you,
+and it&rsquo;s tricky to get things right; with the actor model I believe much safer
+concurrency can be accomplished.</p>
+<p>Thanks for reading. You can find the <a href="https://github.com/sin-ack/zigself">project here</a>.
+I hope you find it as enjoyable as I do. Now that ZigSelf has evolved enough to
+talk about it, I will probably write more articles about various technical
+aspects of it very soon. Stay tuned!</p>
+
+      </div>
+      <div class="paginator">
+        
+        <a class="link" href="https://sin-ack.github.io/posts/jpg-loader-bork/">← prev</a>
+        
+        
+        <a></a>
+        
+      </div>
+      <div class="comment">
+        
+      </div>
+      
+    </main>
+    <footer id="footer">
+  <div>
+    <span>© 2019</span> - <span>2022</span>
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+    <span> 🍦 Theme </span>
+    <a class="link" href="https://github.com/queensferryme/hugo-theme-texify">TeXify</a>
+    <span> + </span>
+    <a class="link" href="https://github.com/sin-ack/hugo-theme-texify">some changes</a>
+  </div>
+
+  <div class="footnote">
+    <span></span>
+  </div>
+</footer>
+
+  </div>
+  
+
+<link media="screen" rel="stylesheet" href="https://sin-ack.github.io/css/custom.css" />
+
+
+
+
+
+</body>
+
+</html>

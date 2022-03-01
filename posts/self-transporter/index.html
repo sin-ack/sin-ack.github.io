@@ -128,9 +128,8 @@ they also contain <em>individual slots</em>. That is, you can set a module for a
 slot, in any object. This makes Self&rsquo;s modules incredibly powerful in extending
 the language: by making the granularity of modules in Self at the slot level,
 you can extend the standard library as you wish, adding new slots.</p>
-<figure>
-    <img src="/images/self2/string_asFileContents.png"
-         alt="asFileContents is probably not something you would expect to be on traits string."/> <figcaption>
+<figure><img src="/images/self2/string_asFileContents.png"
+         alt="asFileContents is probably not something you would expect to be on traits string."/><figcaption>
             <p><code>asFileContents</code> is probably not something you would expect to be on
 <code>traits string</code>.</p>
         </figcaption>
@@ -143,9 +142,8 @@ own the slots. If there is only one module for all slots, it will show the
 module name like above; if there are multiple, it will abbreviate it and show
 the module count instead; and if there are none, it will show
 <code>no filed-out slots</code> (might be familiar if you followed the previous post).<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
-<figure>
-    <img src="/images/self2/globals_modules.png"
-         alt="The module summary for globals, using the morphic snapshot."/> <figcaption>
+<figure><img src="/images/self2/globals_modules.png"
+         alt="The module summary for globals, using the morphic snapshot."/><figcaption>
             <p>The module summary
 for <code>globals</code>, using the <code>morphic</code> snapshot.</p>
         </figcaption>
@@ -177,18 +175,16 @@ are stored with the object or slot and can then be fetched by the environment.
 The default Self environment and Transporter separates different keys and values
 in an annotation with <code>\x7f</code>. In text form, slots and objects can be annotated
 using curly braces.</p>
-<figure>
-    <img src="/images/self2/annotation_syntax.png"
-         alt="Annotations in text form."/> <figcaption>
+<figure><img src="/images/self2/annotation_syntax.png"
+         alt="Annotations in text form."/><figcaption>
             <p>Annotations in text form.</p>
         </figcaption>
 </figure>
 
 <p>In an object, there are a few annotations that are relevant to the Transporter
 system, and the environment provides a graphical way to modify them.</p>
-<figure>
-    <img src="/images/self2/object_annotations.png"
-         alt="The annotations that are available on an object."/> <figcaption>
+<figure><img src="/images/self2/object_annotations.png"
+         alt="The annotations that are available on an object."/><figcaption>
             <p>The annotations that are available on an object.</p>
         </figcaption>
 </figure>
@@ -206,18 +202,16 @@ recreate slot contents.<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" ro
 </ul>
 <p>An important thing to note is that, for an object to be accurately recreated, it
 must either be complete or it must have a well-known creator slot.</p>
-<figure>
-    <img src="/images/self2/creator.png"
-         alt="traits string has a well-known creator path: you can always access it by evaluating traits string."/> <figcaption>
+<figure><img src="/images/self2/creator.png"
+         alt="traits string has a well-known creator path: you can always access it by evaluating traits string."/><figcaption>
             <p><code>traits string</code>
 has a well-known creator path: you can always access it by evaluating
 <code>traits string</code>.</p>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/images/self2/complete.png"
-         alt="This textLines object is complete: when filing out, Transporter will simply write &amp;lsquo;foo&amp;rsquo; asTextLines. You can create the object this way yourself."/> <figcaption>
+<figure><img src="/images/self2/complete.png"
+         alt="This textLines object is complete: when filing out, Transporter will simply write &amp;lsquo;foo&amp;rsquo; asTextLines. You can create the object this way yourself."/><figcaption>
             <p>This <code>textLines</code>
 object is complete: when filing out, Transporter will simply write
 <code>&lsquo;foo&rsquo; asTextLines</code>. You can create the object this way yourself.</p>
@@ -226,10 +220,9 @@ object is complete: when filing out, Transporter will simply write
 
 <p>For slots, we have a few more annotations. They determine how the slot will be
 represented when Transporter files them out.</p>
-<figure>
-    <img src="/images/self2/slot_annotations.png"
+<figure><img src="/images/self2/slot_annotations.png"
          alt="The annotations
-that are available on a slot."/> <figcaption>
+that are available on a slot."/><figcaption>
             <p>The annotations
 that are available on a slot.</p>
         </figcaption>
@@ -244,19 +237,17 @@ expression that&rsquo;s typed in the text box as the slot&rsquo;s value.</p>
 so let&rsquo;s do it.</p>
 <h2 id="writing-our-own-module">Writing our own module</h2>
 <p>Here, I am creating an object with basic mathematical operations.</p>
-<figure>
-    <img src="/images/self2/object_creation.png"
+<figure><img src="/images/self2/object_creation.png"
          alt="Creating the objects
-on the slot."/> <figcaption>
+on the slot."/><figcaption>
             <p>Creating the objects
 on the slot.</p>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/images/self2/object.png"
+<figure><img src="/images/self2/object.png"
          alt="The final version of the
-object."/> <figcaption>
+object."/><figcaption>
             <p>The final version of the
 object.</p>
         </figcaption>
@@ -266,17 +257,15 @@ object.</p>
 the object&rsquo;s header (the part with <code>a slots object</code>) and select <code>Set Module...</code>
 Select <code>All</code> slots, and select module as <code>other</code>. For name, we can enter
 <code>maths</code> and then click <code>Okay</code>.</p>
-<figure>
-    <img src="/images/self2/set_module_1.png"
-         alt="Selecting Set Module."/> <figcaption>
+<figure><img src="/images/self2/set_module_1.png"
+         alt="Selecting Set Module."/><figcaption>
             <p>Selecting
 <code>Set Module</code>.</p>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/images/self2/set_module_2.png"
-         alt="Steps of setting module to maths."/> <figcaption>
+<figure><img src="/images/self2/set_module_2.png"
+         alt="Steps of setting module to maths."/><figcaption>
             <p>Steps of setting module
 to <code>maths</code>.</p>
         </figcaption>
@@ -284,10 +273,9 @@ to <code>maths</code>.</p>
 
 <p>Self will warn us that the module we are trying to save to does not exist, but
 we already know this. Click on <code>Create it!</code></p>
-<figure>
-    <img src="/images/self2/set_module_3.png"
+<figure><img src="/images/self2/set_module_3.png"
          alt="Self telling us that
-there is no such module."/> <figcaption>
+there is no such module."/><figcaption>
             <p>Self telling us that
 there is no such module.</p>
         </figcaption>
@@ -296,10 +284,9 @@ there is no such module.</p>
 <p>Self will then ask us to add this module as a submodule of another. This is good
 for organization, but we want this module to be standalone, so leave this
 textbox empty and click <code>Okay</code>.</p>
-<figure>
-    <img src="/images/self2/set_module_4.png"
+<figure><img src="/images/self2/set_module_4.png"
          alt="Leaving the parent module
-empty."/> <figcaption>
+empty."/><figcaption>
             <p>Leaving the parent module
 empty.</p>
         </figcaption>
@@ -307,10 +294,9 @@ empty.</p>
 
 <p>Self will be surprised because we&rsquo;re creating a new root module, but that&rsquo;s
 fine; click <code>No module</code>.</p>
-<figure>
-    <img src="/images/self2/set_module_5.png"
+<figure><img src="/images/self2/set_module_5.png"
          alt="Self is very shocked at
-this turn of events."/> <figcaption>
+this turn of events."/><figcaption>
             <p>Self is very shocked at
 this turn of events.</p>
         </figcaption>
@@ -318,19 +304,17 @@ this turn of events.</p>
 
 <p>For the final step, we determine which directory our module will reside in. The
 directory <code>applications</code> is fine, so let&rsquo;s just accept the default.</p>
-<figure>
-    <img src="/images/self2/set_module_6.png"
+<figure><img src="/images/self2/set_module_6.png"
          alt="Selecting the directory
-of the application."/> <figcaption>
+of the application."/><figcaption>
             <p>Selecting the directory
 of the application.</p>
         </figcaption>
 </figure>
 
 <p>And there we go, we just created our first module.</p>
-<figure>
-    <img src="/images/self2/set_module_success.png"
-         alt="The object now displays the module as maths."/> <figcaption>
+<figure><img src="/images/self2/set_module_success.png"
+         alt="The object now displays the module as maths."/><figcaption>
             <p>The object
 now displays the module as <code>maths</code>.</p>
         </figcaption>
@@ -345,28 +329,25 @@ just put our slot on <code>globals</code>, as most modules do.</p>
 you cannot find the &ldquo;Add Slot&hellip;&rdquo; option in the object menu, make sure you are
 clicking on the outliner&rsquo;s header area. For now, we are setting it to <code>nil</code>,
 because we will be setting it to our object later on.</p>
-<figure>
-    <img src="/images/self2/global_slot_1.png"
+<figure><img src="/images/self2/global_slot_1.png"
          alt="Adding a new slot to
-global."/> <figcaption>
+global."/><figcaption>
             <p>Adding a new slot to
 global.</p>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/images/self2/global_slot_2.png"
-         alt="The newly added slot."/> <figcaption>
+<figure><img src="/images/self2/global_slot_2.png"
+         alt="The newly added slot."/><figcaption>
             <p>The newly added slot.</p>
         </figcaption>
 </figure>
 
 <p>We can now carry the connector that&rsquo;s currently connected to <code>nil</code>, and drag it
 over the object we have created.</p>
-<figure>
-    <img src="/images/self2/global_slot_connector.png"
+<figure><img src="/images/self2/global_slot_connector.png"
          alt="Dropping the
-connector on the object."/> <figcaption>
+connector on the object."/><figcaption>
             <p>Dropping the
 connector on the object.</p>
         </figcaption>
@@ -378,10 +359,9 @@ the creator of our object (which we can now do, because the object is globally
 accessible).</p>
 <p>Middle-click on our object, and select &ldquo;Show Annotation&rdquo;, then set it to <code>maths</code>
 and save it with the green button.</p>
-<figure>
-    <img src="/images/self2/set_creator.png"
+<figure><img src="/images/self2/set_creator.png"
          alt="Setting the creator of
-our object."/> <figcaption>
+our object."/><figcaption>
             <p>Setting the creator of
 our object.</p>
         </figcaption>
@@ -389,9 +369,8 @@ our object.</p>
 
 <p>At this point, our object (now knowing its creator path) identifies itself as
 <code>maths</code>. The object is now globally accessible and ready for filing out.</p>
-<figure>
-    <img src="/images/self2/maths.png"
-         alt="The object now identifies itself as maths."/> <figcaption>
+<figure><img src="/images/self2/maths.png"
+         alt="The object now identifies itself as maths."/><figcaption>
             <p>The object now
 identifies itself as <code>maths</code>.</p>
         </figcaption>
@@ -403,9 +382,8 @@ but do not belong to any module in our Self world. We can check it by
 middle-clicking the background, selecting <code>Changed Modules</code> (which will list our
 module), and middle clicking on the <code>Changed Modules</code> morph and selecting
 <code>Expatriate Slots (not in any module)</code>.</p>
-<figure>
-    <img src="/images/self2/expat.png"
-         alt="Expatriate Slots list."/> <figcaption>
+<figure><img src="/images/self2/expat.png"
+         alt="Expatriate Slots list."/><figcaption>
             <p>Expatriate Slots list.</p>
         </figcaption>
 </figure>
@@ -415,9 +393,8 @@ module), and middle clicking on the <code>Changed Modules</code> morph and selec
 need to set it so that the <code>maths</code> slot belongs to our module. So let&rsquo;s middle
 click on the <code>maths</code> slot, select <code>Show Annotation</code>, enter the module as <code>maths</code>
 and accept.</p>
-<figure>
-    <img src="/images/self2/maths_annotation.png"
-         alt="Annotating the maths slot."/> <figcaption>
+<figure><img src="/images/self2/maths_annotation.png"
+         alt="Annotating the maths slot."/><figcaption>
             <p>Annotating the
 <code>maths</code> slot.</p>
         </figcaption>
@@ -426,10 +403,9 @@ and accept.</p>
 <p>Now if we middle-click <code>Changed Modules</code> again, the menu item will say
 <code>No Expatriate Slots</code>, which means we correctly assigned modules to all our
 slots and can now file them out.</p>
-<figure>
-    <img src="/images/self2/no_expat.png"
+<figure><img src="/images/self2/no_expat.png"
          alt="We don&amp;rsquo;t have any other
-expatriate slots."/> <figcaption>
+expatriate slots."/><figcaption>
             <p>We don&rsquo;t have any other
 expatriate slots.</p>
         </figcaption>
@@ -449,9 +425,8 @@ selecting <code>Quit &gt; Just quit</code> from the background menu, then open i
 we have filed our module out. Select <code>New shell</code> from the background menu, open
 a new prompt by clicking the &ldquo;E&rdquo;, and enter the path of the .self file relative
 to where you executed Self, followed by <code>runScript</code>.</p>
-<figure>
-    <img src="/images/self2/filing_in.png"
-         alt="Filing in our maths module."/> <figcaption>
+<figure><img src="/images/self2/filing_in.png"
+         alt="Filing in our maths module."/><figcaption>
             <p>Filing in our
 <code>maths</code> module.</p>
         </figcaption>
@@ -475,18 +450,18 @@ text form.</small></p>
 <ol>
 <li id="fn:1" role="doc-endnote">
 <p>If you want to know more about how the summarization process works, you
-should dig into <code>pluggableOutliner</code> and <code>selfCatOrObjModel</code>. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+should dig into <code>pluggableOutliner</code> and <code>selfCatOrObjModel</code>.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
 <p>An object is well-known if it has a known path from <code>lobby</code> to itself.
 This is important because this is how you and others will access your
-module&rsquo;s objects and slots. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+module&rsquo;s objects and slots.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
 <p>When an object <code>isComplete</code>, it accepts the <code>printString</code> (the string
 representation of this object when printing) and <code>storeString</code> (the string
 representation when filed out into a module) messages. It also accepts a few
-more messages; check out the handbook if you&rsquo;d like to know more. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+more messages; check out the handbook if you&rsquo;d like to know more.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>
@@ -506,7 +481,7 @@ more messages; check out the handbook if you&rsquo;d like to know more. <a href=
     </main>
     <footer id="footer">
   <div>
-    <span>© 2019</span> - <span>2021</span>
+    <span>© 2019</span> - <span>2022</span>
   </div>
 
   <div>

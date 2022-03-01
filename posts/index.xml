@@ -6,7 +6,17 @@
     <description>Recent content in Posts on sin-ack&#39;s writings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 03 Jun 2021 00:00:00 +0200</lastBuildDate><atom:link href="https://sin-ack.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 01 Mar 2022 10:00:00 +0100</lastBuildDate><atom:link href="https://sin-ack.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ZigSelf: An implementation of Self in Zig</title>
+      <link>https://sin-ack.github.io/posts/zigself-01/</link>
+      <pubDate>Tue, 01 Mar 2022 10:00:00 +0100</pubDate>
+      
+      <guid>https://sin-ack.github.io/posts/zigself-01/</guid>
+      <description>Hello there. I have not posted in a while, and not without good reason. In my first article I had mentioned that I was going to make posts about my own implementation of Self called mySelf. That project never took off, and my interest shifted to other things. I had largely forgotten about it, but then LangJam happened.
+LangJam LangJam is a programming jam that works similar to game jams, but instead of developing video games you develop a programming language based around the theme of the jam.</description>
+    </item>
+    
     <item>
       <title>How malloc broke Serenity&#39;s JPGLoader, or: how to win the lottery</title>
       <link>https://sin-ack.github.io/posts/jpg-loader-bork/</link>
@@ -17,10 +27,9 @@
 &lt;a href=&#34;https://serenityos.org/&#34;&gt;SerenityOS&lt;/a&gt; this week. It was related to the decoding
 of JPG images in the operating system. For some reason, when a JPG image is
 viewed, it comes out like this:&lt;/p&gt;
-&lt;figure&gt;
-    &lt;img src=&#34;https://sin-ack.github.io/images/serenity-jpgloader/lenna-broken.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://sin-ack.github.io/images/serenity-jpgloader/lenna-broken.png&#34;
          alt=&#34;Lenna,
-showing up with incorrect colors.&#34;/&gt; &lt;figcaption&gt;
+showing up with incorrect colors.&#34;/&gt;&lt;figcaption&gt;
             &lt;p&gt;Lenna,
 showing up with incorrect colors.&lt;/p&gt;
         &lt;/figcaption&gt;
@@ -28,7 +37,7 @@ showing up with incorrect colors.&lt;/p&gt;
 
 &lt;p&gt;Weird, huh? Also seems like a simple confusion of RGB vs. BGR. And sure enough,
 making the following change on &lt;code&gt;JPGLoader.cpp&lt;/code&gt;:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-diff&#34; data-lang=&#34;diff&#34;&gt;&lt;span class=&#34;gd&#34;&gt;-   const Color color { (u8)block.y[pixel_index], (u8)block.cb[pixel_index], (u8)block.cr[pixel_index] };
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-diff&#34; data-lang=&#34;diff&#34;&gt;&lt;span class=&#34;gd&#34;&gt;-   const Color color { (u8)block.y[pixel_index], (u8)block.cb[pixel_index], (u8)block.cr[pixel_index] };
 &lt;/span&gt;&lt;span class=&#34;gd&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gi&#34;&gt;+   const Color color { (u8)block.cr[pixel_index], (u8)block.cb[pixel_index], (u8)block.y[pixel_index] };
 &lt;/span&gt;&lt;span class=&#34;gi&#34;&gt;&lt;/span&gt;    context.bitmap-&amp;gt;set_pixel(x, y, color);
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;makes the image show up correctly. Case closed!&lt;/p&gt;

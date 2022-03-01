@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>zigself on sin-ack&#39;s writings</title>
+    <link>https://sin-ack.github.io/categories/zigself/</link>
+    <description>Recent content in zigself on sin-ack&#39;s writings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 01 Mar 2022 10:00:00 +0100</lastBuildDate><atom:link href="https://sin-ack.github.io/categories/zigself/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ZigSelf: An implementation of Self in Zig</title>
+      <link>https://sin-ack.github.io/posts/zigself-01/</link>
+      <pubDate>Tue, 01 Mar 2022 10:00:00 +0100</pubDate>
+      
+      <guid>https://sin-ack.github.io/posts/zigself-01/</guid>
+      <description>Hello there. I have not posted in a while, and not without good reason. In my first article I had mentioned that I was going to make posts about my own implementation of Self called mySelf. That project never took off, and my interest shifted to other things. I had largely forgotten about it, but then LangJam happened.
+LangJam LangJam is a programming jam that works similar to game jams, but instead of developing video games you develop a programming language based around the theme of the jam.</description>
+    </item>
+    
+  </channel>
+</rss>

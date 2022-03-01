@@ -112,9 +112,8 @@ runtime is based on the idea of &ldquo;processes&rdquo;: each piece of Self code
 its own process (not an OS process &ndash; a Self process) in which it runs until
 termination. During its runtime it can interact with other objects it can reach,
 and create new ones.</p>
-<figure>
-    <img src="/images/tour1/processes.png"
-         alt="Two processes: The left one is the scheduler (the root process), and the right one is a short-lived one created by the shell when I typed process this and evaluated it."/> <figcaption>
+<figure><img src="/images/tour1/processes.png"
+         alt="Two processes: The left one is the scheduler (the root process), and the right one is a short-lived one created by the shell when I typed process this and evaluated it."/><figcaption>
             <p>Two processes: The left one
 is the scheduler (the root process), and the right one is a short-lived one
 created by the shell when I typed <code>process this</code> and evaluated it.</p>
@@ -124,9 +123,8 @@ created by the shell when I typed <code>process this</code> and evaluated it.</p
 <p>Each object holds a number of slots, which can be added to and removed from
 (facilitated by the programming environment). Slots can be mutable, in which
 case they accept a message with their name and the new value as an argument.</p>
-<figure>
-    <img src="/images/tour1/slots.png"
-         alt="This object has a mutable slot named foo (marked by the colon on the right). I can send it a message like foo: &amp;lsquo;bar&amp;rsquo; to set the value it points at to &amp;lsquo;bar&amp;rsquo;. Constant slots (like parent above) are marked with an equals sign."/> <figcaption>
+<figure><img src="/images/tour1/slots.png"
+         alt="This object has a mutable slot named foo (marked by the colon on the right). I can send it a message like foo: &amp;lsquo;bar&amp;rsquo; to set the value it points at to &amp;lsquo;bar&amp;rsquo;. Constant slots (like parent above) are marked with an equals sign."/><figcaption>
             <p>This object has a mutable slot
 named <code>foo</code> (marked by the colon on the right). I can send it a
 message like <code>foo: &lsquo;bar&rsquo;</code> to set the value it points at to &lsquo;bar&rsquo;.
@@ -139,9 +137,8 @@ slot is called a <em>method</em>, and the code will be executed when a message i
 to that slot. Methods can take arguments, and the keywords for each argument
 after the first must start with a capital letter (due to the way message
 precedence works in Self).</p>
-<figure>
-    <img src="/images/tour1/methods.png"
-         alt="This object holds a method called bark, which will pop up a dialog box when it receives a message."/> <figcaption>
+<figure><img src="/images/tour1/methods.png"
+         alt="This object holds a method called bark, which will pop up a dialog box when it receives a message."/><figcaption>
             <p>This object holds a method
 called <code>bark</code>, which will pop up a dialog box when it receives a
 message.</p>
@@ -153,11 +150,10 @@ for inheritance (like Javascript). Prototypes are objects which are the
 canonical instance of a type. New &ldquo;instances&rdquo; are created by copying, or
 cloning, the prototype and modifying its properties. Cloning is the only way to
 create new &ldquo;instances&rdquo; in Self.</p>
-<figure>
-    <img src="/images/tour1/cloning.png"
+<figure><img src="/images/tour1/cloning.png"
          alt="Cloning a vector. The object
 on the left is the vector prototype, and the one on the right is the &amp;ldquo;instance&amp;rdquo;
-that I have created by cloning the prototype, marked by the &amp;ldquo;a&amp;rdquo; before its name."/> <figcaption>
+that I have created by cloning the prototype, marked by the &amp;ldquo;a&amp;rdquo; before its name."/><figcaption>
             <p>Cloning a vector. The object
 on the left is the vector prototype, and the one on the right is the &ldquo;instance&rdquo;
 that I have created by cloning the prototype, marked by the &ldquo;a&rdquo; before its name.</p>
@@ -176,9 +172,8 @@ which doesn&rsquo;t have a parent (for most Self objects, this is <code>globals<
 we will talk more about later).</p>
 <p>Note that parent slots can be mutable too. You can change the behavior of an
 object while it exists in Self (dynamic inheritance!).</p>
-<figure>
-    <img src="/images/tour1/parent_slot.png"
-         alt="vector&amp;rsquo;s parent slot traits vector contains the defintion for the message size."/> <figcaption>
+<figure><img src="/images/tour1/parent_slot.png"
+         alt="vector&amp;rsquo;s parent slot traits vector contains the defintion for the message size."/><figcaption>
             <p><code>vector</code>&rsquo;s
 parent slot <code>traits vector</code> contains the defintion for the message
 <code>size</code>.</p>
@@ -189,10 +184,9 @@ parent slot <code>traits vector</code> contains the defintion for the message
 with if you know Smalltalk or Objective-C. They are objects which hold a block
 of code, and they execute the code and return the value when they are sent the
 <code>value</code> message (they are just regular objects with special syntax, after all).</p>
-<figure>
-    <img src="/images/tour1/blocks.png"
+<figure><img src="/images/tour1/blocks.png"
          alt="A block which reports the
-number it is given."/> <figcaption>
+number it is given."/><figcaption>
             <p>A block which reports the
 number it is given.</p>
         </figcaption>
@@ -209,9 +203,8 @@ which is the UI framework powering the environment, built on X11 on GNU/Linux
 and Quartz on macOS.</p>
 <p>When you first start the <code>morphic</code> or <code>kitchensink</code> snapshots, you are greeted
 with something like this:</p>
-<figure>
-    <img src="/images/tour1/self_window.png"
-         alt="The initial window."/> <figcaption>
+<figure><img src="/images/tour1/self_window.png"
+         alt="The initial window."/><figcaption>
             <p>The initial window.</p>
         </figcaption>
 </figure>
@@ -227,10 +220,9 @@ object that the outliner points to. It is opened with the middle click.</li>
 ways of modifying it. For instance, you can click <code>Resize</code> to resize the
 morph. It is opened with the right click.</li>
 </ul>
-<figure>
-    <img src="/images/tour1/menus.png"
+<figure><img src="/images/tour1/menus.png"
          alt="The object (yellow) and morph
-(blue) menus."/> <figcaption>
+(blue) menus."/><figcaption>
             <p>The object (yellow) and morph
 (blue) menus.</p>
         </figcaption>
@@ -241,9 +233,8 @@ If you want to change the morph itself, you right click it.</p>
 <p>The background (called world, or root) is middle-clickable, as well, and
 contains many important menu items. It is where you find the options to create a
 new object, and references to some important objects in the Self environment.</p>
-<figure>
-    <img src="/images/tour1/bg_menu.png"
-         alt="The background (rootMorph) menu."/> <figcaption>
+<figure><img src="/images/tour1/bg_menu.png"
+         alt="The background (rootMorph) menu."/><figcaption>
             <p>The background (<code>rootMorph</code>) menu.</p>
         </figcaption>
 </figure>
@@ -261,16 +252,14 @@ middle-click the world and create a new object. Then I middle-click the outliner
 new object, and select &ldquo;Add Slot&rdquo;. This opens an editor in which I can enter the
 code for this slot. I enter the slot values for <code>parent</code>, <code>fizzBuzzList</code> and
 <code>n</code>.</p>
-<figure>
-    <img src="/images/tour1/add_slot.png"
-         alt="Adding a slot to the new object."/> <figcaption>
+<figure><img src="/images/tour1/add_slot.png"
+         alt="Adding a slot to the new object."/><figcaption>
             <p>Adding a slot to the new object.</p>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/images/tour1/slot_editor.png"
-         alt="The editor for the new slot."/> <figcaption>
+<figure><img src="/images/tour1/slot_editor.png"
+         alt="The editor for the new slot."/><figcaption>
             <p>The editor for the new slot.</p>
         </figcaption>
 </figure>
@@ -279,9 +268,8 @@ code for this slot. I enter the slot values for <code>parent</code>, <code>fizzB
 completely interactively. Let&rsquo;s do this for the <code>fizzBuzzList</code> slot. First, I
 will middle-click the world and select &ldquo;Globals&rdquo;, which will open the <code>globals</code>
 object containing all world-reachable objects in Self (of which there are many).</p>
-<figure>
-    <img src="/images/tour1/globals.png"
-         alt="The globals object."/> <figcaption>
+<figure><img src="/images/tour1/globals.png"
+         alt="The globals object."/><figcaption>
             <p>The globals object.</p>
         </figcaption>
 </figure>
@@ -289,9 +277,8 @@ object containing all world-reachable objects in Self (of which there are many).
 <p>Then I find the object I want (<code>sequence</code> for storing a sequence of values),
 which is under <code>core &gt; collections &gt; ordered</code>. The standard library is nicely
 organized and it is a lot of fun to discover what is available visually.</p>
-<figure>
-    <img src="/images/tour1/find_sequence.png"
-         alt="Finding sequence in globals."/> <figcaption>
+<figure><img src="/images/tour1/find_sequence.png"
+         alt="Finding sequence in globals."/><figcaption>
             <p>Finding <code>sequence</code> in <code>globals</code>.</p>
         </figcaption>
 </figure>
@@ -299,9 +286,8 @@ organized and it is a lot of fun to discover what is available visually.</p>
 <p>We then fetch the object by clicking the symbol on its right, and create an
 instance of it by opening the prompt and sending it the message
 <code>copyRemoveAll</code> to get a sequence with no values in it.</p>
-<figure>
-    <img src="/images/tour1/sequence_copy.png"
-         alt="Copying the sequence prototype."/> <figcaption>
+<figure><img src="/images/tour1/sequence_copy.png"
+         alt="Copying the sequence prototype."/><figcaption>
             <p>Copying the sequence prototype.</p>
         </figcaption>
 </figure>
@@ -314,17 +300,15 @@ value of <code>fizzBuzzList</code> to <code>sequence copyRemoveAll</code> during
 this allows you to set the value of slots to objects that are not well-known
 (cannot be reached from <code>globals</code>), like the instance of <code>sequence</code> we had just
 created. Plus, it is super cool to navigate the standard libarary.</p>
-<figure>
-    <img src="/images/tour1/drag_connector.png"
-         alt="Dragging the connector to the sequence."/> <figcaption>
+<figure><img src="/images/tour1/drag_connector.png"
+         alt="Dragging the connector to the sequence."/><figcaption>
             <p>Dragging the connector to the sequence.</p>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/images/tour1/object_with_slots.png"
+<figure><img src="/images/tour1/object_with_slots.png"
          alt="The final version
-of our object, with all the slots we need."/> <figcaption>
+of our object, with all the slots we need."/><figcaption>
             <p>The final version
 of our object, with all the slots we need.</p>
         </figcaption>
@@ -336,7 +320,7 @@ here, and either &ldquo;get it&rdquo; (getting the result of the last statement)
 (just execute the code without grabbing any value).</p>
 <p>This is the code for FizzBuzz:</p>
 <!-- prettier-ignore -->
-<div class="highlight"><pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="mi">1</span> <span class="ss">to</span><span class="p">:</span> <span class="mi">100</span> <span class="ss">Do</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:i</span> <span class="o">|</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="mi">1</span> <span class="ss">to</span><span class="p">:</span> <span class="mi">100</span> <span class="ss">Do</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:i</span> <span class="o">|</span>
     <span class="p">((</span><span class="n">i</span> <span class="o">%</span> <span class="mi">15</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span> <span class="n">fizzBuzzList</span> <span class="ss">add</span><span class="p">:</span> <span class="s1">&#39;FizzBuzz&#39;</span> <span class="o">]</span> <span class="ss">False</span><span class="p">:</span> <span class="o">[</span>
     <span class="p">((</span><span class="n">i</span> <span class="o">%</span> <span class="mi">5</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span> <span class="n">fizzBuzzList</span> <span class="ss">add</span><span class="p">:</span> <span class="s1">&#39;Buzz&#39;</span> <span class="o">]</span> <span class="ss">False</span><span class="p">:</span> <span class="o">[</span>
     <span class="p">((</span><span class="n">i</span> <span class="o">%</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span> <span class="n">fizzBuzzList</span> <span class="ss">add</span><span class="p">:</span> <span class="s1">&#39;Fizz&#39;</span> <span class="o">]</span> <span class="ss">False</span><span class="p">:</span> <span class="o">[</span>
@@ -357,9 +341,8 @@ value to <code>fizzBuzzList add:</code>.</li>
 <li>Finally, we return the list object we just populated, so we can grab the
 object when we press &ldquo;get it&rdquo;.</li>
 </ol>
-<figure>
-    <img src="/images/tour1/fizzbuzz_code.png"
-         alt="FizzBuzz in the prompt."/> <figcaption>
+<figure><img src="/images/tour1/fizzbuzz_code.png"
+         alt="FizzBuzz in the prompt."/><figcaption>
             <p>FizzBuzz in the prompt.</p>
         </figcaption>
 </figure>
@@ -369,9 +352,8 @@ cursor, which we can drop somewhere to inspect. <code>sequence</code> stores the
 it in an inner <code>vector</code> (which it wraps to expose an easy API for adding new
 items in it). We can list the elements in the vector by expanding <code>Indexable</code>.
 As you can see, the vector is now populated with the FizzBuzz game.</p>
-<figure>
-    <img src="/images/tour1/fizzbuzz.png"
-         alt="FizzBuzz game in the vector"/> <figcaption>
+<figure><img src="/images/tour1/fizzbuzz.png"
+         alt="FizzBuzz game in the vector"/><figcaption>
             <p>FizzBuzz game in the vector</p>
         </figcaption>
 </figure>
@@ -391,7 +373,7 @@ ARM, though I have not had a chance to try this. Before running, make sure your
 method of portably allocating heap memory by <code>mmap</code>ing <code>/dev/zero</code> with <code>O_EXEC</code>
 set). Then run:</p>
 <!-- prettier-ignore -->
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ ./Self -s kitchensink.snap</code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ ./Self -s kitchensink.snap</code></pre></div>
 <p>I recommend the kitchen sink image because it contains everything that has been
 developed for Self (more stuff to play around with). However, you can also try
 the &ldquo;morphic&rdquo; and &ldquo;core&rdquo; images (be warned, the core image does not contain the
@@ -426,7 +408,7 @@ checked into version control. Stay tuned!</p>
     </main>
     <footer id="footer">
   <div>
-    <span>© 2019</span> - <span>2021</span>
+    <span>© 2019</span> - <span>2022</span>
   </div>
 
   <div>
