@@ -245,30 +245,30 @@ too long (longer than it already is, anyway). The hierarchy of the final
             labelMorph (title)
         uglyTextEditorMorph (editor)
         rowMorph (buttonRows at: 0)
-            buttonMorph ('(')
-            buttonMorph (')')
-            buttonMorph ('CE')
-            buttonMorph ('+')
+            buttonMorph (&#39;(&#39;)
+            buttonMorph (&#39;)&#39;)
+            buttonMorph (&#39;CE&#39;)
+            buttonMorph (&#39;+&#39;)
         rowMorph (buttonRows at: 1)
-            buttonMorph ('7')
-            buttonMorph ('8')
-            buttonMorph ('9')
-            buttonMorph ('-')
+            buttonMorph (&#39;7&#39;)
+            buttonMorph (&#39;8&#39;)
+            buttonMorph (&#39;9&#39;)
+            buttonMorph (&#39;-&#39;)
         rowMorph (buttonRows at: 2)
-            buttonMorph ('4')
-            buttonMorph ('5')
-            buttonMorph ('6')
-            buttonMorph ('*')
+            buttonMorph (&#39;4&#39;)
+            buttonMorph (&#39;5&#39;)
+            buttonMorph (&#39;6&#39;)
+            buttonMorph (&#39;*&#39;)
         rowMorph (buttonRows at: 3)
-            buttonMorph ('1')
-            buttonMorph ('2')
-            buttonMorph ('3')
-            buttonMorph ('/')
+            buttonMorph (&#39;1&#39;)
+            buttonMorph (&#39;2&#39;)
+            buttonMorph (&#39;3&#39;)
+            buttonMorph (&#39;/&#39;)
         rowMorph (buttonRows at: 4)
-            buttonMorph ('.')
-            buttonMorph ('0')
-            buttonMorph ('BS')
-            buttonMorph ('=')
+            buttonMorph (&#39;.&#39;)
+            buttonMorph (&#39;0&#39;)
+            buttonMorph (&#39;BS&#39;)
+            buttonMorph (&#39;=&#39;)
 </code></pre><figure><img src="/images/self3/calculator_done.png"
          alt="Our finished
 product."/><figcaption>
@@ -410,16 +410,16 @@ label <code>Calculator</code> and make it white in color and with a font size of
 we will create a <code>rowMorph</code> for <code>titleBar</code> and set its color to <code>blue</code>. Finally,
 we will add <code>title</code> to <code>titleBar</code>, and add <code>titleBar</code> to <code>layout</code>.</p>
 <!-- prettier-ignore -->
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="ss">title</span><span class="p">:</span> <span class="n">labelMorph</span>
-    <span class="ss">copyLabel</span><span class="p">:</span> <span class="s1">&#39;Calculator&#39;</span>
-    <span class="ss">FontSpec</span><span class="p">:</span> <span class="p">(</span><span class="n">labelMorph</span> <span class="n">fontSpec</span> <span class="ss">copySize</span><span class="p">:</span> <span class="mi">12</span><span class="p">)</span>
-    <span class="ss">Color</span><span class="p">:</span> <span class="p">(</span><span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;white&#39;</span><span class="p">)</span><span class="o">.</span>
-
-<span class="ss">titleBar</span><span class="p">:</span> <span class="n">rowMorph</span> <span class="n">copy</span> <span class="n">beFlexible</span> <span class="ss">borderWidth</span><span class="p">:</span> <span class="mi">2</span><span class="o">.</span>
-<span class="n">titleBar</span> <span class="ss">color</span><span class="p">:</span> <span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="o">.</span>
-
-<span class="n">titleBar</span> <span class="ss">addMorph</span><span class="p">:</span> <span class="n">title</span><span class="o">.</span>
-<span class="n">layout</span> <span class="ss">addMorph</span><span class="p">:</span> <span class="n">titleBar</span><span class="o">.</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="ss">title</span><span class="p">:</span> <span class="n">labelMorph</span>
+</span></span><span class="line"><span class="cl">    <span class="ss">copyLabel</span><span class="p">:</span> <span class="s1">&#39;Calculator&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="ss">FontSpec</span><span class="p">:</span> <span class="p">(</span><span class="n">labelMorph</span> <span class="n">fontSpec</span> <span class="ss">copySize</span><span class="p">:</span> <span class="mi">12</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="ss">Color</span><span class="p">:</span> <span class="p">(</span><span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;white&#39;</span><span class="p">)</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="ss">titleBar</span><span class="p">:</span> <span class="n">rowMorph</span> <span class="n">copy</span> <span class="n">beFlexible</span> <span class="ss">borderWidth</span><span class="p">:</span> <span class="mi">2</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="n">titleBar</span> <span class="ss">color</span><span class="p">:</span> <span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">titleBar</span> <span class="ss">addMorph</span><span class="p">:</span> <span class="n">title</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="n">layout</span> <span class="ss">addMorph</span><span class="p">:</span> <span class="n">titleBar</span><span class="o">.</span></span></span></code></pre></div>
 <figure><img src="/images/self3/setting_title.png"
          alt="Setting
 the title."/><figcaption>
@@ -439,12 +439,12 @@ is a regular text editor (that can hold morphs as well as text!), and
 personally prefer the <code>uglyTextEditorMorph</code>, because it is what is used in the
 evaluator and I think it looks cooler.</p>
 <!-- prettier-ignore -->
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="s2">&#34;offWhite is the color that the evaluator uses for the editor.&#34;</span>
-<span class="ss">editor</span><span class="p">:</span> <span class="n">uglyTextEditorMorph</span>
-    <span class="ss">copyString</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span>
-    <span class="ss">Style</span><span class="p">:</span> <span class="p">(</span><span class="o">|</span> <span class="n">color</span> <span class="o">=</span> <span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;offWhite&#39;</span><span class="o">.</span> <span class="o">|</span><span class="p">)</span>
-    
-<span class="n">layout</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="n">editor</span><span class="o">.</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="s2">&#34;offWhite is the color that the evaluator uses for the editor.&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="ss">editor</span><span class="p">:</span> <span class="n">uglyTextEditorMorph</span>
+</span></span><span class="line"><span class="cl">    <span class="ss">copyString</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="ss">Style</span><span class="p">:</span> <span class="p">(</span><span class="o">|</span> <span class="n">color</span> <span class="o">=</span> <span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;offWhite&#39;</span><span class="o">.</span> <span class="o">|</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="n">layout</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="n">editor</span><span class="o">.</span></span></span></code></pre></div>
 <figure><img src="/images/self3/calculator_editor.png"
          alt="Adding the display
 to the calculator."/><figcaption>
@@ -494,17 +494,17 @@ object that the button is targetting.</p>
 <p>With all of that out of the way, let&rsquo;s add <code>buildButton:Script:</code> on our trait
 object:</p>
 <!-- prettier-ignore -->
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="ss">buildButton</span><span class="p">:</span> <span class="n">label</span> <span class="ss">Script</span><span class="p">:</span> <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="o">|</span> <span class="n">b</span> <span class="o">|</span>
-    <span class="s2">&#34;Create the new button.&#34;</span>
-    <span class="ss">b</span><span class="p">:</span> <span class="n">ui2Button</span>
-        <span class="ss">copyColor</span><span class="p">:</span> <span class="p">(</span><span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;lightGray&#39;</span><span class="p">)</span>
-        <span class="ss">Target</span><span class="p">:</span> <span class="nb">self</span><span class="o">.</span>
-    <span class="s2">&#34;Make it flexible, set its label and script. , is the concatenation operator.&#34;</span>
-    <span class="n">b</span> <span class="n">beFlexible</span><span class="o">.</span>
-    <span class="n">b</span> <span class="ss">label</span><span class="p">:</span> <span class="n">label</span><span class="o">.</span>
-    <span class="n">b</span> <span class="ss">script</span><span class="p">:</span> <span class="s1">&#39;target &#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span>
-    <span class="n">b</span>
-<span class="p">)</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="ss">buildButton</span><span class="p">:</span> <span class="n">label</span> <span class="ss">Script</span><span class="p">:</span> <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="o">|</span> <span class="n">b</span> <span class="o">|</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Create the new button.&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="ss">b</span><span class="p">:</span> <span class="n">ui2Button</span>
+</span></span><span class="line"><span class="cl">        <span class="ss">copyColor</span><span class="p">:</span> <span class="p">(</span><span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;lightGray&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="ss">Target</span><span class="p">:</span> <span class="nb">self</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Make it flexible, set its label and script. , is the concatenation operator.&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">b</span> <span class="n">beFlexible</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">b</span> <span class="ss">label</span><span class="p">:</span> <span class="n">label</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">b</span> <span class="ss">script</span><span class="p">:</span> <span class="s1">&#39;target &#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">b</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span></span></span></code></pre></div>
 <figure><img src="/images/self3/buildButton.png"
          alt="The buildButton:Script:
 method, under the &amp;lsquo;building&amp;rsquo; category."/><figcaption>
@@ -529,15 +529,15 @@ created.</p>
 <code>addCharacter:</code> for our calculator morph yet. So let&rsquo;s do that now. I will place
 it under the &ldquo;text operations&rdquo; category.</p>
 <!-- prettier-ignore -->
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="ss">addCharacter</span><span class="p">:</span> <span class="n">c</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&#34;If the display shows 0 and we didn&#39;t press ., replace the display contents
-</span><span class="s2">     with the character we just entered, like calculators do.&#34;</span>
-    <span class="p">(</span><span class="n">editor</span> <span class="n">contentsString</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">[</span><span class="n">c</span> <span class="o">!=</span> <span class="s1">&#39;.&#39;</span><span class="o">]</span>
-    <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span><span class="n">editor</span> <span class="ss">setText</span><span class="p">:</span> <span class="n">c</span><span class="o">]</span>
-    <span class="s2">&#34;Otherwise, simply insert the character at the cursor point.&#34;</span>
-    <span class="ss">False</span><span class="p">:</span> <span class="o">[</span><span class="n">editor</span> <span class="n">text</span> <span class="ss">insert_char</span><span class="p">:</span> <span class="n">c</span><span class="o">].</span>
-    <span class="nb">self</span>
-<span class="p">)</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="ss">addCharacter</span><span class="p">:</span> <span class="n">c</span> <span class="o">=</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;If the display shows 0 and we didn&#39;t press ., replace the display contents
+</span></span></span><span class="line"><span class="cl"><span class="s2">     with the character we just entered, like calculators do.&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">editor</span> <span class="n">contentsString</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">[</span><span class="n">c</span> <span class="o">!=</span> <span class="s1">&#39;.&#39;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">    <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span><span class="n">editor</span> <span class="ss">setText</span><span class="p">:</span> <span class="n">c</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Otherwise, simply insert the character at the cursor point.&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="ss">False</span><span class="p">:</span> <span class="o">[</span><span class="n">editor</span> <span class="n">text</span> <span class="ss">insert_char</span><span class="p">:</span> <span class="n">c</span><span class="o">].</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">self</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span></span></span></code></pre></div>
 <p>If you click the button now, you should see the it fill the calculator display
 with 1s. You just learned how to hook up Morphic widgets! But wait, we&rsquo;re not
 done yet. We need to create a grid of buttons for our calculator like I showed
@@ -549,16 +549,16 @@ morph menu (right-click)).</p>
 <p>Let&rsquo;s take it one step at a time. First, let&rsquo;s fill out our <code>buttonRows</code> with
 <code>rowMorph</code>s by evaluating the following snippet in the evaluator.</p>
 <!-- prettier-ignore -->
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="ss">buttonRows</span><span class="p">:</span> <span class="n">vector</span> <span class="ss">copySize</span><span class="p">:</span> <span class="mi">5</span><span class="o">.</span>
-<span class="s2">&#34;traits integer do: is how range loops are done in Self, similar to Ruby.&#34;</span>
-<span class="mi">5</span> <span class="k">do</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:i</span><span class="o">.</span> <span class="n">r</span> <span class="o">|</span>
-    <span class="ss">r</span><span class="p">:</span> <span class="n">rowMorph</span> <span class="n">copy</span> <span class="n">beFlexible</span> <span class="ss">borderWidth</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span>
-    <span class="n">r</span> <span class="ss">color</span><span class="p">:</span> <span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;transparent&#39;</span><span class="o">.</span>
-    <span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="n">i</span> <span class="ss">Put</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span>
-    <span class="n">layout</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span>
-<span class="o">].</span>
-<span class="s2">&#34;Let layout know that the layout changed.&#34;</span>
-<span class="n">layout</span> <span class="n">layoutChanged</span><span class="o">.</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="ss">buttonRows</span><span class="p">:</span> <span class="n">vector</span> <span class="ss">copySize</span><span class="p">:</span> <span class="mi">5</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;traits integer do: is how range loops are done in Self, similar to Ruby.&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="mi">5</span> <span class="k">do</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:i</span><span class="o">.</span> <span class="n">r</span> <span class="o">|</span>
+</span></span><span class="line"><span class="cl">    <span class="ss">r</span><span class="p">:</span> <span class="n">rowMorph</span> <span class="n">copy</span> <span class="n">beFlexible</span> <span class="ss">borderWidth</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">r</span> <span class="ss">color</span><span class="p">:</span> <span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;transparent&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="n">i</span> <span class="ss">Put</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">layout</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="o">].</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;Let layout know that the layout changed.&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">layout</span> <span class="n">layoutChanged</span><span class="o">.</span></span></span></code></pre></div>
 <figure><img src="/images/self3/button_rows.png"
          alt="The button rows showing
 up as 1 pixel high morphs."/><figcaption>
@@ -570,46 +570,46 @@ up as 1 pixel high morphs.</p>
 <p>We can finally add our buttons. Since each button is unique, we&rsquo;ll just add them
 one by one:</p>
 <!-- prettier-ignore -->
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;(&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;(\&#39;&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;)&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;)\&#39;&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;CE&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;clear&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;+&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;+\&#39;&#39;</span><span class="o">.</span>
-
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;7&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;7\&#39;&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;8&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;8\&#39;&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;9&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;9\&#39;&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;-&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;-\&#39;&#39;</span><span class="o">.</span>
-
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;4&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;4\&#39;&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;5&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;5\&#39;&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;6\&#39;&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;*&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;*\&#39;&#39;</span><span class="o">.</span>
-
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;1\&#39;&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;2\&#39;&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;3&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;3\&#39;&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;/&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;/\&#39;&#39;</span><span class="o">.</span>
-
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;.&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;.\&#39;&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;0\&#39;&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;BS&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;backspace&#39;</span><span class="o">.</span>
-<span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;=&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;evaluate&#39;</span><span class="o">.</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;(&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;(\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;)&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;)\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;CE&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;clear&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;+&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;+\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;7&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;7\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;8&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;8\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;9&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;9\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;-&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;-\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;4&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;4\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;5&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;5\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;6\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;*&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;*\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;1\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;2\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;3&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;3\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;/&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;/\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;.&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;.\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;addCharacter: \&#39;0\&#39;&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;BS&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;backspace&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="ss">addMorphLast</span><span class="p">:</span> <span class="ss">buildButton</span><span class="p">:</span> <span class="s1">&#39;=&#39;</span> <span class="ss">Script</span><span class="p">:</span> <span class="s1">&#39;evaluate&#39;</span><span class="o">.</span></span></span></code></pre></div>
 <p>Most of these are pretty straight-forward, they just add characters to the
 display, but there are a few functions we didn&rsquo;t implement, so let&rsquo;s do that now
 on the traits object.</p>
 <p>Each method is a separate slot, so make sure you create 3 new slots from the
 object menu.</p>
 <!-- prettier-ignore -->
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="s2">&#34;Resets the calculator input.&#34;</span>
-<span class="n">clear</span> <span class="o">=</span> <span class="p">(</span><span class="n">editor</span> <span class="ss">setText</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="o">.</span>
-<span class="s2">&#34;Removes one character at cursor point. If display is empty, set it to &#39;0&#39;.&#34;</span>
-<span class="n">backspace</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">editor</span> <span class="n">text</span> <span class="n">backspace</span><span class="o">.</span>
-    <span class="p">(</span><span class="n">editor</span> <span class="n">contentsString</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
-    <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span><span class="n">editor</span> <span class="ss">setText</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="o">].</span>
-<span class="p">)</span><span class="o">.</span>
-<span class="s2">&#34;Evaluates the expression on the editor display and writes the result.&#34;</span>
-<span class="n">evaluate</span> <span class="o">=</span> <span class="p">(</span><span class="n">editor</span> <span class="ss">setText</span><span class="p">:</span> <span class="n">editor</span> <span class="n">text</span> <span class="nb">eval</span> <span class="n">asString</span><span class="p">)</span><span class="o">.</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="s2">&#34;Resets the calculator input.&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">clear</span> <span class="o">=</span> <span class="p">(</span><span class="n">editor</span> <span class="ss">setText</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;Removes one character at cursor point. If display is empty, set it to &#39;0&#39;.&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">backspace</span> <span class="o">=</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">editor</span> <span class="n">text</span> <span class="n">backspace</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">editor</span> <span class="n">contentsString</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span><span class="n">editor</span> <span class="ss">setText</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="o">].</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;Evaluates the expression on the editor display and writes the result.&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">evaluate</span> <span class="o">=</span> <span class="p">(</span><span class="n">editor</span> <span class="ss">setText</span><span class="p">:</span> <span class="n">editor</span> <span class="n">text</span> <span class="nb">eval</span> <span class="n">asString</span><span class="p">)</span><span class="o">.</span></span></span></code></pre></div>
 <p><code>evaluate</code> uses <code>traits string eval</code> to evaluate the contents of the text
 display as a Self expression, which works just fine. However, Self does not have
 operator precedence (because operators are just messages with special names),
@@ -640,20 +640,20 @@ dictionary of old morph references to new ones. Using this dictionary we can
 update our references to submorphs to the new values.</p>
 <p>So let&rsquo;s create this method on our traits object.</p>
 <!-- prettier-ignore -->
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="ss">mapReferencesUsing</span><span class="p">:</span> <span class="n">dict</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&#34;Make sure the overridden call is also run.&#34;</span>
-    <span class="n">resend</span><span class="o">.</span><span class="n">mapReferencesUsing</span><span class="p">:</span> <span class="n">dict</span><span class="o">.</span>
-    <span class="s2">&#34;Update each of our references.&#34;</span>
-    <span class="n">dict</span> <span class="k">if</span><span class="p">:</span>   <span class="n">layout</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span>   <span class="ss">layout</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
-    <span class="n">dict</span> <span class="k">if</span><span class="p">:</span>   <span class="n">editor</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span>   <span class="ss">editor</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
-    <span class="n">dict</span> <span class="k">if</span><span class="p">:</span>    <span class="n">title</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span>    <span class="ss">title</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
-    <span class="n">dict</span> <span class="k">if</span><span class="p">:</span> <span class="n">titleBar</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span> <span class="ss">titleBar</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
-    <span class="s2">&#34;Update the buttonRows vector.&#34;</span>
-    <span class="n">buttonRows</span> <span class="k">do</span><span class="p">:</span> <span class="o">[|</span><span class="ss">:r</span><span class="o">.</span> <span class="ss">:i</span><span class="o">|</span>
-        <span class="n">dict</span> <span class="k">if</span><span class="p">:</span> <span class="n">r</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span> <span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="n">i</span> <span class="ss">Put</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
-    <span class="o">].</span>
-    <span class="n">dict</span>
-<span class="p">)</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="ss">mapReferencesUsing</span><span class="p">:</span> <span class="n">dict</span> <span class="o">=</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Make sure the overridden call is also run.&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">resend</span><span class="o">.</span><span class="n">mapReferencesUsing</span><span class="p">:</span> <span class="n">dict</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Update each of our references.&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dict</span> <span class="k">if</span><span class="p">:</span>   <span class="n">layout</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span>   <span class="ss">layout</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dict</span> <span class="k">if</span><span class="p">:</span>   <span class="n">editor</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span>   <span class="ss">editor</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dict</span> <span class="k">if</span><span class="p">:</span>    <span class="n">title</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span>    <span class="ss">title</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dict</span> <span class="k">if</span><span class="p">:</span> <span class="n">titleBar</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span> <span class="ss">titleBar</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Update the buttonRows vector.&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">buttonRows</span> <span class="k">do</span><span class="p">:</span> <span class="o">[|</span><span class="ss">:r</span><span class="o">.</span> <span class="ss">:i</span><span class="o">|</span>
+</span></span><span class="line"><span class="cl">        <span class="n">dict</span> <span class="k">if</span><span class="p">:</span> <span class="n">r</span> <span class="ss">IsPresentDo</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:new</span> <span class="o">|</span> <span class="n">buttonRows</span> <span class="ss">at</span><span class="p">:</span> <span class="n">i</span> <span class="ss">Put</span><span class="p">:</span> <span class="kp">new</span><span class="o">].</span>
+</span></span><span class="line"><span class="cl">    <span class="o">].</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dict</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span></span></span></code></pre></div>
 <p>However, if we copy our calculator now, we&rsquo;ll find that text input doesn&rsquo;t work.
 This is unfortunately because of a bug in the Self environment. Normally,
 <code>uglyTextEditorMorph</code>s are not copied with the <code>ui2_Text</code> morph inside but are
@@ -662,14 +662,14 @@ during normal operation, but our usecase hits a bug where the
 <code>uglyTextEditorMorph</code> goes out-of-sync with the inner <code>ui2_Text</code> morph. To work
 around this, we can override <code>copy</code> and re-initialize our editor after the copy
 is done.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="n">copy</span> <span class="o">=</span> <span class="p">(</span><span class="o">|</span> <span class="n">c</span> <span class="o">|</span>
-    <span class="ss">c</span><span class="p">:</span> <span class="n">resend</span><span class="o">.</span><span class="n">copy</span><span class="o">.</span>
-    <span class="s2">&#34;Re-initialize our editor.&#34;</span>
-    <span class="n">c</span> <span class="n">editor</span>
-        <span class="ss">initializeString</span><span class="p">:</span> <span class="p">(</span><span class="n">c</span> <span class="n">editor</span> <span class="n">contentsString</span><span class="p">)</span>
-        <span class="ss">Style</span><span class="p">:</span> <span class="p">(</span><span class="o">|</span> <span class="n">color</span> <span class="o">=</span> <span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;offWhite&#39;</span> <span class="o">|</span><span class="p">)</span><span class="o">.</span>
-    <span class="n">c</span>
-<span class="p">)</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="n">copy</span> <span class="o">=</span> <span class="p">(</span><span class="o">|</span> <span class="n">c</span> <span class="o">|</span>
+</span></span><span class="line"><span class="cl">    <span class="ss">c</span><span class="p">:</span> <span class="n">resend</span><span class="o">.</span><span class="n">copy</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Re-initialize our editor.&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">c</span> <span class="n">editor</span>
+</span></span><span class="line"><span class="cl">        <span class="ss">initializeString</span><span class="p">:</span> <span class="p">(</span><span class="n">c</span> <span class="n">editor</span> <span class="n">contentsString</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="ss">Style</span><span class="p">:</span> <span class="p">(</span><span class="o">|</span> <span class="n">color</span> <span class="o">=</span> <span class="n">paint</span> <span class="ss">named</span><span class="p">:</span> <span class="s1">&#39;offWhite&#39;</span> <span class="o">|</span><span class="p">)</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">c</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span></span></span></code></pre></div>
 <p>Finally, let&rsquo;s make our calculator morph globally accessible, and set its
 prototype so Self knows how to restore this calculator morph when we file it
 back in. Open up <code>globals</code>, and add a new slot named <code>calculatorMorph</code>, then
@@ -706,20 +706,20 @@ tuned!</p>
 <!-- prettier-ignore -->
 <!-- prettier-ignore -->
 <!-- prettier-ignore -->
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p>You are obviously free to choose your own color. Evaluate <code>paint</code> in the
 shell in order to get the possible paints you can apply to an object.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p>When creating a new kind of morph, you might need to add new references
 down the line. You are not restricted by Self from adding new slots or
 categories. The ones I created here are simply the ones that I know we will be
 using.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
+<li id="fn:3">
 <p>If you&rsquo;re wondering why the morph didn&rsquo;t immediately shrivel when <code>layout</code>
 is inside it like it did when we set the main morph to shrink-wrap, it&rsquo;s
 because morphs like <code>columnMorph</code> have a <code>minimumWidth</code> and <code>minimumHeight</code>
@@ -727,7 +727,7 @@ set that prevent them from getting any smaller. You can check out their
 definitions to find out more.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
       </div>
       <div class="paginator">
         

@@ -28,7 +28,7 @@ toolkit that it is created from: Morphic.&lt;/p&gt;</description>
       <description>Hey there. This is the first post I will be making here, and I wanted to give a tour of Self before making posts about my current implementation, mySelf.
 Throughout this post, I will be showing examples from the regular implementation of the Self programming environment, available here.
 What is Self? To quote the Self language homepage:
- Self is a prototype-based dynamic object-oriented programming language, environment, and virtual machine centered around the principles of simplicity, uniformity, concreteness, and liveness.</description>
+Self is a prototype-based dynamic object-oriented programming language, environment, and virtual machine centered around the principles of simplicity, uniformity, concreteness, and liveness.</description>
     </item>
     
   </channel>

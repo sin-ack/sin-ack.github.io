@@ -6,7 +6,19 @@
     <description>Recent content in zigself on sin-ack&#39;s writings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 01 Mar 2022 10:00:00 +0100</lastBuildDate><atom:link href="https://sin-ack.github.io/categories/zigself/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 13 Aug 2022 10:00:00 +0100</lastBuildDate><atom:link href="https://sin-ack.github.io/categories/zigself/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ZigSelf Update, August 2022</title>
+      <link>https://sin-ack.github.io/posts/zigself-202208/</link>
+      <pubDate>Sat, 13 Aug 2022 10:00:00 +0100</pubDate>
+      
+      <guid>https://sin-ack.github.io/posts/zigself-202208/</guid>
+      <description>&lt;p&gt;Hi there. It&amp;rsquo;s been quite a while since I posted here, mostly due to real life
+responsibilities. I&amp;rsquo;m planning on making monthly updates here from now on so
+that I can showcase the new things that are in ZigSelf. For the first update
+though, let&amp;rsquo;s play some catch-up.&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>ZigSelf: An implementation of Self in Zig</title>
       <link>https://sin-ack.github.io/posts/zigself-01/</link>

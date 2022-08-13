@@ -14,7 +14,7 @@
 <meta name="description" content="Hey there. This is the first post I will be making here, and I wanted to give a tour of Self before making posts about my current implementation, mySelf.
 Throughout this post, I will be showing examples from the regular implementation of the Self programming environment, available here.
 What is Self? To quote the Self language homepage:
- Self is a prototype-based dynamic object-oriented programming language, environment, and virtual machine centered around the principles of simplicity, uniformity, concreteness, and liveness.">
+Self is a prototype-based dynamic object-oriented programming language, environment, and virtual machine centered around the principles of simplicity, uniformity, concreteness, and liveness.">
 
 
 
@@ -28,7 +28,7 @@ What is Self? To quote the Self language homepage:
 <meta name="twitter:description" content="Hey there. This is the first post I will be making here, and I wanted to give a tour of Self before making posts about my current implementation, mySelf.
 Throughout this post, I will be showing examples from the regular implementation of the Self programming environment, available here.
 What is Self? To quote the Self language homepage:
- Self is a prototype-based dynamic object-oriented programming language, environment, and virtual machine centered around the principles of simplicity, uniformity, concreteness, and liveness." />
+Self is a prototype-based dynamic object-oriented programming language, environment, and virtual machine centered around the principles of simplicity, uniformity, concreteness, and liveness." />
 
 
 <link rel="canonical" href="https://sin-ack.github.io/posts/a-tour-of-self/">
@@ -320,14 +320,14 @@ here, and either &ldquo;get it&rdquo; (getting the result of the last statement)
 (just execute the code without grabbing any value).</p>
 <p>This is the code for FizzBuzz:</p>
 <!-- prettier-ignore -->
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="mi">1</span> <span class="ss">to</span><span class="p">:</span> <span class="mi">100</span> <span class="ss">Do</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:i</span> <span class="o">|</span>
-    <span class="p">((</span><span class="n">i</span> <span class="o">%</span> <span class="mi">15</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span> <span class="n">fizzBuzzList</span> <span class="ss">add</span><span class="p">:</span> <span class="s1">&#39;FizzBuzz&#39;</span> <span class="o">]</span> <span class="ss">False</span><span class="p">:</span> <span class="o">[</span>
-    <span class="p">((</span><span class="n">i</span> <span class="o">%</span> <span class="mi">5</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span> <span class="n">fizzBuzzList</span> <span class="ss">add</span><span class="p">:</span> <span class="s1">&#39;Buzz&#39;</span> <span class="o">]</span> <span class="ss">False</span><span class="p">:</span> <span class="o">[</span>
-    <span class="p">((</span><span class="n">i</span> <span class="o">%</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span> <span class="n">fizzBuzzList</span> <span class="ss">add</span><span class="p">:</span> <span class="s1">&#39;Fizz&#39;</span> <span class="o">]</span> <span class="ss">False</span><span class="p">:</span> <span class="o">[</span>
-        <span class="n">fizzBuzzList</span> <span class="ss">add</span><span class="p">:</span> <span class="n">i</span>
-    <span class="o">]]].</span>
-<span class="o">].</span>
-<span class="n">fizzBuzzList</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="mi">1</span> <span class="ss">to</span><span class="p">:</span> <span class="mi">100</span> <span class="ss">Do</span><span class="p">:</span> <span class="o">[|</span> <span class="ss">:i</span> <span class="o">|</span>
+</span></span><span class="line"><span class="cl">    <span class="p">((</span><span class="n">i</span> <span class="o">%</span> <span class="mi">15</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span> <span class="n">fizzBuzzList</span> <span class="ss">add</span><span class="p">:</span> <span class="s1">&#39;FizzBuzz&#39;</span> <span class="o">]</span> <span class="ss">False</span><span class="p">:</span> <span class="o">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">((</span><span class="n">i</span> <span class="o">%</span> <span class="mi">5</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span> <span class="n">fizzBuzzList</span> <span class="ss">add</span><span class="p">:</span> <span class="s1">&#39;Buzz&#39;</span> <span class="o">]</span> <span class="ss">False</span><span class="p">:</span> <span class="o">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">((</span><span class="n">i</span> <span class="o">%</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ss">ifTrue</span><span class="p">:</span> <span class="o">[</span> <span class="n">fizzBuzzList</span> <span class="ss">add</span><span class="p">:</span> <span class="s1">&#39;Fizz&#39;</span> <span class="o">]</span> <span class="ss">False</span><span class="p">:</span> <span class="o">[</span>
+</span></span><span class="line"><span class="cl">        <span class="n">fizzBuzzList</span> <span class="ss">add</span><span class="p">:</span> <span class="n">i</span>
+</span></span><span class="line"><span class="cl">    <span class="o">]]].</span>
+</span></span><span class="line"><span class="cl"><span class="o">].</span>
+</span></span><span class="line"><span class="cl"><span class="n">fizzBuzzList</span></span></span></code></pre></div>
 <p>When I execute this code, it will do the following:</p>
 <ol>
 <li>It will first send <code>1</code> the <code>to:Do:</code> message, creating a range loop during
@@ -373,7 +373,7 @@ ARM, though I have not had a chance to try this. Before running, make sure your
 method of portably allocating heap memory by <code>mmap</code>ing <code>/dev/zero</code> with <code>O_EXEC</code>
 set). Then run:</p>
 <!-- prettier-ignore -->
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ ./Self -s kitchensink.snap</code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ./Self -s kitchensink.snap</span></span></code></pre></div>
 <p>I recommend the kitchen sink image because it contains everything that has been
 developed for Self (more stuff to play around with). However, you can also try
 the &ldquo;morphic&rdquo; and &ldquo;core&rdquo; images (be warned, the core image does not contain the

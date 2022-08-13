@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<meta name="author" content="sin-ack">
+
+
+
+<meta name="description" content="Hi there. It&rsquo;s been quite a while since I posted here, mostly due to real life
+responsibilities. I&rsquo;m planning on making monthly updates here from now on so
+that I can showcase the new things that are in ZigSelf. For the first update
+though, let&rsquo;s play some catch-up.">
+
+
+
+
+<meta name="keywords" content=" self  blog ">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="ZigSelf Update, August 2022" />
+<meta name="twitter:description" content="Hi there. It&rsquo;s been quite a while since I posted here, mostly due to real life
+responsibilities. I&rsquo;m planning on making monthly updates here from now on so
+that I can showcase the new things that are in ZigSelf. For the first update
+though, let&rsquo;s play some catch-up." />
+
+
+<link rel="canonical" href="https://sin-ack.github.io/posts/zigself-202208/">
+
+
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/common.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/content.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/highlight.css'>
+
+
+
+<title>ZigSelf Update, August 2022 - sin-ack&#39;s writings</title>
+
+
+
+
+
+  <link rel="stylesheet" href='https://sin-ack.github.io/css/single.css'>
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://sin-ack.github.io/">sin-ack&#39;s writings</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/posts/">Archives</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/index.xml">RSS Feed</a>
+    </span>
+    
+  </nav>
+</header>
+
+    <main id="main" class="post">
+      
+      
+      
+      <h1>ZigSelf Update, August 2022</h1>
+      
+      <div>
+        <b>Keywords: </b>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/self'>#self</a>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/zigself'>#zigself</a>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/update'>#update</a>
+        
+      </div>
+      
+      <div class="content">
+        <p>Hi there. It&rsquo;s been quite a while since I posted here, mostly due to real life
+responsibilities. I&rsquo;m planning on making monthly updates here from now on so
+that I can showcase the new things that are in ZigSelf. For the first update
+though, let&rsquo;s play some catch-up.</p>
+<h1 id="language">Language</h1>
+<h2 id="the-start-of-an-actor-model-inspired-by-erlang">The start of an actor model, inspired by Erlang</h2>
+<p>This was something I had intended from the beginning. The original Self VM
+relies on what it calls &ldquo;processes&rdquo; to operate. Similar to operating system
+threads, there is no memory protection between these user processes and a user
+must use semaphores. I wanted a more structured approach to my concurrency
+model.</p>
+<p>When I saw Erlang&rsquo;s actor model, it was an &ldquo;aha&rdquo; moment: Self is a language that
+naturally uses message passing as its method of communication, and it made
+perfect sense to add a message-passing based concurrency model! In this model,
+actors would only communicate using messages, and would not be able to access
+each other&rsquo;s memory.</p>
+<p>One big problem however was that unlike Erlang, ZigSelf is an object-oriented
+programming language and is mutable by default. Objects can mutate other
+objects, including the global object hierarchy (everything that an object can
+reach from lobby, including the standard library). It would be too restrictive
+to fully cut off access to the global object hierarchy.</p>
+<p>Another important point was that I wanted the scheduling of actors to be fully
+in userspace. I believe that putting the scheduler directly in the VM would be
+too restrictive. I wanted to have a userspace scheduler, so that it&rsquo;s easily
+modifiable and introspectable.</p>
+<p>From these ideas, ZigSelf&rsquo;s actor model was born. Fully explaining how it works
+would take several pages, and I intend to do that with a dedicated post soon. It
+takes the basic idea from Erlang, and makes it possible to safely run multiple
+actors at once with read-only global hierarchy access. In the future, I want to
+make it possible to schedule actors on multiple OS threads at once, which would
+be the ultimate point in ZigSelf&rsquo;s concurrency model; however, there are still
+various problems to solve before getting there.</p>
+<p>Currently actors can still access each other&rsquo;s memory, but work is already
+underway to fix this. I am going to implement actor memory isolation before
+going through with writing any code that depends on actors.</p>
+<h2 id="-syntax-for-chaining-message-sends-easily"><code>;</code> syntax for chaining message sends easily</h2>
+<p>The <code>;</code> symbol allows one to send a message to the result of an expression. This
+makes it much easier and better-looking to chain messages in the VM (especially
+important considering most mutating methods return <code>self</code>):</p>
+<pre tabindex="0"><code class="language-zigself" data-lang="zigself">&#34;Before&#34;
+((foo bar: 1) baz: 2 Quux: 3) zoink: 4.
+(1 + 2) asString printLine.
+&#34;After&#34;
+foo bar: 1; baz: 2 Quux: 3; zoink: 4.
+1 + 2; asString printLine.
+</code></pre><p>Not only does it cut down on the amount of parenthesis needed, but it also makes
+for very nice chaining syntax. Take this example from
+<a href="https://github.com/sin-ack/zigself/blob/42e35a7/objects/hashMap.self#L39">the standard library</a>:</p>
+<pre tabindex="0"><code class="language-zigself" data-lang="zigself">copyKey: key Value: value = (clone; key: key; value: value).
+</code></pre><p>To supplement the chaining system, assignment messages were made to return
+<code>self</code> (which is what you&rsquo;re seeing above).</p>
+<h2 id="unix-socket-primitives-aka-zigselfs-first-talk-with-the-internet">Unix socket primitives, AKA ZigSelf&rsquo;s first talk with the internet</h2>
+<p>In early June I implemented some primitives that implement the BSD socket
+interface (or at least some of it). This makes it possible for ZigSelf to listen
+as a server and make HTTP requests. Additionally, they fully support the actor
+model, blocking only the current actor if the VM is in a regular actor :^)</p>
+<p>Right now the primitives are <em>very</em> primitive and don&rsquo;t do any proper error
+handling, but I plan to change that in the near future. For now, I&rsquo;ll leave you
+with this small snippet:</p>
+<figure><img src="/images/zigself-202208/host.png"
+         alt="A basic implementation of a host program in Self running successfully."/><figcaption>
+            <p>A basic implementation
+of a <code>host</code> program in Self running successfully.</p>
+        </figcaption>
+</figure>
+
+<h1 id="virtual-machine">Virtual Machine</h1>
+<h2 id="the-bytecode-interpreter">The bytecode interpreter</h2>
+<p>When I was implementing the actor model, it became clear to me that my initial
+AST interpreter implementation was not going to be viable. For one, it didn&rsquo;t
+support pausing the thread of execution at a certain point, and it would also
+require me to unwind and rewind the stack everytime even if it did. Therefore, I
+looked into what I needed to do to implement a bytecode interpreter.</p>
+<p>The bytecode interpreter could probably be explained in much more detail in
+another post. The new interpreter runs a register-based bytecode set, with 3
+separate stacks: arguments, slots and saved registers. The argument stack is
+used for arguments to a message, the slot stack is used for building objects and
+the saved registers stack is used to restore registers after a return operation.</p>
+<p>There are currently two bytecode instruction sets in ZigSelf. When the parser is
+done parsing a source file, the AST tree is then sent to
+<a href="https://github.com/sin-ack/zigself/blob/42e35a7/src/runtime/AstGen.zig"><code>AstGen</code></a>,
+which is responsible for generating <em>ASTcode</em>. After the ASTcode is generated, a
+linear-scan register allocation is performed in order to minimize the amount of
+registers used in the VM in
+<a href="https://github.com/sin-ack/zigself/blob/42e35a7/src/runtime/CodeGen.zig"><code>CodeGen</code></a>,
+and <em>Lowcode</em> is produced. The VM then runs the Lowcode in the global actor and
+execution continues as normal. When an actor is paused, the current activation
+stack of the actor is paused, and another actor takes its place.</p>
+<p>I want to go into much more detail in a follow-up post, but to summarize, the
+bytecode VM made it possible to implement the actor model and also gave the VM
+a surprising 20% performance boost (despite the two bytecode passes!).</p>
+<h2 id="handlearea-to-reduce-handle-allocation-churn"><code>HandleArea</code> to reduce handle allocation churn</h2>
+<p><a href="https://github.com/sin-ack/zigself/commit/267358c"><code>267358c</code></a> introduced a new
+structure called <code>HandleArea</code> as part of the heap. A <code>Handle</code> is a strong
+reference to an object in the object heap in Zig code which prevents it from
+being garbage collected. This is very useful when some VM code needs objects to
+survive a garbage collection. However, previously every single <code>Handle</code> would be
+heap-allocated due to how <code>Handle</code>s work (the contents of the handle must not
+move in order for it to work properly).</p>
+<p><code>HandleArea</code> significantly reduces memory consumption in this regard by
+implementing an arena allocator that can deallocate its chunks. Each chunk is
+1MB in size and is self-aligned (so each address is aligned to <code>0x10000</code>). This
+allows for the <code>HandleArea</code> to keep track of how many handles are allocated in a
+very simple fashion, and recycle/deallocate <code>HandleArea</code> chunks as necessary.
+This significantly increased the VM performance.</p>
+<p>With the implementation of the bytecode, the <code>HandleArea</code> is used much less, but
+nevertheless it&rsquo;s still very important in order to prevent unnecessary
+allocations.</p>
+<h2 id="stricter-heap-allocation">Stricter heap allocation</h2>
+<p><a href="https://github.com/sin-ack/zigself/commit/e2697ff"><code>e2697ff</code></a> significantly
+changed how allocation within the ZigSelf virtual machine works. Previously, any
+heap allocation was allowed to garbage collect. This made it very easy to
+allocate from the heap, but came with a problem: any heap allocation garbage
+collecting meant that the program could garbage collect in the middle of any
+operation, regardless of whether it was safe to do so. To make it possible to
+safely perform multiple allocations at once, a method called
+<code>heap.ensureSpaceInEden</code> was made to garbage collect if there wasn&rsquo;t enough
+space, but this was very error-prone as it was quite easy to miscalculate the
+amount of space needed and cause a garbage collection anyway.</p>
+<p>This has (on more than one occasion) caused confusing and frustrating stale heap
+reference bugs, where a heap allocation within the VM (in Zig code) would cause
+a garbage collection accidentally and the only way to know what actually
+happened was by carefully tracing everything that happened in a debugger.</p>
+<p>With the new heap allocation API, the user of the heap allocation is fully
+responsible for their memory accounting. A new method called
+<code>heap.getAllocation</code> can be called with the requested amount of bytes, which
+ensures that there&rsquo;s enough space in eden before returning an <code>AllocationToken</code>.
+The token can then be used to allocate on the heap. If the requested amount of
+bytes is exceeded while allocating, the VM immediately crashes, turning
+frustrating stale heap reference bugs into easy-to-debug crashes. Additionally,
+calling <code>token.deinit</code> at the end of the function (via <code>defer</code>) ensures that the
+caller didn&rsquo;t <em>under-use</em> their requested amount of bytes, thus also preventing
+unnecessary garbage collections.</p>
+<h2 id="lazy-allocation-of-old-space">Lazy allocation of old space</h2>
+<p>When the <code>Heap</code> was first written, memory for all three generations (eden, new
+space and old space) were allocated in one go. Because old space is only ever
+used in long-running programs (and we don&rsquo;t have any so far), this meant that
+16MB of memory was unnecessarily allocated.</p>
+<p><a href="https://github.com/sin-ack/zigself/commit/26f53d0"><code>26f53d0</code></a> makes it so that
+old space is only allocated if it has an object allocated inside it. This
+reduces memory usage significantly for short running programs (in my tests short
+running and medium-length programs only use about 15-20MB of memory).</p>
+<h2 id="zig-self-hosted-compiler-support">Zig self-hosted compiler support</h2>
+<p>As of August 13, ZigSelf can now build on both stage1 (the bootstrap compiler)
+and stage2 (the self-hosted compiler)! This is a great change, because stage2
+brings many improvements, the most notable ones being improvements to
+compilation speed and memory usage. ZigSelf will be fully ready to compile with
+0.10.0, which will ship with the self-hosted compiler by default.</p>
+<p>(Note: The self-hosted compiler support has been tested with <code>a89c3de66</code>. I try
+to keep up to date with the master branch of Zig as much as possible but it&rsquo;s
+possible that compiler changes have broken compilation since writing this post.)</p>
+<h1 id="standard-library">Standard Library</h1>
+<h2 id="collection-api-in-the-standard-library">Collection API in the standard library</h2>
+<p>One of the main things that ZigSelf lacked was that it had no good way of
+expressing collections of items. The closest thing we had was a linked list,
+which was woefully slow for random access (of course). To fix this, I&rsquo;ve
+implemented a new set of APIs collectively (hehe) called &ldquo;The Collection API&rdquo;.
+It consists of a core trait which defines things that should work on all
+collections (checking whether the collection is empty, finding items, etc.),
+plus a few mixin traits which define various different traits of the collections
+we have. The following concrete collection data structures have been implemented
+so far:</p>
+<ul>
+<li><code>std array</code>, a statically-sized array.</li>
+<li><code>std vector</code>, a dynamically-sized array.</li>
+<li><code>std hashTable</code>, a dynamically-resizing open addressed hash table.</li>
+<li><code>std hashMap</code>, a mapping of items built on top of <code>std hashTable</code>.</li>
+<li><code>std hashSet</code>, a unique set of items built on top of <code>std hashTable</code>.</li>
+</ul>
+<p>Additionally, various existing traits like <code>std string</code> have been adapted to the
+collection API, making it possible to use them just like any other collection.</p>
+<p>In the process of making <code>std vector</code>, a new object type called <code>Array</code> was also
+implemented. An <code>Array</code> is a statically-sized array, and has various primitives
+which allow manipulating it. <code>std array</code> is a thin wrapper over an <code>Array</code>
+object, while <code>std vector</code> and <code>std hashTable</code> (and its descendants) use it as
+the basis of their respective implementations.</p>
+<p>You can see the interface
+<a href="https://github.com/sin-ack/zigself/blob/42e35a7/objects/collection.self">here</a>.</p>
+<h2 id="std-collector"><code>std collector</code></h2>
+<p>One of the main problems with zigSelf syntax (and Self syntax in general) is
+that it does not allow for things like array literals, which are present in many
+languages but don&rsquo;t exist in Self due to its very simple syntax. To alleviate
+this, the <code>std collector</code> object has been introduced. <code>std collector</code> is
+intended to be an easy-to-use interface for constructing various collections:</p>
+<pre tabindex="0"><code class="language-zigself" data-lang="zigself">1 &amp; 2 &amp; 3; asVector asString printLine. &#34;[1, 2, 3]&#34;
+&#39;hello &#39; &amp; &#39;world!&#39;; flattenIntoString printLine. &#34;hello world!&#34;
+</code></pre><p>Under the hood, <code>std collector</code> has been implemented as a linked list as it does
+not need random access and appending an item is O(1). Once a conversion to a
+collection has been requested, the linked list is scanned once and the
+collection is appended to.</p>
+<p>You can see the source code for <code>std collector</code>
+<a href="https://github.com/sin-ack/zigself/blob/42e35a7/objects/collector.self">here</a>.</p>
+<hr>
+<p>Thanks for reading! If you&rsquo;re interested in ZigSelf and want to discuss it with
+me and others, or want to contribute, you can join the
+<a href="https://discord.gg/HJ62kw6yvn">Discord server</a>.</p>
+<p>I know that I keep disappearing for months at a time, but I intend to post an
+update every month with new things in ZigSelf from now on. Stay tuned!</p>
+      </div>
+      <div class="paginator">
+        
+        <a class="link" href="https://sin-ack.github.io/posts/zigself-01/">← prev</a>
+        
+        
+        <a></a>
+        
+      </div>
+      <div class="comment">
+        
+      </div>
+      
+    </main>
+    <footer id="footer">
+  <div>
+    <span>© 2019</span> - <span>2022</span>
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+    <span> 🍦 Theme </span>
+    <a class="link" href="https://github.com/queensferryme/hugo-theme-texify">TeXify</a>
+    <span> + </span>
+    <a class="link" href="https://github.com/sin-ack/hugo-theme-texify">some changes</a>
+  </div>
+
+  <div class="footnote">
+    <span></span>
+  </div>
+</footer>
+
+  </div>
+  
+
+<link media="screen" rel="stylesheet" href="https://sin-ack.github.io/css/custom.css" />
+
+
+
+
+
+</body>
+
+</html>

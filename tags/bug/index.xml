@@ -27,10 +27,10 @@ showing up with incorrect colors.&lt;/p&gt;
 
 &lt;p&gt;Weird, huh? Also seems like a simple confusion of RGB vs. BGR. And sure enough,
 making the following change on &lt;code&gt;JPGLoader.cpp&lt;/code&gt;:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-diff&#34; data-lang=&#34;diff&#34;&gt;&lt;span class=&#34;gd&#34;&gt;-   const Color color { (u8)block.y[pixel_index], (u8)block.cb[pixel_index], (u8)block.cr[pixel_index] };
-&lt;/span&gt;&lt;span class=&#34;gd&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gi&#34;&gt;+   const Color color { (u8)block.cr[pixel_index], (u8)block.cb[pixel_index], (u8)block.y[pixel_index] };
-&lt;/span&gt;&lt;span class=&#34;gi&#34;&gt;&lt;/span&gt;    context.bitmap-&amp;gt;set_pixel(x, y, color);
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;makes the image show up correctly. Case closed!&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-diff&#34; data-lang=&#34;diff&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;gd&#34;&gt;-   const Color color { (u8)block.y[pixel_index], (u8)block.cb[pixel_index], (u8)block.cr[pixel_index] };
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;gd&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gi&#34;&gt;+   const Color color { (u8)block.cr[pixel_index], (u8)block.cb[pixel_index], (u8)block.y[pixel_index] };
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;gi&#34;&gt;&lt;/span&gt;    context.bitmap-&amp;gt;set_pixel(x, y, color);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;makes the image show up correctly. Case closed!&lt;/p&gt;
 &lt;p&gt;&amp;hellip;not. Why did this even break in the first place?&lt;/p&gt;</description>
     </item>
     

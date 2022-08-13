@@ -125,10 +125,10 @@ showing up with incorrect colors.</p>
 
 <p>Weird, huh? Also seems like a simple confusion of RGB vs. BGR. And sure enough,
 making the following change on <code>JPGLoader.cpp</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-diff" data-lang="diff"><span class="gd">-   const Color color { (u8)block.y[pixel_index], (u8)block.cb[pixel_index], (u8)block.cr[pixel_index] };
-</span><span class="gd"></span><span class="gi">+   const Color color { (u8)block.cr[pixel_index], (u8)block.cb[pixel_index], (u8)block.y[pixel_index] };
-</span><span class="gi"></span>    context.bitmap-&gt;set_pixel(x, y, color);
-</code></pre></div><p>makes the image show up correctly. Case closed!</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-diff" data-lang="diff"><span class="line"><span class="cl"><span class="gd">-   const Color color { (u8)block.y[pixel_index], (u8)block.cb[pixel_index], (u8)block.cr[pixel_index] };
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+   const Color color { (u8)block.cr[pixel_index], (u8)block.cb[pixel_index], (u8)block.y[pixel_index] };
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span>    context.bitmap-&gt;set_pixel(x, y, color);
+</span></span></code></pre></div><p>makes the image show up correctly. Case closed!</p>
 <p>&hellip;not. Why did this even break in the first place?</p>
 <p>The last non-reverted change
 to <code>JPGLoader.cpp</code> is reported by Git to be over a month ago:</p>
@@ -207,11 +207,11 @@ possible causes.</p>
 <code>HashMap</code> depends on) and <code>Vector</code>. Both are used in the <code>JPGLoader</code> code, and
 either could be the cause of the problem here.</p>
 <p>I picked <code>HashTable</code> at random, removed the offending line:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-diff" data-lang="diff">         new_capacity = max(new_capacity, static_cast&lt;size_t&gt;(4));
-<span class="gd">-        new_capacity = kmalloc_good_size(new_capacity * sizeof(Bucket)) / sizeof(Bucket);
-</span><span class="gd"></span>
-         auto* old_buckets = m_buckets;
-</code></pre></div><p>and rebuilt the system, while joking around in chat about how this can&rsquo;t
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-diff" data-lang="diff"><span class="line"><span class="cl">         new_capacity = max(new_capacity, static_cast&lt;size_t&gt;(4));
+</span></span><span class="line"><span class="cl"><span class="gd">-        new_capacity = kmalloc_good_size(new_capacity * sizeof(Bucket)) / sizeof(Bucket);
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span>
+</span></span><span class="line"><span class="cl">         auto* old_buckets = m_buckets;
+</span></span></code></pre></div><p>and rebuilt the system, while joking around in chat about how this can&rsquo;t
 possibly be the problem.</p>
 <p>&hellip;but then it fixed the issue.</p>
 <p>What? How? Why does the <code>HashTable</code> capacity being different matter?! <code>HashTable</code>
@@ -303,7 +303,7 @@ changing the order of the components caused Huffman decoding to fail.
 
 This was the result of about 10 hours of hair-pulling and repeatedly
 doing full rebuilds due to bisecting between commits that touched AK.
-Gunnar, I like you, but please don't make me go through this again. :^)
+Gunnar, I like you, but please don&#39;t make me go through this again. :^)
 
 Credits to Andrew Kaster, bgianf, CxByte and Gunnar for the debugging
 help.

@@ -6,7 +6,19 @@
     <description>Recent content on sin-ack&#39;s writings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 01 Mar 2022 10:00:00 +0100</lastBuildDate><atom:link href="https://sin-ack.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 13 Aug 2022 10:00:00 +0100</lastBuildDate><atom:link href="https://sin-ack.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ZigSelf Update, August 2022</title>
+      <link>https://sin-ack.github.io/posts/zigself-202208/</link>
+      <pubDate>Sat, 13 Aug 2022 10:00:00 +0100</pubDate>
+      
+      <guid>https://sin-ack.github.io/posts/zigself-202208/</guid>
+      <description>&lt;p&gt;Hi there. It&amp;rsquo;s been quite a while since I posted here, mostly due to real life
+responsibilities. I&amp;rsquo;m planning on making monthly updates here from now on so
+that I can showcase the new things that are in ZigSelf. For the first update
+though, let&amp;rsquo;s play some catch-up.&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>ZigSelf: An implementation of Self in Zig</title>
       <link>https://sin-ack.github.io/posts/zigself-01/</link>
@@ -37,10 +49,10 @@ showing up with incorrect colors.&lt;/p&gt;
 
 &lt;p&gt;Weird, huh? Also seems like a simple confusion of RGB vs. BGR. And sure enough,
 making the following change on &lt;code&gt;JPGLoader.cpp&lt;/code&gt;:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-diff&#34; data-lang=&#34;diff&#34;&gt;&lt;span class=&#34;gd&#34;&gt;-   const Color color { (u8)block.y[pixel_index], (u8)block.cb[pixel_index], (u8)block.cr[pixel_index] };
-&lt;/span&gt;&lt;span class=&#34;gd&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gi&#34;&gt;+   const Color color { (u8)block.cr[pixel_index], (u8)block.cb[pixel_index], (u8)block.y[pixel_index] };
-&lt;/span&gt;&lt;span class=&#34;gi&#34;&gt;&lt;/span&gt;    context.bitmap-&amp;gt;set_pixel(x, y, color);
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;makes the image show up correctly. Case closed!&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-diff&#34; data-lang=&#34;diff&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;gd&#34;&gt;-   const Color color { (u8)block.y[pixel_index], (u8)block.cb[pixel_index], (u8)block.cr[pixel_index] };
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;gd&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gi&#34;&gt;+   const Color color { (u8)block.cr[pixel_index], (u8)block.cb[pixel_index], (u8)block.y[pixel_index] };
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;gi&#34;&gt;&lt;/span&gt;    context.bitmap-&amp;gt;set_pixel(x, y, color);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;makes the image show up correctly. Case closed!&lt;/p&gt;
 &lt;p&gt;&amp;hellip;not. Why did this even break in the first place?&lt;/p&gt;</description>
     </item>
     
@@ -115,7 +127,7 @@ And the answer to that is the Transporter system.&lt;/p&gt;</description>
       <description>Hey there. This is the first post I will be making here, and I wanted to give a tour of Self before making posts about my current implementation, mySelf.
 Throughout this post, I will be showing examples from the regular implementation of the Self programming environment, available here.
 What is Self? To quote the Self language homepage:
- Self is a prototype-based dynamic object-oriented programming language, environment, and virtual machine centered around the principles of simplicity, uniformity, concreteness, and liveness.</description>
+Self is a prototype-based dynamic object-oriented programming language, environment, and virtual machine centered around the principles of simplicity, uniformity, concreteness, and liveness.</description>
     </item>
     
   </channel>
