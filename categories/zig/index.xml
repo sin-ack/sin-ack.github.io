@@ -8,7 +8,7 @@
     <language>en</language>
     <lastBuildDate>Wed, 19 Oct 2022 19:00:00 +0000</lastBuildDate><atom:link href="https://sin-ack.github.io/categories/zig/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>That Time I Ported Zig to SerenityOS</title>
+      <title>That Time I Tried Porting Zig to SerenityOS</title>
       <link>https://sin-ack.github.io/posts/sycl-talk-20221007/</link>
       <pubDate>Wed, 19 Oct 2022 19:00:00 +0000</pubDate>
       
