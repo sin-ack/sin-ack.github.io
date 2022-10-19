@@ -6,7 +6,18 @@
     <description>Recent content in serenity on sin-ack&#39;s writings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 03 Jun 2021 00:00:00 +0200</lastBuildDate><atom:link href="https://sin-ack.github.io/categories/serenity/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 19 Oct 2022 19:00:00 +0000</lastBuildDate><atom:link href="https://sin-ack.github.io/categories/serenity/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>That Time I Ported Zig to SerenityOS</title>
+      <link>https://sin-ack.github.io/posts/sycl-talk-20221007/</link>
+      <pubDate>Wed, 19 Oct 2022 19:00:00 +0000</pubDate>
+      
+      <guid>https://sin-ack.github.io/posts/sycl-talk-20221007/</guid>
+      <description>This was a talk I gave at the Software You Can Love 2022 conference. You can find the slides right here (PDF).
+Today I want to tell you a story about the time I ported the Zig compiler to SerenityOS.
+I&amp;rsquo;m going to tell you a bit about what my motivation was to do this. Then I&amp;rsquo;ll explain the steps I took and the various challenges I faced (there were a lot of those!</description>
+    </item>
+    
     <item>
       <title>How malloc broke Serenity&#39;s JPGLoader, or: how to win the lottery</title>
       <link>https://sin-ack.github.io/posts/jpg-loader-bork/</link>

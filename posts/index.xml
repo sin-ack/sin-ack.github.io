@@ -6,7 +6,18 @@
     <description>Recent content in Posts on sin-ack&#39;s writings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 13 Aug 2022 10:00:00 +0100</lastBuildDate><atom:link href="https://sin-ack.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 19 Oct 2022 19:00:00 +0000</lastBuildDate><atom:link href="https://sin-ack.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>That Time I Ported Zig to SerenityOS</title>
+      <link>https://sin-ack.github.io/posts/sycl-talk-20221007/</link>
+      <pubDate>Wed, 19 Oct 2022 19:00:00 +0000</pubDate>
+      
+      <guid>https://sin-ack.github.io/posts/sycl-talk-20221007/</guid>
+      <description>This was a talk I gave at the Software You Can Love 2022 conference. You can find the slides right here (PDF).
+Today I want to tell you a story about the time I ported the Zig compiler to SerenityOS.
+I&amp;rsquo;m going to tell you a bit about what my motivation was to do this. Then I&amp;rsquo;ll explain the steps I took and the various challenges I faced (there were a lot of those!</description>
+    </item>
+    
     <item>
       <title>ZigSelf Update, August 2022</title>
       <link>https://sin-ack.github.io/posts/zigself-202208/</link>

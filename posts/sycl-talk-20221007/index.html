@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<meta name="author" content="sin-ack">
+
+
+
+<meta name="description" content="This was a talk I gave at the Software You Can Love 2022 conference. You can find the slides right here (PDF).
+Today I want to tell you a story about the time I ported the Zig compiler to SerenityOS.
+I&rsquo;m going to tell you a bit about what my motivation was to do this. Then I&rsquo;ll explain the steps I took and the various challenges I faced (there were a lot of those!">
+
+
+
+
+<meta name="keywords" content=" self  blog ">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="That Time I Ported Zig to SerenityOS" />
+<meta name="twitter:description" content="This was a talk I gave at the Software You Can Love 2022 conference. You can find the slides right here (PDF).
+Today I want to tell you a story about the time I ported the Zig compiler to SerenityOS.
+I&rsquo;m going to tell you a bit about what my motivation was to do this. Then I&rsquo;ll explain the steps I took and the various challenges I faced (there were a lot of those!" />
+
+
+<link rel="canonical" href="https://sin-ack.github.io/posts/sycl-talk-20221007/">
+
+
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/common.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/content.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/highlight.css'>
+
+
+
+<title>That Time I Ported Zig to SerenityOS - sin-ack&#39;s writings</title>
+
+
+
+
+
+  <link rel="stylesheet" href='https://sin-ack.github.io/css/single.css'>
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://sin-ack.github.io/">sin-ack&#39;s writings</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/posts/">Archives</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/index.xml">RSS Feed</a>
+    </span>
+    
+  </nav>
+</header>
+
+    <main id="main" class="post">
+      
+      
+      
+      <h1>That Time I Ported Zig to SerenityOS</h1>
+      
+      <div>
+        <b>Keywords: </b>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/serenity'>#serenity</a>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/zig'>#zig</a>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/talk'>#talk</a>
+        
+      </div>
+      
+      <div class="content">
+        <p>This was a talk I gave at the <a href="https://sycl.it/">Software You Can Love 2022</a>
+conference. You can find the slides <a href="/documents/sycl-talk-20221007.pdf">right here
+(PDF)</a>.</p>
+<hr>
+<p>Today I want to tell you a story about the time I ported the Zig compiler to
+SerenityOS.</p>
+<p>I&rsquo;m going to tell you a bit about what my motivation was to do this. Then I&rsquo;ll
+explain the steps I took and the various challenges I faced (there were a lot of
+those!). We&rsquo;re going to go into the details of some of the problems that I had
+to deal with. And finally, I&rsquo;ll finish it off with my general thoughts&hellip; and
+maybe a little surprise.</p>
+<p>So why port a new programming language compiler to a new operating system? Well,
+the first (and obvious) reason is that it&rsquo;s just fun to do so. I am sure that
+many people in the audience have their own fun hobby projects. I have my own
+projects too, of course; but at least for me, it&rsquo;s hard to do the same project
+for a long time without mixing things up a bit, and I sometimes take a couple
+week-long breaks from my personal projects and go contribute to other projects.</p>
+<p>The second reason that I wanted to port Zig to SerenityOS is that I wanted to
+see ZigSelf working on it. <a href="https://github.com/sin-ack/zigself">ZigSelf</a> is my
+own implementation of the Self programming language. I&rsquo;ve been working on it
+on-and-off for the past year or so, and I wanted to see how it would fare on
+SerenityOS.</p>
+<h1 id="serenityos">SerenityOS</h1>
+<p>Now, I&rsquo;ve been using the word SerenityOS a lot, but how many people in the
+audience know what it is? <em>(PS: most people did.)</em></p>
+<p>SerenityOS is a hobby operating system developed by Andreas Kling. The project
+started in 2018 after Andreas got out of rehabilitation as a way to keep himself
+occupied, and over time grew to hundreds of contributors.</p>
+<p>In SerenityOS, everything is from scratch - the kernel, the GUI framework, the
+core system utilities, a browser engine with JavaScript (small feat I know),
+<em>everything</em>. The codebase is extremely approachable, and everything is in one
+repo - the entire operating system is within your reach. This makes it an
+exciting project to hack on, since you can grep through the codebase from the
+shell all the way to the kernel. Andreas himself regularly posts hacking videos
+where he demonstrates how he adds a new feature or fixes an issue, which are
+both entertaining to watch and very educational at the same time.</p>
+<p>I first got interested in SerenityOS back in April 2021, when Andreas announced
+the start of a Discord server. Now, say what you will about Discord, but the new
+communication medium was a lot more engaging and soon I found myself
+contributing various fixes. Although I&rsquo;m not as active a contributor anymore
+(mostly due to real life obligations and other projects of mine), I still
+contribute from time to time, and it&rsquo;s still a project that I really enjoy just
+opening and exploring the new things every couple weeks.</p>
+<p>So back in February 2022, I wanted to see how my project ZigSelf would run on
+SerenityOS. Only one problem&hellip;</p>
+<p>There is no Zig target for SerenityOS!</p>
+<p>I was officially yak-baited.</p>
+<h1 id="humble-beginnings">Humble Beginnings</h1>
+<p>So, what do you need in order to run Zig binaries on an operating system? Well,
+the easiest way is to just write a target and then compile your binaries for
+that target&hellip; but that&rsquo;s boring, right? So I wanted to actually be able to
+compile my project directly within SerenityOS and also contribute any fixes that
+SerenityOS needed as well, improving the POSIX compatibility of the system.</p>
+<p>As most of you already know, Zig currently relies on LLVM for the actual binary
+generation in its default mode. This means that if you want to run Zig on an
+operating system and have it produce binaries, you are going to need LLVM
+working on that system too. This is certainly a barrier for entry for a new
+operating system. (Note that this requirement is going to going away with the
+self-hosted backends in stage2, but there&rsquo;s still some way to go for those to
+become usable for daily driving - in particular, the x86_64 backend can&rsquo;t build
+my project yet, and back in February when I tried this it was nowhere near where
+it is today.)</p>
+<p>Thanks to the work of Daniel, Andrew Kaster, and many other great contributors,
+the hard part was already done for me - LLVM already worked on SerenityOS, and
+there was even a working clang port. This meant that the only part that I
+actually needed to handle was the Zig part.</p>
+<p>Okay, we&rsquo;ve already got LLVM, but what else does the Zig compiler need to work
+on a new operating system? Well, it needs a Zig compiler.</p>
+<p>Wait what?</p>
+<p>Well, in order to compile Zig code to an appropriate target, you need a Zig
+compiler that&rsquo;s able to compile for that target. In my case, I had no chicken
+and no egg, since this is the first time (that I know of) someone had tried to
+run Zig on SerenityOS.</p>
+<p>Thankfully, there&rsquo;s this very useful project by one Andrew Kelley called
+zig-bootstrap. What zig-bootstrap does is that it builds a host LLVM, a host Zig
+using that LLVM, and then a target LLVM and Zig for the target that you specify.
+It allows you to build Zig for a target with nothing but a C++ compiler and
+build tools. This project became the basis of my efforts. Huge thanks to Andrew
+for paving the way for it.</p>
+<h1 id="making-zig-cc-work">Making <code>zig cc</code> Work</h1>
+<p>Earlier, I mentioned that in order to build Zig binaries for a target, you need,
+well, a Zig target. If you&rsquo;re using the LLVM backend, you are also going to need
+an LLVM target that matches your Zig target. Since there was already a clang
+port for SerenityOS, I already had the necessary patches for a clang SerenityOS
+driver. But I didn&rsquo;t want to write a whole bunch of target code without
+verifying that the Zig compiler even was able to work on SerenityOS.</p>
+<p>One of zig&rsquo;s killer features is the bundled C/C++ compiler when you build it
+with LLVM, courtesy of the Clang compiler. My first idea was to use this
+compiler to build a simple C program, which would prove that stage1 could be
+built (at the time, stage2 was still quite a ways away).</p>
+<p>So my goals were as follows: I would build a host Zig compiler that&rsquo;s capable of
+building files for Serenity, build a simple C program and test that it works,
+and then get to compiling Zig itself for SerenityOS once I confirmed that it was
+possible to do so.</p>
+<h1 id="patching-non-monorepo-llvm">Patching Non-Monorepo LLVM</h1>
+<p>The first problem I hit was before I even started compiling, actually. Back in
+February, the LLVM patches that SerenityOS uses to make the necessary changes
+were a single, large patch, intended to be applied on the LLVM monorepo.
+However, since zig-bootstrap does not use the monorepo layout of LLVM, this
+caused a problem. However, Daniel quickly split those patches up for me and gave
+me a set of patches such that I could apply in parts. Thanks Daniel!</p>
+<p>Once that was done, host LLVM compilation was pretty uneventful, just a <em>lot</em> of
+waiting.</p>
+<h1 id="synchronizing-zig-with-llvm">Synchronizing Zig With LLVM</h1>
+<p>Next up was compiling host Zig, where I hit a couple more issues.</p>
+<p>First up, Zig <em>really</em> doesn&rsquo;t like to be out of sync with LLVM&rsquo;s enums, and
+there are various static assertions within the C++ code which verify that the
+ZigLLVM enums match the LLVM enums exactly. This is actually a really nice
+thing, because once you add a new value to those enums, the compiler will guide
+you by telling you where you should be inserting that new enum values in various
+places in the compiler.</p>
+<p>Of course, adding things to the C++ parts means that you have to synchronize Zig
+code with C++ too. At the time (and today still), the Zig compiler is still a
+hybrid between the bootstrap C++ code and the newer self-hosted implementation
+in Zig, which means some manual synchronization work is required to keep
+everything running smoothly. Adding <code>serenity</code> to <code>Target.Os.Tag</code> will guide you
+on where this new value isn&rsquo;t handled.</p>
+<h1 id="a-maze-of-crt-objects-all-different">A Maze of CRT Objects, All Different</h1>
+<p>As part of &ldquo;fix everything that the compiler complains about&rdquo; ordeal, I came
+across <a href="https://github.com/ziglang/zig/blob/8a344fab3908e1b793fe8f9590696142aee2a1be/src/link/Elf.zig#L3053">this bit of
+code</a>.
+This code tells the Zig compiler about which C startup objects to link the
+executable or library against when cross-compiling to another target.</p>
+<p>Now, there&rsquo;s a lot of details here that nobody except those weird people who
+develop compilers need to know about, but the gist of it is that this is
+different for every single operating system and varies across executable types.
+For SerenityOS, the patches we use for Clang seem to automatically figure out
+linking crtbegin and crtend, so all I had to really do was get rid of those and
+fill it out based on what we had available in /usr/lib once the system had been
+built. It seems to work and I plan on NOT touching it ever again.</p>
+<h1 id="the-ununited-state-of-libc">The Ununited State of LibC</h1>
+<p>So once all the compiler errors were fixed, I had a host Zig built and ready to
+build programs with. So I wrote a hello world C program, pointed <code>zig cc</code> at it,
+and&hellip; linker errors!</p>
+<p>Right. In order to build a C binary that links to SerenityOS&rsquo; libc, we need to
+know what symbols libc itself needs. As SerenityOS&rsquo; libc was (for some reason)
+statically linked, it can&rsquo;t tell which libraries it needs on its own; therefore
+it was mostly trying it again and again until it stopped erroring out.</p>
+<p>In the end, I had to link in pthreads, libdl, libm and libunwind for the C
+library to work.</p>
+<p>Oh, and libc++ too.</p>
+<p>Yeah&hellip; Serenity is fundamentally a C++ project and it shows. The C standard
+library itself uses C++&rsquo;s runtime type information in order to link properly.
+It&rsquo;s unfortunate, but it works, so it&rsquo;s fine.</p>
+<p>Oh, and I should mention this: As of just a couple weeks ago, this issue has
+been resolved thanks to the awesome work by Tim Schumacher, who merged in all
+those libraries into libc, which makes the serenity target actually need the
+least flags to link with libc now. Thanks Tim!</p>
+<h1 id="so-it-built">So It Built&hellip;</h1>
+<p>Okay, so the C binary built, and it looks like a valid C binary. Let&rsquo;s put it on
+the disk image and run it and&hellip; welp.</p>
+<figure><img src="/images/sycl-talk-20221007/cbinarycrash.png"
+         alt="A zig cc-built C binary crashing on SerenityOS."/><figcaption>
+            <p>A
+<code>zig cc</code>-built C binary crashing on SerenityOS.</p>
+        </figcaption>
+</figure>
+
+<p>This is an issue with SerenityOS. Basically, when you load in a program, your
+program first has to load in <code>/usr/lib/Loader.so</code> as its interpreter, which
+relocates your sections, sets up all your dynamic libraries and then executes
+you. The problem is the fact that static PIE binaries also need the relocation
+section, but they don&rsquo;t want to use the loader (as Daniel put it, they&rsquo;re &ldquo;the
+edgy version [of static binaries]&rdquo;).</p>
+<p>Of course, what&rsquo;s the best way to make Zig output a dynamic binary? Why, link a
+dynamic C++ library of course. After doing that, this beautiful line&hellip;</p>
+<figure><img src="/images/sycl-talk-20221007/cbinarycommandline.png"
+         alt="The
+&amp;ldquo;wonderful&amp;rdquo; command used to build the binary."/><figcaption>
+            <p>The
+&ldquo;wonderful&rdquo; command used to build the binary.</p>
+        </figcaption>
+</figure>
+
+<p>generated this beautiful binary&hellip;</p>
+<figure><img src="/images/sycl-talk-20221007/cbinaryfile.png"
+         alt="Running file on the binary."/><figcaption>
+            <p>Running
+<code>file</code> on the binary.</p>
+        </figcaption>
+</figure>
+
+<p>and here&rsquo;s a Zig-built C binary running on SerenityOS!</p>
+<figure><img src="/images/sycl-talk-20221007/cbinaryonserenity.png"
+         alt="Zig-built C binary running on SerenityOS."/><figcaption>
+            <p>Zig-built C binary running on SerenityOS.</p>
+        </figcaption>
+</figure>
+
+<p>Oh, and the proper fix for the dynamic binary thing is using the designated
+function for it in the Zig compiler, which I would learn and then promptly
+facepalm.</p>
+<h1 id="the-big-guns">The Big Guns</h1>
+<p>Okay, so we&rsquo;ve confirmed that Zig can indeed build a binary that can work on
+SerenityOS. But we haven&rsquo;t <em>actually</em> built any Zig code, that was just C code
+that leveraged Clang. But what do we actually need in order to build Zig code?</p>
+<p>Well, for things like printing to the screen or allocation to work, the built
+binary needs to know how to talk to the operating system. Zig uses two
+approaches for this. The first is to actually write how to syscall and its
+parameters directly within the compiler; this is the approach Zig has taken with
+Linux as it has a syscall stability guarantee. But Linux is the outlier here;
+for almost every other operating system, Zig will link in the C library and then
+use functions defined there as the stable system call interface. This is the
+best you can do, since many operating systems (including SerenityOS) only
+guarantee stability through libc. So when the time came to build Zig for the
+SerenityOS target, I would need to tell it the necessary things about the OS in
+order for the compilation to succeed.</p>
+<p>The three components that are of concern when building Zig for a target are
+Zlib, LLVM and Zig itself. So it was time to start actually building big
+programs with <code>zig cc</code>.</p>
+<h1 id="building-zlib-and-llvm">Building zlib And LLVM</h1>
+<p>Building zlib was mostly uneventful, save for a little hack needed at the time
+which required us to force zlib to build with <code>-fPIC</code> (as some non-relocatable
+code still sneaked in somehow). This is fixed with recent Serenity Clang
+patches.</p>
+<p>Now it was time for target LLVM&hellip; though it wasn&rsquo;t as easy to make it get
+going. First off, it couldn&rsquo;t find <code>compress2</code> from zlib. Hmm, why could this
+be? We had some brainstorming on the Discord, and tried building with
+<code>CMAKE_FIND_ROOT_PATH</code> pointed to the out directory for the target, but it still
+didn&rsquo;t work.</p>
+<p>Or, well, it would&rsquo;ve, if I hadn&rsquo;t accidentally forgotten a backlash on the line
+above that flag. I love shells.</p>
+<figure><img src="/images/sycl-talk-20221007/findrootpathfail.png"
+         alt="Epic fail."/><figcaption>
+            <p>Epic fail.</p>
+        </figcaption>
+</figure>
+
+<p>Moving on&hellip; Now cmake can&rsquo;t figure out that we have <code>dlopen</code> and <code>dladdr</code>. This
+is the same &ldquo;libc needs the rest of the world&rdquo; issue that we discussed earlier,
+and was resolved by making Zig also link those in.</p>
+<p>But beyond those minor setbacks, zlib and LLVM were rather easily built. Now it
+was time for the fun part!</p>
+<h1 id="the-holy-yak">The Holy Yak</h1>
+<p>Now we&rsquo;re at the final stage before we can start trying out the Zig compiler on
+SerenityOS. For the most part, this is just a variant of the host Zig compiler;
+the target Zig compiler needs code from std.os in order to be built, which just
+means adding the things it tells me are missing.</p>
+<p>But how do we actually add a new OS to the Zig standard library? Earlier I
+mentioned that you either implement the syscalls directly or you go through
+libc. Since SerenityOS&rsquo; stable (well, &ldquo;stable&rdquo;) syscall interface is libc, this
+means adding <code>.serenity</code> to <a href="https://github.com/ziglang/zig/blob/8a344fab3908e1b793fe8f9590696142aee2a1be/lib/std/c.zig#L42">this struct right
+here</a>
+in <code>std.c</code>, and std will take care of it for me. Doing this actually gives me
+more info about what kind of things Zig expects from a <code>std.c.xyz</code> struct.</p>
+<p>For an OS-specific struct in <code>std.c</code>, you&rsquo;re mostly expected to just list all
+the various libc constants defined by POSIX in various structs, grouped by the
+constant prefix. Take <code>PROT</code> for example. Each of the values in the struct
+correspond to one constant defined by POSIX. One notable exception to this is
+<code>errno</code> numbers, which is actually an enum. Beyond this, you&rsquo;re also expected to
+describe a couple of structs in pthreads, a few extern function declarations,
+and if you built with debug mode then you&rsquo;re also expected to supply something
+that can walk through the list of shared objects - for Serenity this is
+<code>dl_iterate_phdr</code> like on Linux.</p>
+<p>But there&rsquo;s one special definition you must supply, and it&rsquo;s quite special
+indeed. And it&rsquo;s our good old friend <code>errno</code>! <code>errno</code> is a delightful legacy
+piece of POSIX. It&rsquo;s basically a global value that gets written to whenever
+something unexpected happens as a result of a libc function call. The problem
+is, this obviously won&rsquo;t work when you have more than one thread, so you need to
+somehow keep them separate. The solution most operating systems have come up
+with is making errno thread local, and then providing its location as a pointer
+via an <code>__errno_location</code> function. Most OS modules in <code>std.c</code> do this.</p>
+<p>While <code>errno</code> <em>was</em> a thread local in SerenityOS, it was still a public symbol
+from libc and there was no <code>__errno_location</code>, which I worked around by creating
+one. However, this didn&rsquo;t stop me from getting a bizarre size 0 symbol which
+crashes <code>DynamicLoader</code>, so I just removed that check and it works, which is
+fine I suppose. This has since been improved by making <code>__errno_location</code> the
+default way to get errno in SerenityOS.</p>
+<p>After all that and implementing a directory iterator, we went through Semantic
+Analysis, and were at link point! But you know better than to believe it&rsquo;s just
+gonna link first try, right?!</p>
+<h1 id="implementing-posix-support">&ldquo;Implementing&rdquo; POSIX Support</h1>
+<p>So, of course, we had link errors&hellip; and this time, we were actually missing
+functions! Alright, let&rsquo;s &ldquo;implement&rdquo; them by just slapping some stubs in libc.
+What could go wrong?</p>
+<p>Well, after this and chasing a few more bizarre loader related errors, we
+finally got the Zig help printing!</p>
+<figure><img src="/images/sycl-talk-20221007/zighelponserenity.png"
+         alt="zig help running on SerenityOS."/><figcaption>
+            <p><code>zig help</code> running on SerenityOS.</p>
+        </figcaption>
+</figure>
+
+<p>Though, the Zig help being printed doesn&rsquo;t actually prove that Zig can build
+stuff, so let&rsquo;s build a hello world again!</p>
+<h1 id="oops-non-working-semaphores">Oops, Non-Working Semaphores</h1>
+<p>Hmm, okay, so it&rsquo;s taking a while&hellip; it&rsquo;s taking a good while actually. It
+probably shouldn&rsquo;t take this long to start. Let&rsquo;s profile it and see what it&rsquo;s
+stuck on&hellip;</p>
+<figure><img src="/images/sycl-talk-20221007/semaphorespin.png"
+         alt="Zig
+getting stuck on SerenityOS&amp;rsquo; POSIX semaphore implementation."/><figcaption>
+            <p>Zig
+getting stuck on SerenityOS&rsquo; POSIX semaphore implementation.</p>
+        </figcaption>
+</figure>
+
+<p>Okay then, we&rsquo;re stuck spinning on POSIX semaphores, I guess that&rsquo;s broken. Let
+me make target Zig build in single-threaded mode per Andrew&rsquo;s suggestion (Andrew
+was in the chat at this point), and it seems that we&rsquo;re getting somewhere!</p>
+<p>(Sidenote, building the Zig compiler single-threaded is currently broken in
+stage2.)</p>
+<h1 id="actually-implementing-posix-support">Actually Implementing POSIX Support</h1>
+<p>Or, well, we were gonna get somewhere, but here&rsquo;s where my earlier decisions
+bite me. Turns out those functions I stubbed are actually needed by Zig&hellip; so
+let&rsquo;s implement them in the kernel really quickly. While I was doing so, I hit
+this interesting error which is apparently a first.</p>
+<figure><img src="/images/sycl-talk-20221007/andrewsurprised.png"
+         alt="SerenityOS getting the crown for being the first OS to throw TimerUnsupported."/><figcaption>
+            <p>SerenityOS
+getting the crown for being the first OS to throw <code>TimerUnsupported</code>.</p>
+        </figcaption>
+</figure>
+
+<p>Since SerenityOS didn&rsquo;t have a way to get the clock resolution at the time, I
+wrote the best possible implementation.</p>
+<figure><img src="/images/sycl-talk-20221007/bestgetresimpl.png"
+         alt="The best clock_getres implementation."/><figcaption>
+            <p>The
+best <code>clock_getres</code> implementation.</p>
+        </figcaption>
+</figure>
+
+<p>Anyway, most of the work here was implementing a few more of those <code>*at</code>
+functions, so not much to say here.</p>
+<h1 id="hmm-weird-crash">Hmm&hellip; Weird Crash</h1>
+<p>Alright, now I&rsquo;m getting this weird crash in <code>init</code>, which is stage1 C++ code&hellip;
+I wonder what&rsquo;s up with that. And the fun part with this crash is that if you
+change the location or the arguments of any of the prints, the crash location
+changes!</p>
+<p>At this point it was very late at the night to be debugging weird crashes, so I
+came back the next day and continued debugging. This was mostly a matter of
+adding debug prints in places and seeing what happened. This went on for a while
+until I hit a very peculiar error.</p>
+<figure><img src="/images/sycl-talk-20221007/notfunnydidnotlaugh.png"
+         alt="Debugging
+with meme strings gone wrong."/><figcaption>
+            <p>Debugging
+with meme strings gone wrong.</p>
+        </figcaption>
+</figure>
+
+<p>Ignore the silly debug messages, at this point I was pretty bored. The
+interesting part is the fact that randomly, I started printing some unrelated
+strings! In fact, it was a very specific string called
+<code>target_specific_features</code>, defined near the start of the <code>init</code> function. A bit
+more debug prints, and it looked like we were getting that broken string right
+after <code>stage2_version</code> was being called.</p>
+<p>Now, what&rsquo;s so special about <code>stage2_version</code>? As I&rsquo;ve mentioned earlier, the
+Zig compiler is still a hybrid of C++ and Zig. However, this doesn&rsquo;t only mean
+that Zig code calls into C++; it also means that C++ code can call into Zig! To
+facilitate this, there are various function declarations with their definitions
+in C code, and the calling convention for those functions is set to C in order
+to have the ABI match. Now, what happens if that ABI doesn&rsquo;t perfectly match?
+Unfortunately, you don&rsquo;t get a nice compile error, you get weirdness like this.</p>
+<p>In order to test what&rsquo;s actually supposed to be generated, I wrote
+<code>stage2_version</code> in C++ and compiled it with a C++ compiler for Serenity. Here&rsquo;s
+what that looks like:</p>
+<pre tabindex="0"><code>00001430 &lt;stage2_version&gt;:
+    1430:       55                      push   %ebp
+    1431:       89 e5                   mov    %esp,%ebp
+    1433:       8b 45 08                mov    0x8(%ebp),%eax
+    1436:       c7 00 00 00 00 00       movl   $0x0,(%eax)
+    143c:       c7 40 04 09 00 00 00    movl   $0x9,0x4(%eax)
+    1443:       c7 40 08 00 00 00 00    movl   $0x0,0x8(%eax)
+    144a:       5d                      pop    %ebp
+    144b:       c2 04 00                ret    $0x4
+    144e:       66 90                   xchg   %ax,%ax
+</code></pre><p>And here&rsquo;s the version that Zig builds. Notice any difference?</p>
+<pre tabindex="0"><code>02e31180 &lt;stage2_version&gt;:
+ 2e31180:    31 c0                    xor    %eax,%eax
+ 2e31182:    ba 09 00 00 00           mov    $0x9,%edx
+ 2e31187:    31 c9                    xor    %ecx,%ecx
+ 2e31189:    c3                       ret
+</code></pre><p>After posting this and with help from some C++ wizards on Discord, I learned
+that&hellip;</p>
+<h1 id="thou-shalt-not-pass-structs-through-registers">Thou Shalt Not Pass (Structs Through Registers)!</h1>
+<p>At least on i386.</p>
+<p>The SystemV ABI for i386 makes this clear. If you&rsquo;re going to return a struct,
+you <em>have</em> to use the address of the struct and place it on <code>%eax</code>, no way
+around it. Even if it fits into registers. This is apparently called an <code>sret</code>.</p>
+<p>I didn&rsquo;t know enough about Zig compiler to fix this properly, but my &ldquo;fix&rdquo;
+(which consisted of inserting an x86 ABI check into an x86_64 function in the
+compiler) seemed to work, and we&rsquo;re now getting some compile errors on the Zig
+side!</p>
+<figure><img src="/images/sycl-talk-20221007/zigcompilererrors.png"
+         alt="Zig
+compiler printing errors in SerenityOS."/><figcaption>
+            <p>Zig
+compiler printing errors in SerenityOS.</p>
+        </figcaption>
+</figure>
+
+<h1 id="libc-stuff">LibC Stuff</h1>
+<p>Now that the Zig compiler was working, the only things to fix were those
+reported by the compiler. I had to implement various things I skipped out on
+such as the <code>faccessat</code> syscall and debugging support. I also had to stub out
+<code>flock</code> because we didn&rsquo;t support file lock downgrading at the time. Finally, I
+needed to tell Zig about where our libc was because the necessary checks were
+not implemented yet.</p>
+<p>And with all of that, we have a Zig-compiled program running on SerenityOS.</p>
+<figure><img src="/images/sycl-talk-20221007/zighelloworldonserenity.png"
+         alt="Hello world in Zig running on SerenityOS!"/><figcaption>
+            <p>Hello world in Zig running on SerenityOS!</p>
+        </figcaption>
+</figure>
+
+<p>(Though only with the compiler built in release mode, debug mode was causing an
+integer overflow panic but details, details.)</p>
+<h1 id="just-a-couple-more-hacks">Just A Couple More Hacks&hellip;</h1>
+<p>Now that I was able to run a basic Zig program, I wanted to see if I could
+complete my original goal of running ZigSelf on SerenityOS too. I actually
+caught a few &ldquo;used usize interchangeably with u64&rdquo; errors while doing this since
+I was running on i386, but eventually that worked too.</p>
+<figure><img src="/images/sycl-talk-20221007/zigselfonserenity.png"
+         alt="ZigSelf running on SerenityOS."/><figcaption>
+            <p>ZigSelf running on SerenityOS.</p>
+        </figcaption>
+</figure>
+
+<h1 id="aftermath">Aftermath</h1>
+<p>After all of this, these changes unfortunately didn&rsquo;t get upstreamed into Zig
+and there currently is no Zig port for SerenityOS. The main reason is that at
+the time, stage2 was &ldquo;very close&rdquo; (yeah, right), and also due to the various
+things I had to hack or patch out didn&rsquo;t allow for it to be merged, and so I
+abandoned the port; however, I had always planned to complete it once stage2 was
+officially ready for use.</p>
+<h1 id="now-for-something-different">Now For Something Different&hellip;</h1>
+<p>So, in the passing months, thanks to the tremendous work by the Zig team and all
+the contributors&rsquo; help, stage2 became the default compiler. Where does that
+leave us? Well, I have something to show you.</p>
+<p>(Here I had a demo showing a build of the self-hosted Zig compiler running on
+SerenityOS, ported again in October, building a simple hello world, then
+building ZigSelf, and finally (attempting to) build the Zig compiler itself.)</p>
+<p>So this is actually the self-hosted Zig compiler running on SerenityOS. Again,
+thanks to the work of many SerenityOS and Zig contributors, this port was
+actually surprisingly easy to do once again and only took a couple of days (and
+most of the second day was chasing a nasty kernel bug). It&rsquo;s surprisingly usable
+in conjunction with the C++ syntax highlighting you saw with <code>TextEditor</code> too. I
+believe that SerenityOS could be a great platform to work on Zig with enough
+work.</p>
+<h1 id="future-work">Future Work</h1>
+<p>So what&rsquo;s next for SerenityOS on Zig? Obviously, I want to upstream this and
+make it as simple as running <code>./package.sh</code> and waiting. Though there are some
+steps we must take to get there.</p>
+<p>First things first, we need to upstream our LLVM patches from the SerenityOS
+side. As far as I&rsquo;m aware, they&rsquo;re mostly ready, but there are still some issues
+that need to be addressed. Without this, I cannot upstream the Zig patches,
+because as I mentioned near the start of my porting efforts, Zig&rsquo;s LLVM
+integration is strongly tied to the target triples, and now that some of that
+code is in Zig too, I don&rsquo;t think I can ifdef it out like before anymore.</p>
+<p>Once that&rsquo;s done, we need to find a solution to the problem of SerenityOS&rsquo; libc
+not being that stable. The names are the same, but things like errno numbers can
+change often. After doing some brainstorming in the Serenity Discord, we came up
+with the idea of a program which uses Zig&rsquo;s <code>@cImport</code> superpowers to import all
+the constants and then provide them with a package to <code>std.c.serenity</code>, and then
+provide that package during the SerenityOS Zig build. So the&hellip; let&rsquo;s say &ldquo;less&rdquo;
+changing parts of LibC could be part of Zig upstream, and the things that need
+to change more frequently can be provided with Serenity&rsquo;s ports system.</p>
+<p>After doing both of those, I want to explore how we could provide access to
+Serenity&rsquo;s system libraries and IPC from Zig. As SerenityOS&rsquo; libraries are all
+in C++, I&rsquo;m gonna have to write some bindings for this, but maybe an alternative
+is possible by parsing the IPC files instead.</p>
+<h1 id="closing-thoughts">Closing Thoughts</h1>
+<p>I want to finish up with some thoughts. Obviously, the story that I&rsquo;ve told you
+is nowhere near the scale of something like Zig and SerenityOS, but I believe
+that it captures at least a bit of that spirit. At the start, the task seemed
+insurmountable to me - I mean, how would I even go about getting Zig running on
+SerenityOS? &ldquo;It&rsquo;s gonna take weeks&rdquo;, I thought. But it turns out, the reason it
+wasn&rsquo;t done was just because nobody has tried it. So if there&rsquo;s a lesson to
+learn from this story, it&rsquo;s that any task is achievable (be it an operating
+system, a new programming language, a browser from the scratch) with enough
+yakshaving!</p>
+<h1 id="thanks">Thanks</h1>
+<p>I&rsquo;d like to thank all of the people on the slide for their help along the
+journey, and specially Daniel Bertalan, Ali Mohammad and Andrew Kaster for their
+emotional support during the final hours, Andreas Kling for creating the amazing
+SerenityOS project, and Andrew Kelley for creating the wonderful Zig programming
+language. Thanks everyone.</p>
+
+      </div>
+      <div class="paginator">
+        
+        <a class="link" href="https://sin-ack.github.io/posts/zigself-202208/">← prev</a>
+        
+        
+        <a></a>
+        
+      </div>
+      <div class="comment">
+        
+      </div>
+      
+    </main>
+    <footer id="footer">
+  <div>
+    <span>© 2019</span> - <span>2022</span>
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+    <span> 🍦 Theme </span>
+    <a class="link" href="https://github.com/queensferryme/hugo-theme-texify">TeXify</a>
+    <span> + </span>
+    <a class="link" href="https://github.com/sin-ack/hugo-theme-texify">some changes</a>
+  </div>
+
+  <div class="footnote">
+    <span></span>
+  </div>
+</footer>
+
+  </div>
+  
+
+<link media="screen" rel="stylesheet" href="https://sin-ack.github.io/css/custom.css" />
+
+
+
+
+
+</body>
+
+</html>
