@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>technical on sin-ack&#39;s writings</title>
+    <link>https://sin-ack.github.io/tags/technical/</link>
+    <description>Recent content in technical on sin-ack&#39;s writings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 26 Nov 2022 21:00:00 +0000</lastBuildDate><atom:link href="https://sin-ack.github.io/tags/technical/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The inner workings of ZigSelf&#39;s actor model</title>
+      <link>https://sin-ack.github.io/posts/zigself-actor/</link>
+      <pubDate>Sat, 26 Nov 2022 21:00:00 +0000</pubDate>
+      
+      <guid>https://sin-ack.github.io/posts/zigself-actor/</guid>
+      <description>Hi there. I wanted to do a series of deep dives about various parts of ZigSelf in order to give others a more thorough explanation of how everything works, and also as a braindump in order to verify my thinking. The first post I wanted to make is regarding ZigSelf&amp;rsquo;s implementation of the actor model, as it&amp;rsquo;s the feature I believe is one of the most interesting aspects of the language.</description>
+    </item>
+    
+  </channel>
+</rss>

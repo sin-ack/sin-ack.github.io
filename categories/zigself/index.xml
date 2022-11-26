@@ -6,7 +6,16 @@
     <description>Recent content in zigself on sin-ack&#39;s writings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 13 Aug 2022 10:00:00 +0100</lastBuildDate><atom:link href="https://sin-ack.github.io/categories/zigself/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 26 Nov 2022 21:00:00 +0000</lastBuildDate><atom:link href="https://sin-ack.github.io/categories/zigself/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The inner workings of ZigSelf&#39;s actor model</title>
+      <link>https://sin-ack.github.io/posts/zigself-actor/</link>
+      <pubDate>Sat, 26 Nov 2022 21:00:00 +0000</pubDate>
+      
+      <guid>https://sin-ack.github.io/posts/zigself-actor/</guid>
+      <description>Hi there. I wanted to do a series of deep dives about various parts of ZigSelf in order to give others a more thorough explanation of how everything works, and also as a braindump in order to verify my thinking. The first post I wanted to make is regarding ZigSelf&amp;rsquo;s implementation of the actor model, as it&amp;rsquo;s the feature I believe is one of the most interesting aspects of the language.</description>
+    </item>
+    
     <item>
       <title>ZigSelf Update, August 2022</title>
       <link>https://sin-ack.github.io/posts/zigself-202208/</link>

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<meta name="generator" content="Hugo 0.101.0" />
+	<meta name="generator" content="Hugo 0.105.0">
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -66,6 +66,28 @@
 
     <main id="main" class="index">
       
+      
+      <div class="post">
+        <h2>
+          <a href="https://sin-ack.github.io/posts/zigself-actor/">The inner workings of ZigSelf&#39;s actor model</a>
+          <time>2022-11-26</time>
+        </h2>
+        
+        <div>
+          <b>Keywords: </b>
+          
+          <a class="link" href='https://sin-ack.github.io/tags/self'>#self</a>
+          
+          <a class="link" href='https://sin-ack.github.io/tags/zigself'>#zigself</a>
+          
+          <a class="link" href='https://sin-ack.github.io/tags/actor-model'>#actor-model</a>
+          
+          <a class="link" href='https://sin-ack.github.io/tags/technical'>#technical</a>
+          
+        </div>
+        
+        <div class="content">Hi there. I wanted to do a series of deep dives about various parts of ZigSelf in order to give others a more thorough explanation of how everything works, and also as a braindump in order to verify my thinking. The first post I wanted to make is regarding ZigSelf&rsquo;s implementation of the actor model, as it&rsquo;s the feature I believe is one of the most interesting aspects of the language.</div>
+      </div>
       
       <div class="post">
         <h2>
@@ -165,45 +187,6 @@ making the following change on <code>JPGLoader.cpp</code>:</p>
 </span></span></span><span class="line"><span class="cl"><span class="gi"></span>    context.bitmap-&gt;set_pixel(x, y, color);
 </span></span></code></pre></div><p>makes the image show up correctly. Case closed!</p>
 <p>&hellip;not. Why did this even break in the first place?</p></div>
-      </div>
-      
-      <div class="post">
-        <h2>
-          <a href="https://sin-ack.github.io/posts/self-object-system/">A look at Self&#39;s object system</a>
-          <time>2021-03-29</time>
-        </h2>
-        
-        <div>
-          <b>Keywords: </b>
-          
-          <a class="link" href='https://sin-ack.github.io/tags/self'>#self</a>
-          
-          <a class="link" href='https://sin-ack.github.io/tags/vm'>#vm</a>
-          
-        </div>
-        
-        <div class="content"><p>When I <a href="/posts/a-tour-of-self/">first introduced Self</a>, I mentioned that Self is
-a programming language which employs <em>prototype-based inheritance</em>; it does not
-depend on a class-instance distinction to facilitate object-oriented
-programming, but rather, it uses a <em>prototype object</em> from which copies are
-created. The methods associated with a prototype is stored in a <em>traits object</em>
-which is just another object storing methods that can be used on a prototype and
-all its copies through a parent slot.</p>
-<p>The trouble begins when we actually try to implement this prototype-based
-inheritance system as an actual virtual machine, particularly with regards to
-memory consumption. Say that I have a prototype object <code>point</code> with a constant
-parent slot pointing to <code>traits point</code> and two assignable slots, <code>x</code> and
-<code>y</code>.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> When we copy this object, we would expect to copy all three fields. But
-if we scale that up, that&rsquo;s so much unnecessary data being copied! For one, for
-every copy of the <code>point</code> prototype we make, we&rsquo;re copying that <code>traits point</code>
-parent slot reference. Not to mention, because our language is dynamic, we can&rsquo;t
-simply treat <code>x</code> and <code>y</code> as offsets into memory, because they might be constant
-or assignable (Self can&rsquo;t intrinsically know). So our naive implementation would
-be pretty inefficient.</p>
-<p>Can we make this more memory-efficient? In fact, we can; we can exploit the fact
-that most Self objects that are copied only ever have their assignable slots
-modified. Let&rsquo;s take a look at how the original developers of Self have
-optimized the memory usage of the Self virtual machine.</p></div>
       </div>
       
       

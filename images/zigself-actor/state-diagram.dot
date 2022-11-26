@@ -1,0 +1,33 @@
+digraph zigself_actor_mode_state_machine {
+    rankdir=LR;
+    nodesep=1;
+
+    ENTRY[shape=doublecircle,style="filled",fillcolor="black",label="",width=0.25,height=0.25];
+    EXIT[shape=point,label="",width=0.25,height=0.25];
+
+    node [shape=rectangle];
+    RUNNING[fontname="Liberation Sans",fontsize=12,label="Running"];
+    YIELDED[fontname="Liberation Sans",fontsize=12,label="Yielded"];
+    BLOCKED[fontname="Liberation Sans",fontsize=12,label="Blocked"];
+    RUNTIME_ERROR[fontname="Liberation Sans",fontsize=12,label="Runtime error"];
+    DEAD[fontname="Liberation Sans",fontsize=12,label="Dead"];
+    ACTOR_SPAWNED[fontname="Liberation Sans",fontsize=12,label="Actor spawned"];
+
+    ENTRY->RUNNING [fontname="Liberation Sans",fontsize=12,label="_ActorSpawn:"];
+
+    RUNNING->YIELDED [fontname="Liberation Sans",fontsize=12,label="_ActorYield:"];
+    RUNNING->BLOCKED [fontname="Liberation Sans",fontsize=12,label="[blocking operation]"];
+    RUNNING->RUNTIME_ERROR [fontname="Liberation Sans",fontsize=12,label="[error received]"];
+    RUNNING->DEAD [fontname="Liberation Sans",fontsize=12,label="[execution finishes]"];
+    RUNNING->ACTOR_SPAWNED [fontname="Liberation Sans",fontsize=12,label="[actor sends _ActorSpawn:]"];
+
+    YIELDED->RUNNING;
+
+    BLOCKED->RUNNING [fontname="Liberation Sans",fontsize=12,label="[operation unblocks]"];
+
+    RUNTIME_ERROR->EXIT;
+
+    DEAD->EXIT;
+
+    ACTOR_SPAWNED->RUNNING [fontname="Liberation Sans",fontsize=12,label="[resumed by scheduler]"];
+}
