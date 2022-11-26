@@ -17,3 +17,7 @@ figcaption p {
 figcaption code {
   font-style: normal;
 }
+
+.language-smalltalk .err {
+  background-color: transparent;
+}
