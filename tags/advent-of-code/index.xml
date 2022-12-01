@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>advent-of-code on sin-ack&#39;s writings</title>
+    <link>https://sin-ack.github.io/tags/advent-of-code/</link>
+    <description>Recent content in advent-of-code on sin-ack&#39;s writings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 01 Dec 2022 06:00:00 +0000</lastBuildDate><atom:link href="https://sin-ack.github.io/tags/advent-of-code/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AoC 2022 in ZigSelf, day 1</title>
+      <link>https://sin-ack.github.io/posts/zigself-aoc-2022-day1/</link>
+      <pubDate>Thu, 01 Dec 2022 06:00:00 +0000</pubDate>
+      
+      <guid>https://sin-ack.github.io/posts/zigself-aoc-2022-day1/</guid>
+      <description>&lt;p&gt;Hi there. I had mentioned that I would be solving AoC puzzles this year with
+ZigSelf. I plan to commit to it as much as possible, but no promises. :^)&lt;/p&gt;
+&lt;p&gt;The first day of AoC has always been quite easy, and today is no exception, so
+this was rather simple.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

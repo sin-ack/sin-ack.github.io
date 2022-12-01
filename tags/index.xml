@@ -6,7 +6,25 @@
     <description>Recent content in Tags on sin-ack&#39;s writings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 26 Nov 2022 21:00:00 +0000</lastBuildDate><atom:link href="https://sin-ack.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 01 Dec 2022 06:00:00 +0000</lastBuildDate><atom:link href="https://sin-ack.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>advent-of-code</title>
+      <link>https://sin-ack.github.io/tags/advent-of-code/</link>
+      <pubDate>Thu, 01 Dec 2022 06:00:00 +0000</pubDate>
+      
+      <guid>https://sin-ack.github.io/tags/advent-of-code/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>zigself</title>
+      <link>https://sin-ack.github.io/tags/zigself/</link>
+      <pubDate>Thu, 01 Dec 2022 06:00:00 +0000</pubDate>
+      
+      <guid>https://sin-ack.github.io/tags/zigself/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>actor-model</title>
       <link>https://sin-ack.github.io/tags/actor-model/</link>
@@ -31,15 +49,6 @@
       <pubDate>Sat, 26 Nov 2022 21:00:00 +0000</pubDate>
       
       <guid>https://sin-ack.github.io/tags/technical/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>zigself</title>
-      <link>https://sin-ack.github.io/tags/zigself/</link>
-      <pubDate>Sat, 26 Nov 2022 21:00:00 +0000</pubDate>
-      
-      <guid>https://sin-ack.github.io/tags/zigself/</guid>
       <description></description>
     </item>
     

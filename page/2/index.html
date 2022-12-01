@@ -69,6 +69,42 @@
       
       <div class="post">
         <h2>
+          <a href="https://sin-ack.github.io/posts/jpg-loader-bork/">How malloc broke Serenity&#39;s JPGLoader, or: how to win the lottery</a>
+          <time>2021-06-03</time>
+        </h2>
+        
+        <div>
+          <b>Keywords: </b>
+          
+          <a class="link" href='https://sin-ack.github.io/tags/serenity'>#serenity</a>
+          
+          <a class="link" href='https://sin-ack.github.io/tags/bug'>#bug</a>
+          
+        </div>
+        
+        <div class="content"><p>I got the chance to investigate an interesting bug in
+<a href="https://serenityos.org/">SerenityOS</a> this week. It was related to the decoding
+of JPG images in the operating system. For some reason, when a JPG image is
+viewed, it comes out like this:</p>
+<figure><img src="/images/serenity-jpgloader/lenna-broken.png"
+         alt="Lenna,
+showing up with incorrect colors."/><figcaption>
+            <p>Lenna,
+showing up with incorrect colors.</p>
+        </figcaption>
+</figure>
+
+<p>Weird, huh? Also seems like a simple confusion of RGB vs. BGR. And sure enough,
+making the following change on <code>JPGLoader.cpp</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-diff" data-lang="diff"><span class="line"><span class="cl"><span class="gd">-   const Color color { (u8)block.y[pixel_index], (u8)block.cb[pixel_index], (u8)block.cr[pixel_index] };
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+   const Color color { (u8)block.cr[pixel_index], (u8)block.cb[pixel_index], (u8)block.y[pixel_index] };
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span>    context.bitmap-&gt;set_pixel(x, y, color);
+</span></span></code></pre></div><p>makes the image show up correctly. Case closed!</p>
+<p>&hellip;not. Why did this even break in the first place?</p></div>
+      </div>
+      
+      <div class="post">
+        <h2>
           <a href="https://sin-ack.github.io/posts/self-object-system/">A look at Self&#39;s object system</a>
           <time>2021-03-29</time>
         </h2>
