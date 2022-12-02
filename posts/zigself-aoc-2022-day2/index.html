@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<meta name="author" content="sin-ack">
+
+
+
+<meta name="description" content="The second day of Advent of Code was also rather
+easy on the question side, like day 1. Rather, the hard part was reading the
+question. :^) Here&rsquo;s the solution in
+ZigSelf.">
+
+
+
+
+<meta name="keywords" content=" self  blog ">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="AoC 2022 in ZigSelf, day 2" />
+<meta name="twitter:description" content="The second day of Advent of Code was also rather
+easy on the question side, like day 1. Rather, the hard part was reading the
+question. :^) Here&rsquo;s the solution in
+ZigSelf." />
+
+
+<link rel="canonical" href="https://sin-ack.github.io/posts/zigself-aoc-2022-day2/">
+
+
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/common.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/content.css'>
+<link media="screen" rel="stylesheet" href='https://sin-ack.github.io/css/highlight.css'>
+
+
+
+<title>AoC 2022 in ZigSelf, day 2 - sin-ack&#39;s writings</title>
+
+
+
+
+
+  <link rel="stylesheet" href='https://sin-ack.github.io/css/single.css'>
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://sin-ack.github.io/">sin-ack&#39;s writings</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/posts/">Archives</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/index.xml">RSS Feed</a>
+    </span>
+    
+  </nav>
+</header>
+
+    <main id="main" class="post">
+      
+      
+      
+      <h1>AoC 2022 in ZigSelf, day 2</h1>
+      
+      <div>
+        <b>Keywords: </b>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/zigself'>#zigself</a>
+        
+        <a class="link" href='https://sin-ack.github.io/tags/advent-of-code'>#advent-of-code</a>
+        
+      </div>
+      
+      <div class="content">
+        <p>The second day of <a href="https://adventofcode.com/">Advent of Code</a> was also rather
+easy on the question side, like day 1. Rather, the hard part was reading the
+question. :^) Here&rsquo;s the solution in
+<a href="https://github.com/sin-ack/zigself">ZigSelf</a>.</p>
+<p>You can see the <a href="https://github.com/sin-ack/zigself-advent-of-code/blob/2176304c8a5282b419f5480b7a965017986a267f/2022/day2/solve.self">source code
+here</a>,
+or in the below section.</p>
+<details>
+<summary>Source code listing</summary>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="line"><span class="cl"><span class="s">&#39;../../../objects/everything.self&#39;</span> <span class="o">_</span><span class="err">RunScript</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">&#34;Today&#39;s theme: inline methods!&#34;</span>
+</span></span><span class="line"><span class="cl">(<span class="err">|</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">parent</span><span class="nf">*</span> <span class="err">=</span> <span class="nv">std</span> <span class="nf">traits</span> <span class="nf">singleton</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c">&#34;Place input.txt in your cwd&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">input</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c">&#34;Hopefully one day we&#39;ll get a nice enum system.&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">winState</span> <span class="nf">=</span> (<span class="err">|</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">win</span> <span class="nf">=</span> (<span class="err">|</span> <span class="nv">parent</span><span class="nf">*</span> <span class="err">=</span> <span class="nv">std</span> <span class="nf">traits</span> <span class="nf">clonable</span> <span class="nf">|</span>)<span class="p">.</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">draw</span> <span class="nf">=</span> (<span class="err">|</span> <span class="nv">parent</span><span class="nf">*</span> <span class="err">=</span> <span class="nv">std</span> <span class="nf">traits</span> <span class="nf">clonable</span> <span class="nf">|</span>)<span class="p">.</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">loss</span> <span class="nf">=</span> (<span class="err">|</span> <span class="nv">parent</span><span class="nf">*</span> <span class="err">=</span> <span class="nv">std</span> <span class="nf">traits</span> <span class="nf">clonable</span> <span class="nf">|</span>)<span class="p">.</span>
+</span></span><span class="line"><span class="cl">    <span class="err">|</span>)<span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">part1</span> <span class="nf">=</span> (<span class="err">|</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">winnerOf:</span> <span class="nv">him</span> <span class="nf">VS:</span> <span class="nv">you</span> <span class="err">=</span> (
+</span></span><span class="line"><span class="cl">            <span class="nv">him</span> <span class="nf">=</span> <span class="s">&#39;A&#39;</span> <span class="nb">ifTrue:</span> [
+</span></span><span class="line"><span class="cl">                <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;X&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="nv">winState</span> <span class="nf">draw</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;Y&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="nv">winState</span> <span class="nf">win</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;Z&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="nv">winState</span> <span class="nf">loss</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">him</span> <span class="nf">=</span> <span class="s">&#39;B&#39;</span> <span class="nb">ifTrue:</span> [
+</span></span><span class="line"><span class="cl">                <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;X&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="nv">winState</span> <span class="nf">loss</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;Y&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="nv">winState</span> <span class="nf">draw</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;Z&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="nv">winState</span> <span class="nf">win</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">him</span> <span class="nf">=</span> <span class="s">&#39;C&#39;</span> <span class="nb">ifTrue:</span> [
+</span></span><span class="line"><span class="cl">                <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;X&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="nv">winState</span> <span class="nf">win</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;Y&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="nv">winState</span> <span class="nf">loss</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;Z&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="nv">winState</span> <span class="nf">draw</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="o">_</span><span class="err">Error:</span> <span class="s">&#39;Unknown state&#39;</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">        )<span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nf">bonusFor:</span> <span class="nv">state</span> <span class="err">=</span> (
+</span></span><span class="line"><span class="cl">            <span class="nv">state</span> <span class="nf">==</span> <span class="nv">winState</span> <span class="nf">win</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">6</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">state</span> <span class="nf">==</span> <span class="nv">winState</span> <span class="nf">draw</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">3</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">state</span> <span class="nf">==</span> <span class="nv">winState</span> <span class="nf">loss</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">0</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="o">_</span><span class="err">Error:</span> <span class="s">&#39;Unknown state&#39;</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">        )<span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nf">scoreFor:</span> <span class="nv">you</span> <span class="err">=</span> (
+</span></span><span class="line"><span class="cl">            <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;X&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">1</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;Y&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">2</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;Z&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">3</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="o">_</span><span class="err">Error:</span> <span class="s">&#39;Unknown state&#39;</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">        )<span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">total</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">|</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">total:</span> <span class="nv">0</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        [<span class="o">|</span> <span class="err">:</span><span class="nv">break</span> <span class="nf">|</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">input</span> <span class="nf">each:</span> [<span class="o">|</span> <span class="err">:</span><span class="nv">line</span><span class="p">.</span> <span class="nv">him</span><span class="p">.</span> <span class="nv">you</span> <span class="nf">|</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">line</span> <span class="nf">=</span> <span class="s">&#39;&#39;</span> <span class="nb">ifTrue:</span> <span class="nv">break</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="nf">line:</span> <span class="nv">line</span> <span class="err">splitBy:</span> <span class="s">&#39; &#39;</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nf">him:</span> <span class="nv">line</span> <span class="nf">at:</span> <span class="nv">0</span>.
+</span></span><span class="line"><span class="cl">                <span class="nf">you:</span> <span class="nv">line</span> <span class="nf">at:</span> <span class="nv">1</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="nf">total:</span> <span class="nv">total</span> <span class="err">+</span> (<span class="nf">bonusFor:</span> <span class="nv">winnerOf</span><span class="err">:</span> <span class="nv">him</span> <span class="nf">VS:</span> <span class="nv">you</span>) <span class="nf">+</span> (<span class="nf">scoreFor:</span> <span class="nv">you</span>)<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">        ] <span class="nf">break</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">total</span>
+</span></span><span class="line"><span class="cl">    )<span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">part2</span> <span class="nf">=</span> (<span class="err">|</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&#34;Rock = 1, Paper = 2, Scissors = 3&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">expectedScoreFor:</span> <span class="nv">him</span> <span class="nf">VS:</span> <span class="nv">you</span> <span class="err">=</span> (
+</span></span><span class="line"><span class="cl">            <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;Z&#39;</span> <span class="nb">ifTrue:</span> [
+</span></span><span class="line"><span class="cl">                <span class="nv">him</span> <span class="nf">=</span> <span class="s">&#39;A&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">2</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">him</span> <span class="nf">=</span> <span class="s">&#39;B&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">3</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">him</span> <span class="nf">=</span> <span class="s">&#39;C&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">1</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;Y&#39;</span> <span class="nb">ifTrue:</span> [
+</span></span><span class="line"><span class="cl">                <span class="nv">him</span> <span class="nf">=</span> <span class="s">&#39;A&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">1</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">him</span> <span class="nf">=</span> <span class="s">&#39;B&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">2</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">him</span> <span class="nf">=</span> <span class="s">&#39;C&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">3</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;X&#39;</span> <span class="nb">ifTrue:</span> [
+</span></span><span class="line"><span class="cl">                <span class="nv">him</span> <span class="nf">=</span> <span class="s">&#39;A&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">3</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">him</span> <span class="nf">=</span> <span class="s">&#39;B&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">1</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">him</span> <span class="nf">=</span> <span class="s">&#39;C&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">2</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="o">_</span><span class="err">Error:</span> <span class="s">&#39;Unknown state&#39;</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">        )<span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nf">scoreFor:</span> <span class="nv">you</span> <span class="err">=</span> (
+</span></span><span class="line"><span class="cl">            <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;Z&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">6</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;Y&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">3</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">you</span> <span class="nf">=</span> <span class="s">&#39;X&#39;</span> <span class="nb">ifTrue:</span> [ <span class="o">^</span> <span class="m">0</span> ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            <span class="o">_</span><span class="err">Error:</span> <span class="s">&#39;Unknown state&#39;</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">        )<span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">total</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">    <span class="err">|</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">total:</span> <span class="nv">0</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        [<span class="o">|</span> <span class="err">:</span><span class="nv">break</span> <span class="nf">|</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">input</span> <span class="nf">each:</span> [<span class="o">|</span> <span class="err">:</span><span class="nv">line</span><span class="p">.</span> <span class="nv">him</span><span class="p">.</span> <span class="nv">you</span> <span class="nf">|</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">line</span> <span class="nf">=</span> <span class="s">&#39;&#39;</span> <span class="nb">ifTrue:</span> <span class="nv">break</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="nf">line:</span> <span class="nv">line</span> <span class="err">splitBy:</span> <span class="s">&#39; &#39;</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">                <span class="nf">him:</span> <span class="nv">line</span> <span class="nf">at:</span> <span class="nv">0</span>.
+</span></span><span class="line"><span class="cl">                <span class="nf">you:</span> <span class="nv">line</span> <span class="nf">at:</span> <span class="nv">1</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="nf">total:</span> <span class="nv">total</span> <span class="err">+</span> (<span class="nf">expectedScoreFor:</span> <span class="nv">him</span> <span class="nf">VS:</span> <span class="nv">you</span>) <span class="nf">+</span> (<span class="nf">scoreFor:</span> <span class="nv">you</span>)<span class="p">.</span>
+</span></span><span class="line"><span class="cl">            ]<span class="p">.</span>
+</span></span><span class="line"><span class="cl">        ] <span class="nf">break</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">total</span>
+</span></span><span class="line"><span class="cl">    )<span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">run</span> <span class="nf">=</span> (
+</span></span><span class="line"><span class="cl">        <span class="err">input:</span> (
+</span></span><span class="line"><span class="cl">            <span class="nv">std</span> <span class="nf">file</span> <span class="nf">open:</span> <span class="s">&#39;input.txt&#39;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">;</span> <span class="nf">readAll</span>
+</span></span><span class="line"><span class="cl">                <span class="p">;</span> <span class="nf">splitBy:</span> <span class="s">&#39;\n&#39;</span>
+</span></span><span class="line"><span class="cl">        )<span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">part1</span> <span class="nf">asString</span> <span class="nf">printLine</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">part2</span> <span class="nf">asString</span> <span class="nf">printLine</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">    )
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">|</span>) <span class="nf">run</span><span class="p">.</span>
+</span></span></code></pre></div></details>
+<br />
+<p>As you can see, today&rsquo;s theme was focused more on the power of inline methods.
+They allow you, in essence, to define utility methods which you can use as part
+of the method itself. They&rsquo;re treated specially in the VM such that when you
+send that message, it is sent on the current activation object, and can
+therefore access things like method slots. They&rsquo;re really useful for defining
+one-off functions, the recursive case for recursive algorithms, etc.</p>
+<p>Yesterday <a href="https://github.com/sin-ack/zigself/commit/0ee45b57aad62c0ea1d2e0f67925d7eecd560da1">I got rid
+of</a>
+a useless operation, which shaved off 20% runtime. On my laptop (slightly slower
+than the machine I ran yesterday&rsquo;s code on), the two parts complete in 1.6
+seconds. Of course, there&rsquo;s still a ton of room for improvement both on the Self
+side and the VM side.</p>
+<p>No AoC-specific ZigSelf commits this time, since today&rsquo;s problem can be solved
+as-is. :^)</p>
+<hr>
+<br />
+<p>Join the <a href="https://discord.gg/HJ62kw6yvn">ZigSelf Discord server</a> in order to
+discuss the language and/or ask me questions!</p>
+      </div>
+      <div class="paginator">
+        
+        <a class="link" href="https://sin-ack.github.io/posts/zigself-aoc-2022-day1/">← prev</a>
+        
+        
+        <a></a>
+        
+      </div>
+      <div class="comment">
+        
+      </div>
+      
+    </main>
+    <footer id="footer">
+  <div>
+    <span>© 2019</span> - <span>2022</span>
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+    <span> 🍦 Theme </span>
+    <a class="link" href="https://github.com/queensferryme/hugo-theme-texify">TeXify</a>
+    <span> + </span>
+    <a class="link" href="https://github.com/sin-ack/hugo-theme-texify">some changes</a>
+  </div>
+
+  <div class="footnote">
+    <span></span>
+  </div>
+</footer>
+
+  </div>
+  
+
+<link media="screen" rel="stylesheet" href="https://sin-ack.github.io/css/custom.css" />
+
+
+
+
+
+</body>
+
+</html>
